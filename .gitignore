@@ -1,0 +1,9 @@
+# Ignore build output
+*.exe
+*.obj
+*.o
+*.log
+
+# Ignore IDE specific files
+.vscode/
+
