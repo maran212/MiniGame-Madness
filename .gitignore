@@ -5,4 +5,4 @@
 *.log
 
 # Ignore IDE specific files
-.vscode/
+.vscode

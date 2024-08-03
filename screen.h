@@ -8,9 +8,10 @@
 // Define any constants or global variables here
 
 // Declare any function prototypes here
-void clearScreen();
-std::pair<int, int> getScreenSize();
-void setScreenSize(int width, int height);
-void setScreenBackgroundColor(int color);
+void clearScreen(HANDLE screenHandle);
+std::pair<short, short> getScreenSize(HANDLE screenHandle);
+void setScreenSize(HANDLE screenHandle, short width, short height);
+void setScreenBackgroundColour(HANDLE screenHandle, WORD backgroundColour);
+void setScreenTextColour(HANDLE screenHandle, WORD textColour);
 
 #endif // SCREEN_H
