@@ -8,7 +8,7 @@
                 "/EHsc",
                 "${file}",
                 "curser.cpp",
-                "screen.cpp",
+                "screenBuffer.cpp",
                 "/Fe:${fileDirname}/${fileBasenameNoExtension}.exe"
             ],
             "group": {
@@ -19,4 +19,3 @@
         }
     ]
 }
-  
