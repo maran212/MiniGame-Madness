@@ -39,6 +39,12 @@ public:
     bool isActive() const;
 
     /**
+     * Get screen buffer info
+     * @return CONSOLE_SCREEN_BUFFER_INFO The screen buffer info
+     */
+    CONSOLE_SCREEN_BUFFER_INFO getScreenBufferInfo() const;
+
+    /**
      * Clears the screen buffer
      */
     void clearScreen();
@@ -62,7 +68,7 @@ public:
     int getScreenSize() const;
 
     /**
-     * Set the size of the screen buffer
+     * Set the size of the screen buffer and window
      * @param width The width of the screen
      * @param height The height of the screen
      */
@@ -152,13 +158,6 @@ public:
      * @param backgroundColour The color of the background
      */
     void fillScreen(char character, WORD textColour, WORD backgroundColour);
-
-    /**
-     * Copy a screen buffer and create a new screen buffer
-     * @param screenBufferOld The screen buffer to copy
-     * @return screenBuffer The new screen buffer
-     */
-    static screenBuffer copyScreenBuffer(const screenBuffer& screenBufferOld);
 };
 
 #endif // SCREENBUFFER_H

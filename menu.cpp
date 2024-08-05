@@ -1,36 +1,48 @@
-#include <iostream>
 #include "screenBuffer.h"
+#include <iostream>
 
 int main()
 {
     try
     {
-        // Declare and create a new console screen buffer dynamically
-        screenBuffer *newBuffer = new screenBuffer();
+        // Create a screen buffer instance
+        screenBuffer sb1;
 
-        // Set the new buffer as the active screen buffer
-        if (!SetConsoleActiveScreenBuffer(newBuffer->getScreenHandle()))
+        // Check if the screen buffer is active
+        if (sb1.isActive())
         {
-            throw std::runtime_error("Failed to set active screen buffer.");
+            std::cout << "Screen buffer is active." << std::endl;
+        }
+        else
+        {
+            std::cout << "Screen buffer is not active." << std::endl;
         }
 
-        std::cout << "New screen buffer activated." << std::endl;
+        // Set the screen size
+        // sb1.setScreenSize(138, 74);
 
-        // Use the new buffer to clear and fill the screen
-        newBuffer->clearScreen();
-        newBuffer->fillScreen('x');
-        std::cout << "Screen buffer cleared and filled with 'x'." << std::endl;
+        // Clear the screen
+        sb1.clearScreen();
 
-        // Wait for user input to exit
-        std::cout << "Press Enter to exit..." << std::flush;
-        std::cin.get();
+        // Set cursor position and write text
+        sb1.setCursorPosition(10, 5);
+        sb1.setCursorVisibility(false);
+        
+        sb1.writeToScreen(0, 0, "Hello, ScreenBuffer!", 0x0F, 0x00); // White text on black background
 
-        // Clean up
-        delete newBuffer;
+        // Get and display the text from screen
+        std::string text = sb1.getScreenText(0, 0, 20);
+        std::cout << "Text read from screen: " << text << std::endl;
+
+        // set sb1 to active
+        SetConsoleActiveScreenBuffer(sb1.getScreenHandle());
+
+        // Wait for 10 seconds
+        Sleep(10000);
     }
     catch (const std::exception &e)
     {
-        std::cerr << "An error occurred: " << e.what() << std::endl;
+        std::cerr << "Exception: " << e.what() << std::endl;
         return 1;
     }
 
