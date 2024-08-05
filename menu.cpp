@@ -1,26 +1,38 @@
 #include <iostream>
-#include <windows.h>
-#include "curser.h"
 #include "screenBuffer.h"
 
 int main()
 {
-    // Get the handle to the console
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    if (hConsole == INVALID_HANDLE_VALUE)
+    try
     {
-        std::cerr << "Error getting console handle" << std::endl;
+        // Declare and create a new console screen buffer dynamically
+        screenBuffer *newBuffer = new screenBuffer();
+
+        // Set the new buffer as the active screen buffer
+        if (!SetConsoleActiveScreenBuffer(newBuffer->getScreenHandle()))
+        {
+            throw std::runtime_error("Failed to set active screen buffer.");
+        }
+
+        std::cout << "New screen buffer activated." << std::endl;
+
+        // Use the new buffer to clear and fill the screen
+        newBuffer->clearScreen();
+        newBuffer->fillScreen('x');
+        std::cout << "Screen buffer cleared and filled with 'x'." << std::endl;
+
+        // Wait for user input to exit
+        std::cout << "Press Enter to exit..." << std::flush;
+        std::cin.get();
+
+        // Clean up
+        delete newBuffer;
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "An error occurred: " << e.what() << std::endl;
         return 1;
     }
-
-    // Define the position and text to write
-    COORD position1 = {10, 5};  // x = 10, y = 5
-    COORD position2 = {30, 10}; // x = 30, y = 10
-
-    // Wait for user input
-    std::cout << "Press any key to exit..." << std::endl;
-    std::cin.get();
 
     return 0;
 }
