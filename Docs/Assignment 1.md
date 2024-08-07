@@ -66,7 +66,7 @@ Our Goal for the Main menu graphics and the game graphics is to have clean ASCII
 
 To effectively plan our project, we will use a Gantt chart. This chart helps us plot the development stages of each game, including alpha, beta, and release phases, and assign tasks to each group member. We have also transferred the tasks in the Gantt chart into issues in our git repository which are then managed in a GitHub Project. This integration of GitHub Projects into our repository enables team members to monitor the real-time progress of their peers, ensuring better coordination and transparency throughout the project.
 
-[Gantt chart - Finished-1 (1).jpg](https://drive.google.com/file/d/1k\_VnGHzsuiRc\_qvItSqGHhQxVYpZMws5/view?usp=sharing) [https://drive.google.com/file/d/1k\_VnGHzsuiRc\_qvItSqGHhQxVYpZMws5/view?usp=sharing](https://drive.google.com/file/d/1k\_VnGHzsuiRc\_qvItSqGHhQxVYpZMws5/view?usp=sharing) 
+[Gantt chart.jpg](https://drive.google.com/file/d/1k\_VnGHzsuiRc\_qvItSqGHhQxVYpZMws5/view?usp=sharing) 
 
 # **Risk Management Strategies**
 
@@ -74,7 +74,7 @@ To manage risks effectively, our first step was to identify potential risks by b
 
 We then estimated the cost in hours that each identified risk could potentially incur and assessed the likelihood of these risks based on our collective judgment. For example, we determined that there is a high chance (80%) of a team member falling ill, with a low cost of 5 hours. Our mitigation strategy for this risk was to allocate extra time throughout the semester to compensate for any lost productivity. As a result, the adjusted impact was reduced to 2 hours, yielding a risk reduction leverage of 3.4.
 
-This systematic approach was applied to all the risks we identified, ensuring that we have a clear plan to address each one. Our comprehensive risk management document is available here for detailed information. [Risk managment](https://docs.google.com/spreadsheets/d/1wlmZQxtJCCbeWDVdXl0sUJvBfp375IB8YMqNCwEtYos/edit?usp=sharing)[https://docs.google.com/spreadsheets/d/1wlmZQxtJCCbeWDVdXl0sUJvBfp375IB8YMqNCwEtYos/edit?usp=drivesdk](https://docs.google.com/spreadsheets/d/1wlmZQxtJCCbeWDVdXl0sUJvBfp375IB8YMqNCwEtYos/edit?usp=drivesdk) 
+This systematic approach was applied to all the risks we identified, ensuring that we have a clear plan to address each one. Our comprehensive risk management document is available here for detailed information. [Risk managment](https://docs.google.com/spreadsheets/d/1wlmZQxtJCCbeWDVdXl0sUJvBfp375IB8YMqNCwEtYos/edit?usp=sharing)
 
 # **Conclusion:**
 
