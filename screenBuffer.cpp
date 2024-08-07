@@ -50,11 +50,8 @@ screenBuffer::screenBuffer()
  */
 screenBuffer::~screenBuffer()
 {
-    // Checks if the screen buffer is already closed
-    if (screenHandle != INVALID_HANDLE_VALUE)
-    {
-        CloseHandle(screenHandle);
-    }
+    // Close the screen buffer
+    CloseHandle(screenHandle);
 }
 
 /**
@@ -218,28 +215,39 @@ std::pair<WORD, WORD> screenBuffer::getScreenColours(int x, int y, int length) c
 }
 
 /**
- * set screen text and background colour
+ * Set the screen text
  * @param x The x coordinate
  * @param y The y coordinate
- * @param textColour The colour of the text
- * @param backgroundColour The colour of the background
- *
+ * @param textColour The color of the text
+ * @param backgroundColour The color of the background
+ * @return void
  */
 void screenBuffer::setScreenColours(int x, int y, int length, WORD textColour, WORD backgroundColour)
 {
-    // Start coordiante based on x and y
+    // Start coordinate based on x and y
     COORD position = {static_cast<SHORT>(x), static_cast<SHORT>(y)};
 
-    // Set the text and background colour attributes
-    WORD attributes = textColour | (backgroundColour << 4);
+    // Get the current screen colors for the specified area
+    std::pair<WORD, WORD> currentColours = getScreenColours(x, y, length);
 
+    // Determine the new attributes
+    WORD attributes = 0;
     if (textColour == SAME_COLOUR)
     {
-        attributes = getScreenColours(x, y, length).first | (backgroundColour << 4);
+        attributes |= currentColours.first; // Use current text color if SAME_COLOUR
     }
-    else if (backgroundColour == SAME_COLOUR)
+    else
     {
-        attributes = textColour | (getScreenColours(x, y, length).second << 4);
+        attributes |= textColour; // Use provided text color
+    }
+
+    if (backgroundColour == SAME_COLOUR)
+    {
+        attributes |= (currentColours.second << 4); // Use current background color if SAME_COLOUR
+    }
+    else
+    {
+        attributes |= (backgroundColour << 4); // Use provided background color
     }
 
     // Number of attributes set
@@ -353,7 +361,7 @@ std::string screenBuffer::getAllScreenText() const
  * @param text The text to write
  * @return void
  */
-void screenBuffer::writeToScreen(int x, int y, std::string text)
+void screenBuffer::setScreenText(int x, int y, std::string text)
 {
     // Start coordiante based on x and y
     COORD position = {static_cast<SHORT>(x), static_cast<SHORT>(y)};
@@ -383,10 +391,10 @@ void screenBuffer::writeToScreen(int x, int y, std::string text)
  * @param backgroundColour The colour of the background
  * @return void
  */
-void screenBuffer::writeToScreen(int x, int y, std::string text, WORD textColour, WORD backgroundColour)
+void screenBuffer::setScreenText(int x, int y, std::string text, WORD textColour, WORD backgroundColour)
 {
     // write the text to the screen
-    writeToScreen(x, y, text);
+    setScreenText(x, y, text);
 
     // Set text colour
     setScreenColours(x, y, text.length(), textColour, backgroundColour);

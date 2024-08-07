@@ -27,18 +27,20 @@ int main()
         // Set cursor position and write text
         sb1.setCursorPosition(10, 5);
         sb1.setCursorVisibility(false);
-        
-        sb1.writeToScreen(0, 0, "Hello, ScreenBuffer!", 0x0F, 0x00); // White text on black background
+
+        // set sb1 to active
+        SetConsoleActiveScreenBuffer(sb1.getScreenHandle());
+
+        sb1.setScreenText(11, 5, "Hello, ScreenBuffer!", FOREGROUND_RED, BACKGROUND_BLUE); // White text on black background
 
         // Get and display the text from screen
         std::string text = sb1.getScreenText(0, 0, 20);
         std::cout << "Text read from screen: " << text << std::endl;
 
-        // set sb1 to active
-        SetConsoleActiveScreenBuffer(sb1.getScreenHandle());
-
         // Wait for 10 seconds
         Sleep(10000);
+
+        sb1.~screenBuffer();
     }
     catch (const std::exception &e)
     {

@@ -11,8 +11,12 @@ class screenBuffer
 {
 private:
     HANDLE screenHandle;
-    WORD SAME_COLOUR = 0xFFFF; // No change in text or background color
+    const WORD SAME_COLOUR = -1;
 
+    /**
+     * Throw an error if the result is false
+     * @param result The result of the operation
+     */
     void throwError(BOOL result, const std::string message) const;
 
 public:
@@ -84,14 +88,15 @@ public:
     std::pair<WORD, WORD> getScreenColours(int x, int y, int length) const;
 
     /**
-     * Set the screen text and background color
+     * Set the screen text
      * @param x The x coordinate
      * @param y The y coordinate
      * @param length The length of the text
      * @param textColour The color of the text
      * @param backgroundColour The color of the background
+     * @return void
      */
-    void setScreenColours(int x, int y, int length, WORD textColour, WORD backgroundColour);
+    void setScreenColours(int x, int y, int lenght, WORD textColour, WORD backgroundColour);
 
     /**
      * Set cursor visibility
@@ -133,7 +138,7 @@ public:
      * @param y The y coordinate
      * @param text The text to write
      */
-    void writeToScreen(int x, int y, const std::string text);
+    void setScreenText(int x, int y, const std::string text);
 
     /**
      * Write text to the screen at a specific location with a specific color
@@ -143,7 +148,7 @@ public:
      * @param textColour The color of the text
      * @param backgroundColour The color of the background
      */
-    void writeToScreen(int x, int y, const std::string text, WORD textColour, WORD backgroundColour);
+    void setScreenText(int x, int y, const std::string text, WORD textColour, WORD backgroundColour);
 
     /**
      * Fill the screen buffer with a specific character
