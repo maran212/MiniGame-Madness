@@ -1,46 +1,42 @@
 #include "screenBuffer.h"
 #include <iostream>
+#include <conio.h>
 
 int main()
 {
     try
     {
         // Create a screen buffer instance
-        screenBuffer sb1;
-
-        // Check if the screen buffer is active
-        if (sb1.isActive())
-        {
-            std::cout << "Screen buffer is active." << std::endl;
-        }
-        else
-        {
-            std::cout << "Screen buffer is not active." << std::endl;
-        }
+        screenBuffer menu;
 
         // Set the screen size
-        // sb1.setScreenSize(138, 74);
+        menu.setScreenSize(138, 74);
 
         // Clear the screen
-        sb1.clearScreen();
+        menu.clearScreen();
 
-        // Set cursor position and write text
-        sb1.setCursorPosition(10, 5);
-        sb1.setCursorVisibility(false);
+        // Set cursor invisible
+        menu.setCursorVisibility(false);
 
-        // set sb1 to active
-        SetConsoleActiveScreenBuffer(sb1.getScreenHandle());
+        // Write text to the screen
+        menu.setScreenText(11, 5, "Hello, ScreenBuffer!", FOREGROUND_RED, BACKGROUND_BLUE);
 
-        sb1.setScreenText(11, 5, "Hello, ScreenBuffer!", FOREGROUND_RED, BACKGROUND_BLUE); // White text on black background
+        // set menu to active
+        SetConsoleActiveScreenBuffer(menu.getScreenHandle());
 
-        // Get and display the text from screen
-        std::string text = sb1.getScreenText(0, 0, 20);
-        std::cout << "Text read from screen: " << text << std::endl;
+        // Wait for user input
+        char input = ' ';
+        
+        while (input == ' ')
+        {
+            if (_kbhit())
+            {
+                input = _getch();
+                std::cout << input << std::endl;
+            }
+        }
 
-        // Wait for 10 seconds
-        Sleep(10000);
-
-        sb1.~screenBuffer();
+        menu.~screenBuffer();
     }
     catch (const std::exception &e)
     {
