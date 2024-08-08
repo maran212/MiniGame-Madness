@@ -66,7 +66,7 @@ Our Goal for the Main menu graphics and the game graphics is to have clean ASCII
 
 To effectively plan our project, we will use a Gantt chart. This chart helps us plot the development stages of each game, including alpha, beta, and release phases, and assign tasks to each group member. We have also transferred the tasks in the Gantt chart into issues in our git repository which are then managed in a GitHub Project. This integration of GitHub Projects into our repository enables team members to monitor the real-time progress of their peers, ensuring better coordination and transparency throughout the project.
 
-[Gantt chart.pdf]([https://drive.google.com/file/d/1k\_VnGHzsuiRc\_qvItSqGHhQxVYpZMws5/view?usp=sharing](https://drive.google.com/file/d/1XYxtbxNcae68_Kp1voscbZxC-RNvzScz/view?usp=drive_link)) 
+[Gantt chart.pdf](https://drive.google.com/file/d/1k\_VnGHzsuiRc\_qvItSqGHhQxVYpZMws5/view?usp=sharing) 
 
 # **Risk Management Strategies**
 
