@@ -1,4 +1,5 @@
 #include "screenBuffer.h"
+#include "listener.h"
 #include <iostream>
 #include <conio.h>
 
@@ -9,30 +10,40 @@ int main()
         // Create a screen buffer instance
         screenBuffer menu;
 
-        // Set the screen size
-        menu.setScreenSize(138, 74);
+        // Create left and right boarder
+        for (int i = 1; i < menu.getScreenHeight() - 1; i++)
+        {
+            menu.writeToScreen(0, i, "X", 0, 1);
+            menu.writeToScreen(menu.getScreenWidth() - 1, i, "X", 0, 1);
+        }
 
-        // Clear the screen
-        menu.clearScreen();
+        // Create top and bottom boarder
+        for (int i = 0; i < menu.getScreenWidth(); i++)
+        {
+            menu.writeToScreen(i, 0, "X", 0, 1);
+            menu.writeToScreen(i, menu.getScreenHeight() - 1, "X", 0, 1);
+        }
 
         // Set cursor invisible
         menu.setCursorVisibility(false);
 
-        // Write text to the screen
-        menu.setScreenText(11, 5, "Hello, ScreenBuffer!", FOREGROUND_RED, BACKGROUND_BLUE);
+        // Set the menu options
+        std::string text[] = {"MINIGAME MADNESS", "1. Tic Tac Toa", "2. Hangman", "3. Rock Paper Scissors", "4. Exit", "Entre a number to select a game: "};
+
+        for (size_t i = 0; i < 7; i++)
+        {
+            menu.writeToScreen(menu.getScreenWidth() / 2, menu.getScreenHeight() / 2 + i, text[i]);
+        }
 
         // set menu to active
         SetConsoleActiveScreenBuffer(menu.getScreenHandle());
 
         // Wait for user input
-        char input = ' ';
-        
-        while (input == ' ')
+        while (true)
         {
             if (_kbhit())
             {
-                input = _getch();
-                std::cout << input << std::endl;
+                return _getch();
             }
         }
 
