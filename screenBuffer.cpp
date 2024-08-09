@@ -24,6 +24,43 @@ void screenBuffer::throwError(BOOL result, std::string message) const
 }
 
 /**
+ * Write to the screen buffer
+ * @param x The x coordinate
+ * @param y The y coordinate
+ * @param text The text to write
+ * @return result The result of the operation
+ */
+BOOL screenBuffer::writeToScreenBuffer(int x, int y, const std::string text)
+{
+    // Number of characters written
+    DWORD written;
+
+    // Move the cursor to the specified position
+    setCursorPosition(x, y);
+
+    return WriteConsole(
+        screenHandle,  // Console screen buffer handle
+        text.c_str(),  // Buffer containing the text to write
+        text.length(), // Number of characters to write
+        &written,      // Variable to receive the number of characters written
+        nullptr        // Not using asynchronous writing
+    );
+}
+
+/**
+ * Return the text and background colours to the default
+ * @return void
+ */
+void screenBuffer::resetColours()
+{
+    // Set the text and background colours to the default
+    BOOL result = writeToScreenBuffer(0, 0, "\033[0m");
+
+    // Check if the colours were reset successfully
+    throwError(result, "Error resetting colours");
+}
+
+/**
  * Constructor for the screenBuffer class
  */
 screenBuffer::screenBuffer()
@@ -34,10 +71,19 @@ screenBuffer::screenBuffer()
     // Check if the screen buffer was created successfully
     throwError(screenHandle != INVALID_HANDLE_VALUE, "Error creating screen buffer");
 
+    // clear the screen buffer
+    clearScreen();
+
     // set screen buffer size to window size
     CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo = getScreenBufferInfo();
 
-    // Extract window size
+    // Get console mod and set it to enable virtual terminal processing
+    DWORD consoleMode;
+    BOOL result = GetConsoleMode(screenHandle, &consoleMode);
+    consoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    result = SetConsoleMode(screenHandle, consoleMode);
+
+    // Extract window size to set screen buffer size
     SMALL_RECT windowSize = screenBufferInfo.srWindow;
     int width = windowSize.Right - windowSize.Left + 1;
     int height = windowSize.Bottom - windowSize.Top + 1;
@@ -94,11 +140,14 @@ CONSOLE_SCREEN_BUFFER_INFO screenBuffer::getScreenBufferInfo() const
  */
 void screenBuffer::clearScreen()
 {
-    // Fill the screen buffer with spaces
-    fillScreen(' ');
+    // Escape sequence to clear the screen and move cursor to the top left
+    const char *clearScreenSequence = "\033[2J\033[H";
 
-    // Move the cursor to the home position
-    SetConsoleCursorPosition(screenHandle, {0, 0});
+    // Write the escape sequence to the screen buffer
+    BOOL result = writeToScreenBuffer(0, 0, clearScreenSequence);
+
+    // Check if the screen buffer was cleared successfully
+    throwError(result, "Error clearing screen buffer");
 }
 
 /**
@@ -216,54 +265,36 @@ std::pair<WORD, WORD> screenBuffer::getScreenColours(int x, int y, int length) c
 
 /**
  * Set the screen text
- * @param x The x coordinate
- * @param y The y coordinate
+ * @param text The text to have its colour set
  * @param textColour The color of the text
  * @param backgroundColour The color of the background
  * @return void
  */
-void screenBuffer::setScreenColours(int x, int y, int length, WORD textColour, WORD backgroundColour)
+std::string screenBuffer::setTextColours(std::string text, WORD textColour, WORD backgroundColour)
 {
-    // Start coordinate based on x and y
-    COORD position = {static_cast<SHORT>(x), static_cast<SHORT>(y)};
+    // String to hold the VT sequence
+    std::string vtSequence = "\033[";
 
-    // Get the current screen colors for the specified area
-    std::pair<WORD, WORD> currentColours = getScreenColours(x, y, length);
+    // Apply text color if specified
 
-    // Determine the new attributes
-    WORD attributes = 0;
-    if (textColour == SAME_COLOUR)
+    if (textColour != NO_COLOUR)
     {
-        attributes |= currentColours.first; // Use current text color if SAME_COLOUR
-    }
-    else
-    {
-        attributes |= textColour; // Use provided text color
+        vtSequence += std::to_string(30 + textColour);
     }
 
-    if (backgroundColour == SAME_COLOUR)
+    // Apply background color if specified
+    if (backgroundColour != NO_COLOUR)
     {
-        attributes |= (currentColours.second << 4); // Use current background color if SAME_COLOUR
+        if (textColour != NO_COLOUR)
+        {
+            vtSequence += ";";
+        }
+        vtSequence += std::to_string(40 + backgroundColour);
     }
-    else
-    {
-        attributes |= (backgroundColour << 4); // Use provided background color
-    }
 
-    // Number of attributes set
-    DWORD written;
+    vtSequence += "m" + text + "\033[0m"; // Append text and reset sequence
 
-    // Set the attribute for the specified length
-    BOOL result = FillConsoleOutputAttribute(
-        screenHandle, // Console screen buffer handle
-        attributes,   // Attribute to set
-        length,       // Number of cells to set the attribute
-        position,     // Coordinates where to start setting the attribute
-        &written      // Variable to receive the number of cells set
-    );
-
-    // Check if the attribute was set successfully
-    throwError(result, "Error setting screen colours");
+    return vtSequence;
 }
 
 /**
@@ -361,22 +392,10 @@ std::string screenBuffer::getAllScreenText() const
  * @param text The text to write
  * @return void
  */
-void screenBuffer::setScreenText(int x, int y, std::string text)
+void screenBuffer::writeToScreen(int x, int y, std::string text)
 {
-    // Start coordiante based on x and y
-    COORD position = {static_cast<SHORT>(x), static_cast<SHORT>(y)};
-
-    // Number of characters written
-    DWORD written;
-
-    // Write the text to the console buffer at the specified position
-    BOOL result = WriteConsoleOutputCharacterA(
-        screenHandle,  // Console screen buffer handle
-        text.c_str(),  // Buffer containing the text to write
-        text.length(), // Number of characters to write
-        position,      // Coordinates where to start writing
-        &written       // Variable to receive the number of characters written
-    );
+    // Write the text to the screen
+    BOOL result = writeToScreenBuffer(x, y, text);
 
     // Check if the text was written successfully
     throwError(result, "Error writing to screen");
@@ -391,55 +410,11 @@ void screenBuffer::setScreenText(int x, int y, std::string text)
  * @param backgroundColour The colour of the background
  * @return void
  */
-void screenBuffer::setScreenText(int x, int y, std::string text, WORD textColour, WORD backgroundColour)
+void screenBuffer::writeToScreen(int x, int y, std::string text, WORD textColour, WORD backgroundColour)
 {
     // write the text to the screen
-    setScreenText(x, y, text);
+    writeToScreen(x, y, setTextColours(text, textColour, backgroundColour));
 
-    // Set text colour
-    setScreenColours(x, y, text.length(), textColour, backgroundColour);
-}
-
-/**
- * Fill the screen buffer with a specific character
- * @param character The character to write
- * @return void
- */
-void screenBuffer::fillScreen(char character)
-{
-    // The number of cells in the screen buffer
-    DWORD cellCount = getScreenSize();
-
-    // Fill the entire screen buffer with spaces
-    COORD home = {0, 0};
-
-    // Number of characters written
-    DWORD written;
-
-    BOOL result = FillConsoleOutputCharacter(
-        screenHandle, // Console screen buffer handle
-        character,    // Character to write
-        cellCount,    // Number of cells to write
-        home,         // Coordinates where to start writing
-        &written      // Variable to receive the number of characters written
-    );
-
-    // Check if the screen buffer was filled successfully
-    throwError(result, "Error filling screen buffer");
-}
-
-/**
- * Fill the screen buffer with a specific character
- * @param character The character to write
- * @param textColour The colour of the text
- * @param backgroundColour The colour of the background
- * @return void
- */
-void screenBuffer::fillScreen(char character, WORD textColour, WORD backgroundColour)
-{
-    // Fill the screen buffer with the specified character
-    fillScreen(character);
-
-    // Set the text and background colour
-    setScreenColours(0, 0, getScreenSize(), textColour, backgroundColour);
+    // Reset the text and background colours to defaults
+    // resetColours();
 }
