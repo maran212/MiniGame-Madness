@@ -48,7 +48,7 @@ Our project, titled "Minigame Madness," focuses on creating a collection of mini
 
 # **Uniqueness and Niche**
 
-Although the games we are recreating are not unique, there is a lack of widely-known applications that feature a launcher for multiple command-line games. A similar project to ours would be [BSD Games](https://github.com/vattam/BSDGames), which consist of classic board/arcade games as well as some unique games. But lacks a central launcher and menu system. 
+Although the games we are recreating are not unique, there is a lack of widely-known applications that feature a launcher for multiple command-line games. A similar project to ours would be [BSD Games](https://github.com/vattam/BSDGames), which consists of classic board/arcade games as well as some unique games. But lacks a central launcher and menu system. 
 
 Our project aims to fill this niche by offering a diverse range of classic games in one application. We recognize potential copyright issues if this project were to be widely distributed, so it is primarily for educational purposes.
 
@@ -66,11 +66,11 @@ Our Goal for the Main menu graphics and the game graphics is to have clean ASCII
 
 To effectively plan our project, we will use a Gantt chart. This chart helps us plot the development stages of each game, including alpha, beta, and release phases, and assign tasks to each group member. We have also transferred the tasks in the Gantt chart into issues in our git repository which are then managed in a GitHub Project. This integration of GitHub Projects into our repository enables team members to monitor the real-time progress of their peers, ensuring better coordination and transparency throughout the project.
 
-[Gantt chart.jpg](https://drive.google.com/file/d/1k\_VnGHzsuiRc\_qvItSqGHhQxVYpZMws5/view?usp=sharing) 
+[Gantt chart](https://drive.google.com/file/d/1XYxtbxNcae68_Kp1voscbZxC-RNvzScz/view?usp=sharing) 
 
 # **Risk Management Strategies**
 
-To manage risks effectively, our first step was to identify potential risks by brainstorming sessions as a group. We discussed the various challenges our project might encounter and considered possible mitigation strategies for each. This gave us a good idea of what risks there are to our project and group.
+To manage risks effectively, our first step was to identify potential risks by brainstorming sessions as a group. We discussed the various challenges our project might encounter and considered possible mitigation strategies for each. This gave us a good idea of the risks to our project and group.
 
 We then estimated the cost in hours that each identified risk could potentially incur and assessed the likelihood of these risks based on our collective judgment. For example, we determined that there is a high chance (80%) of a team member falling ill, with a low cost of 5 hours. Our mitigation strategy for this risk was to allocate extra time throughout the semester to compensate for any lost productivity. As a result, the adjusted impact was reduced to 2 hours, yielding a risk reduction leverage of 3.4.
 
