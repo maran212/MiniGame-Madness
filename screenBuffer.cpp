@@ -418,3 +418,4 @@ void screenBuffer::writeToScreen(int x, int y, std::string text, WORD textColour
     // Reset the text and background colours to defaults
     // resetColours();
 }
+
