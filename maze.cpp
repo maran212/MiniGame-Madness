@@ -1,21 +1,20 @@
 #include <iostream>
 #include <vector>
+#include <ctime>
 #include <stack>
+#include <algorithm>
 #include "screenBuffer.h"
+#include "windows.h"
 #include <conio.h>
+#include <random>
 
 using namespace std;
-
-// Directions for moving in the maze (right, down, left, up)
-const int DX[4] = {1, 0, -1, 0};
-const int DY[4] = {0, 1, 0, -1};
 
 // Cell states
 enum CellState
 {
     WALL,
-    PATH,
-    VISITED
+    PATH
 };
 
 class Maze
@@ -23,106 +22,109 @@ class Maze
 private:
     int width;
     int height;
-    screenBuffer mazeScreen;
     vector<vector<CellState>> grid;
+    screenBuffer mazeScreen;
+
+    void randomWalk(int startX, int startY)
+    {
+        stack<pair<int, int>> pathStack;
+        vector<vector<bool>> visited(height, vector<bool>(width, false));
+        pathStack.push({startX, startY});
+        visited[startY][startX] = true;
+
+        // Random number generator and distribution
+        random_device rd;                      // Obtain a random number from hardware
+        mt19937 g(rd());                       // Seed the generator
+        uniform_int_distribution<> dist(0, 3); // Distribution in range [0, 3]
+
+        while (!pathStack.empty())
+        {
+            auto [x, y] = pathStack.top();
+            pathStack.pop();
+            grid[y][x] = PATH;
+
+            // Randomly shuffle directions to ensure unbiased random walk
+            vector<pair<int, int>> directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+            shuffle(directions.begin(), directions.end(), g);
+
+            for (const auto &[dx, dy] : directions)
+            {
+                int nx = x + dx;
+                int ny = y + dy;
+
+                if (nx >= 0 && ny >= 0 && nx < width && ny < height)
+                {
+                    if (!visited[ny][nx])
+                    {
+                        visited[ny][nx] = true;
+                        pathStack.push({nx, ny});
+                        break; // Move to the next cell
+                    }
+                }
+            }
+        }
+    }
 
 public:
-    /**
-     * Constructor for the Maze class
-     * @param width The width of the maze
-     * @param height The height of the maze
-     * @return void
-     */
-    Maze(int width, int height)
+    Maze(int width, int height) : width(width), height(height)
     {
-        // Set the width and height of the grid representing of the maze
         grid.resize(height, vector<CellState>(width, WALL));
-
-        // Set the screen size of the existing mazeScreen object
-        mazeScreen.setScreenSize(width, height);
     }
 
     void generate()
     {
-        // Seed the random number generator with the current time
-        srand(time(0));
+        srand(static_cast<unsigned>(time(0))); // Seed the random number generator
 
-        // Create vectors to track visited cells and the path
-        vector<int> set(width, 0);
-        vector<int> rowSet(width, 0);
-
-        // Iterate through rows
         for (int y = 0; y < height; ++y)
         {
-            // Initialize the set for the current row
             for (int x = 0; x < width; ++x)
             {
-                // Randomly decide if the cell should be a path or a wall
-                if (x > 0 && rand() % 2)
+                if (grid[y][x] == WALL)
                 {
-                    grid[y][x] = PATH;
-                }
-                else
-                {
-                    grid[y][x] = WALL;
-                }
-
-                // Ensure vertical connectivity between sets in adjacent rows
-                if (y > 0 && rowSet[x] != rowSet[x - 1])
-                {
-                    grid[y][x] = PATH;
-                }
-
-                // Update the rowSet to reflect the current set of the cell
-                rowSet[x] = set[x];
-            }
-
-            // Connect vertical edges between the current row and the row above
-            for (int x = 0; x < width; ++x)
-            {
-                if (y > 0 && grid[y][x] == PATH && grid[y - 1][x] == PATH)
-                {
-                    set[x] = set[x - 1];
+                    randomWalk(x, y);
                 }
             }
-
-            // Reset row set for the next row
-            fill(rowSet.begin(), rowSet.end(), 0);
         }
 
-        // Ensure final connectivity by converting any remaining walls in the last row to paths
-        for (int x = 0; x < width; ++x)
+        // Ensure all cells are part of the maze
+        for (int y = 0; y < height; ++y)
         {
-            if (grid[height - 1][x] == WALL)
+            for (int x = 0; x < width; ++x)
             {
-                grid[height - 1][x] = PATH;
+                if (grid[y][x] == WALL)
+                {
+                    grid[y][x] = PATH; // Optional: ensure no isolated walls
+                }
             }
         }
     }
 
-    /**
-     * Print the maze to screen buffer
-     * @return void
-     */
     void print()
     {
-        string mazeString = "";
+        mazeScreen.clearScreen();
 
+        // Top border
+        for (int x = 0; x < width + 2; ++x)
+        {
+            mazeScreen.writeToScreen(x, 0, "#");
+        }
+
+        // Maze content with borders
         for (int y = 0; y < height; ++y)
         {
+            mazeScreen.writeToScreen(0, y + 1, "#"); // Left border
             for (int x = 0; x < width; ++x)
             {
-                if (grid[y][x] == PATH)
-                {
-                    mazeString += " ";
-                }
-                else
-                {
-                    mazeString += "#";
-                }
+                char displayChar = (grid[y][x] == PATH) ? ' ' : 'X';
+                mazeScreen.writeToScreen(x + 1, y + 1, string(1, displayChar)); // Write one character at a time
             }
-            mazeScreen.writeToScreen(0, y, mazeString);
-            mazeString = "";
+            mazeScreen.writeToScreen(width + 1, y + 1, "#"); // Right border
+        }
+
+        // Bottom border
+        for (int x = 0; x < width + 2; ++x)
+        {
+            mazeScreen.writeToScreen(x, height + 1, "#");
         }
 
         SetConsoleActiveScreenBuffer(mazeScreen.getScreenHandle());
@@ -131,16 +133,21 @@ public:
 
 int main()
 {
-    Maze maze(120, 40);
+    // Create a maze object
+    Maze maze(41, 21);
+
+    // Generate the maze
     maze.generate();
+
+    // Print the maze
     maze.print();
 
-    // Wait for user input
+    // Wait for a key press before exiting
     while (true)
     {
         if (_kbhit())
         {
-            return _getch();
+            break;
         }
     }
 
