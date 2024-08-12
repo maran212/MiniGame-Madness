@@ -1,3 +1,4 @@
+
 #ifndef SCREENBUFFER_H
 #define SCREENBUFFER_H
 
@@ -179,4 +180,3 @@ public:
 };
 
 #endif // SCREENBUFFER_H
-
