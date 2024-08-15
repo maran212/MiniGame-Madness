@@ -2,7 +2,7 @@
 #include <iostream>
 #include <conio.h>
 
-int main()
+void menu()
 {
     try
     {
@@ -29,7 +29,7 @@ int main()
         // Set the menu options
         std::string text[] = {"MINIGAME MADNESS", "1. Tic Tac Toa", "2. Hangman", "3. Rock Paper Scissors", "4. Exit", "Entre a number to select a game: "};
 
-        for (size_t i = 0; i < 7; i++)
+        for (int i = 0; i < text->length(); i++)
         {
             menu.writeToScreen(menu.getScreenWidth() / 2, menu.getScreenHeight() / 2 + i, text[i]);
         }
@@ -42,7 +42,7 @@ int main()
         {
             if (_kbhit())
             {
-                return _getch();
+                break; //_getch();
             }
         }
 
@@ -51,8 +51,6 @@ int main()
     catch (const std::exception &e)
     {
         std::cerr << "Exception: " << e.what() << std::endl;
-        return 1;
     }
 
-    return 0;
 }
