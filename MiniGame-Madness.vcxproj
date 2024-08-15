@@ -127,6 +127,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\con4.h" />
+    <ClInclude Include="src\hangman.h" />
+    <ClInclude Include="src\maze.h" />
+    <ClInclude Include="src\menu.h" />
     <ClInclude Include="src\screenBuffer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -134,6 +138,7 @@
     <ClCompile Include="src\hangman.cpp" />
     <ClCompile Include="src\maze.cpp" />
     <ClCompile Include="src\menu.cpp" />
+    <ClCompile Include="src\MiniGame-Madness.cpp" />
     <ClCompile Include="src\screenBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
