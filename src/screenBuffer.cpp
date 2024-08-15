@@ -78,10 +78,17 @@ screenBuffer::screenBuffer()
     CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo = getScreenBufferInfo();
 
     // Get console mod and set it to enable virtual terminal processing
-    DWORD consoleMode;
-    BOOL result = GetConsoleMode(screenHandle, &consoleMode);
-    consoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    result = SetConsoleMode(screenHandle, consoleMode);
+    DWORD consoleModeOut;
+    DWORD consoleModeIn;
+
+    GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &consoleModeIn);
+    GetConsoleMode(screenHandle, &consoleModeOut);
+
+    consoleModeIn = ENABLE_VIRTUAL_TERMINAL_INPUT;
+    consoleModeOut = ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
+    
+    //SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), consoleModeIn);
+    SetConsoleMode(screenHandle, consoleModeOut);
 
     // Extract window size to set screen buffer size
     SMALL_RECT windowSize = screenBufferInfo.srWindow;

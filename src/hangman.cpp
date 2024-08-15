@@ -126,7 +126,7 @@ bool isNo(const string& response) {
     return response == "n" || response == "N" || response == "no" || response == "NO";
 }
 
-int main() {
+void hangman() {
     string playAgain;
 
     do {
@@ -137,7 +137,6 @@ int main() {
 
         if (difficulty == "stop") {
             cout << "Game stopped. Exiting..." << endl;
-            return 0;
         }
 
         playHangman(difficulty);
@@ -147,11 +146,9 @@ int main() {
 
         if (playAgain == "stop") {
             cout << "Game stopped. Exiting..." << endl;
-            return 0;
         }
 
     } while (isYes(playAgain));
 
     cout << "Thanks for playing!" << endl;
-    return 0;
 }
