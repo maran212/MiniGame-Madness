@@ -1,14 +1,6 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <ctime>
-#include <cstdlib>
-#include "screenBuffer.h"
-#include <conio.h>
+#include "maze.h"
 
-using namespace std;
-
-vector<vector<int>> maze;
+std::vector<std::vector<int>> maze;
 
 // Check if the cell is within bounds and is an open path
 bool isValid(int x, int y, int width, int height)
@@ -19,10 +11,10 @@ bool isValid(int x, int y, int width, int height)
 // Recursive maze generation
 void generateMazeRecursive(int x, int y, int width, int height)
 {
-    vector<pair<int, int>> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
+    std::vector<std::pair<int, int>> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
     random_shuffle(directions.begin(), directions.end());
 
-    for (auto dir : directions)
+    for (std::pair<int, int> dir : directions)
     {
         int newX = x + dir.first * 2;
         int newY = y + dir.second * 2;
@@ -39,7 +31,7 @@ void generateMazeRecursive(int x, int y, int width, int height)
 // Initialize and generate the maze
 void generateMaze(int height, int width)
 {
-    maze = vector<vector<int>>(height, vector<int>(width, 1));
+    maze = std::vector<std::vector<int>>(height, std::vector<int>(width, 1));
 
     srand(time(0));
     int startX = 2 * (rand() % ((width - 2) / 2)) + 1;
@@ -61,11 +53,11 @@ void printMaze(screenBuffer& sb)
         {
             if (maze[x][y] == 1)
             {
-                sb.writeToScreen(x, y, " ", 7, 7);
+                sb.writeToScreen(x, y, " ", 0, 0);
             }
             else
             {
-                sb.writeToScreen(x, y, " ", 0, 0);
+                sb.writeToScreen(x, y, " ", 7, 7);
             }
         }
     }
@@ -92,7 +84,7 @@ bool move(int input, screenBuffer& sb)
 {
     int height = maze.size();
     int width = maze[0].size();
-    pair<int, int> position = sb.getCursorPosition();
+    std::pair<int, int> position = sb.getCursorPosition();
 
     if (position.second == height - 1)
     {

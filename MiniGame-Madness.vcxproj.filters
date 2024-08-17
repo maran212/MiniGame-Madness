@@ -30,6 +30,9 @@
     <ClInclude Include="src\maze.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\hnefatafl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\con4.cpp">
@@ -48,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\MiniGame-Madness.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hnefatafl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,6 +7,7 @@
 #include "screenBuffer.h"
 #include <iostream>
 
+
 /**
  * Throws an error if the result is false
  * @param result The result to check

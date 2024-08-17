@@ -1,10 +1,4 @@
 #include "menu.h"
-#include "screenBuffer.h" 
-#include "hangman.h"
-#include "con4.h"
-#include "maze.h"
-#include <iostream>
-#include <conio.h>
 
 /**
 * Input function to start each game
