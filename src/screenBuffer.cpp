@@ -1,18 +1,16 @@
 
+#include "screenBuffer.h"
+#include <iostream>
+
 /**
  * Class for creating and controlling a screen buffers
  * @author Angus Martin
  */
 
-#include "screenBuffer.h"
-#include <iostream>
-
-
 /**
  * Throws an error if the result is false
  * @param result The result to check
  * @param message The message to throw
- * @return void
  */
 void screenBuffer::throwError(BOOL result, std::string message) const
 {
@@ -50,7 +48,6 @@ BOOL screenBuffer::writeToScreenBuffer(int x, int y, const std::string text)
 
 /**
  * Return the text and background colours to the default
- * @return void
  */
 void screenBuffer::resetColours()
 {
@@ -144,7 +141,6 @@ CONSOLE_SCREEN_BUFFER_INFO screenBuffer::getScreenBufferInfo() const
 
 /**
  * Clears the screen buffer
- * @return void
  */
 void screenBuffer::clearScreen()
 {
@@ -199,7 +195,6 @@ int screenBuffer::getScreenSize() const
  * Sets the size of the screen buffer and window
  * @param width The width of the screen
  * @param height The height of the screen
- * @return void
  */
 void screenBuffer::setScreenSize(int width, int height)
 {
@@ -276,7 +271,6 @@ std::pair<WORD, WORD> screenBuffer::getScreenColours(int x, int y, int length) c
  * @param text The text to have its colour set
  * @param textColour The color of the text
  * @param backgroundColour The color of the background
- * @return void
  */
 std::string screenBuffer::setTextColours(std::string text, WORD textColour, WORD backgroundColour)
 {
@@ -308,7 +302,6 @@ std::string screenBuffer::setTextColours(std::string text, WORD textColour, WORD
 /**
  * Curser visablitly
  * @param visible True to show the curser, false to hide it
- * @return void
  */
 void screenBuffer::setCursorVisibility(bool isVisible)
 {
@@ -325,7 +318,6 @@ void screenBuffer::setCursorVisibility(bool isVisible)
  * Moves the curser to the specified location
  * @param x The x coordinate
  * @param y The y coordinate
- * @return void
  */
 void screenBuffer::setCursorPosition(int x, int y)
 {
@@ -398,7 +390,6 @@ std::string screenBuffer::getAllScreenText() const
  * @param x The x coordinate
  * @param y The y coordinate
  * @param text The text to write
- * @return void
  */
 void screenBuffer::writeToScreen(int x, int y, std::string text)
 {
@@ -416,7 +407,6 @@ void screenBuffer::writeToScreen(int x, int y, std::string text)
  * @param text The text to write
  * @param textColour The colour of the text
  * @param backgroundColour The colour of the background
- * @return void
  */
 void screenBuffer::writeToScreen(int x, int y, std::string text, WORD textColour, WORD backgroundColour)
 {

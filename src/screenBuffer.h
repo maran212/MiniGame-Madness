@@ -31,7 +31,6 @@ private:
 
     /**
      * Return the text and background colours to the default
-     * @return void
      */
     void resetColours();
 
@@ -108,7 +107,6 @@ public:
      * @param text The text to have its colour set
      * @param textColour The color of the text
      * @param backgroundColour The color of the background
-     * @return void
      */
     std::string setTextColours(std::string text, WORD textColour, WORD backgroundColour);
 

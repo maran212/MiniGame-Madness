@@ -1,4 +1,6 @@
 #include "maze.h"
+#include <iostream>
+#include <conio.h>
 
 std::vector<std::vector<int>> maze;
 
@@ -12,7 +14,7 @@ bool isValid(int x, int y, int width, int height)
 void generateMazeRecursive(int x, int y, int width, int height)
 {
     std::vector<std::pair<int, int>> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
-    random_shuffle(directions.begin(), directions.end());
+    std::random_shuffle(directions.begin(), directions.end());
 
     for (std::pair<int, int> dir : directions)
     {
@@ -41,8 +43,8 @@ void generateMaze(int height, int width)
     generateMazeRecursive(startX, startY, width, height);
 }
 
-// Print the maze
-void printMaze(screenBuffer& sb)
+// Print the maze to the console
+void printMaze()
 {
     int height = maze.size();
     int width = maze[0].size();
@@ -53,13 +55,14 @@ void printMaze(screenBuffer& sb)
         {
             if (maze[x][y] == 1)
             {
-                sb.writeToScreen(x, y, " ", 0, 0);
+                std::cout << "#";
             }
             else
             {
-                sb.writeToScreen(x, y, " ", 7, 7);
+                std::cout << " ";
             }
         }
+        std::cout << std::endl;
     }
 
     int entranceX, exitX;
@@ -73,57 +76,49 @@ void printMaze(screenBuffer& sb)
         exitX = 2 * (rand() % (width / 2));
     } while (maze[exitX][height - 1] != 0);
 
-    sb.writeToScreen(entranceX, 0, " ", 2, 2);
-    sb.writeToScreen(exitX, height - 1, " ", 1, 1);
+    std::cout << "Entrance at (" << entranceX << ", 0)" << std::endl;
+    std::cout << "Exit at (" << exitX << ", " << height - 1 << ")" << std::endl;
 
-    sb.setCursorPosition(entranceX, 0);
+    // Print the player position
+    std::cout << "Player starts at (" << entranceX << ", 0)" << std::endl;
 }
 
 // Move through the maze
-bool move(int input, screenBuffer& sb)
+bool move(int input, int& playerX, int& playerY)
 {
     int height = maze.size();
     int width = maze[0].size();
-    std::pair<int, int> position = sb.getCursorPosition();
 
-    if (position.second == height - 1)
+    if (playerY == height - 1)
     {
-        sb.writeToScreen(0, height + 1, "You have reached the exit!", 15, 0);
+        std::cout << "You have reached the exit!" << std::endl;
         return true;
     }
 
     switch (input)
     {
     case 'w': // Up
-        if (isValid(position.first, position.second - 1, width, height))
+        if (isValid(playerX, playerY - 1, width, height))
         {
-            sb.writeToScreen(position.first, position.second, " ", 0, 0);
-            sb.setCursorPosition(position.first, position.second - 1);
-            sb.writeToScreen(position.first, position.second - 1, "*", 3, 0);
+            playerY--;
         }
         break;
     case 's': // Down
-        if (isValid(position.first, position.second + 1, width, height))
+        if (isValid(playerX, playerY + 1, width, height))
         {
-            sb.writeToScreen(position.first, position.second, " ", 0, 0);
-            sb.setCursorPosition(position.first, position.second + 1);
-            sb.writeToScreen(position.first, position.second + 1, "*", 3, 0);
+            playerY++;
         }
         break;
     case 'a': // Left
-        if (isValid(position.first - 1, position.second, width, height))
+        if (isValid(playerX - 1, playerY, width, height))
         {
-            sb.writeToScreen(position.first, position.second, " ", 0, 0);
-            sb.setCursorPosition(position.first - 1, position.second);
-            sb.writeToScreen(position.first - 1, position.second, "*", 3, 0);
+            playerX--;
         }
         break;
     case 'd': // Right
-        if (isValid(position.first + 1, position.second, width, height))
+        if (isValid(playerX + 1, playerY, width, height))
         {
-            sb.writeToScreen(position.first, position.second, " ", 0, 0);
-            sb.setCursorPosition(position.first + 1, position.second);
-            sb.writeToScreen(position.first + 1, position.second, "*", 3, 0);
+            playerX++;
         }
         break;
     default:
@@ -135,17 +130,28 @@ bool move(int input, screenBuffer& sb)
 
 void mazeGame()
 {
-    screenBuffer sb;
-    generateMaze(71, 71);
-    printMaze(sb);
-    SetConsoleActiveScreenBuffer(sb.getScreenHandle());
+    // Clear the console screen
+    system("cls");
+
+    // Generate and print the maze
+    generateMaze(21, 21);
+    printMaze();
+
+    // Set the player's starting position
+    int playerX, playerY;
+    playerX = 2 * (rand() % (maze[0].size() / 2));
+    playerY = 0;
 
     bool finished = false;
     while (!finished)
     {
         if (_kbhit())
         {
-            finished = move(_getch(), sb);
+            char input = _getch();
+            finished = move(input, playerX, playerY);
+            system("cls"); // Clear the console screen
+            printMaze();   // Print the maze with the updated player position
         }
     }
 }
+
