@@ -1,4 +1,4 @@
-#include "screenBuffer.h"
+#include "../src/screenBuffer.h"
 #include <iostream>
 #include <stdexcept>
 #include <string>
