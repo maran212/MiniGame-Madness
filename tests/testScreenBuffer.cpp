@@ -1,6 +1,6 @@
-
+#include "pch.h"
 #include "../src/screenBuffer.h"
-#include "CppUnitTest.h"
+
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

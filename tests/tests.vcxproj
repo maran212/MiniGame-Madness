@@ -157,11 +157,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\screenBuffer.cpp" />
+    <ClCompile Include="pch.cpp" />
     <ClCompile Include="tests.cpp" />
     <ClCompile Include="testScreenBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\screenBuffer.h" />
+    <ClInclude Include="pch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
