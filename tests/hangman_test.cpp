@@ -5,7 +5,7 @@
 #include <ctime>
 #include <algorithm>
 #include <cstring>
-#include <sstream> // For std::ostringstream
+#include <sstream>
 
 using namespace std;
 
@@ -13,7 +13,7 @@ using namespace std;
 void clearScreen();
 void displayHangman(int wrongGuesses);
 string getRandomWord(const string& filename);
-void playHangman(const string& difficulty);+
+void playHangman(const string& difficulty);
 bool isYes(const string& response);
 bool isNo(const string& response);
 

@@ -1,5 +1,5 @@
 #include "../src/hnefatafl.h"
-#include <iostream>
+#include "pch.h"
 
 int main() {
     // Create a new game instance

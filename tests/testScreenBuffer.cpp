@@ -6,7 +6,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ScreenBufferTests
 {
-    TEST_CLASS(ScreenBufferTests)
+     TEST_CLASS(ScreenBufferTests)
     {
     public:
 
@@ -51,4 +51,4 @@ namespace ScreenBufferTests
             Assert::AreEqual(height, buffer.getScreenHeight());
         }
     };
-};
+}

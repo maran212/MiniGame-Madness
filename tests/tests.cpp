@@ -2,9 +2,9 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace MiniGameMadnessTests
+namespace tests
 {
-	TEST_CLASS(MiniGameMadnessTests)
+	TEST_CLASS(tests)
 	{
 	public:
 		
