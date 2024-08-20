@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <utility>
+#include <vector>
+#include <map>
 
 class HnefataflGame {
 private:
@@ -42,6 +44,9 @@ public:
 
     // Converts a string-based move to board coordinates
     std::pair<int, int> getMove(const std::string move);
+
+	// Bot to play against the player
+    std::pair<int, int> bot(int player);
 
     // Prints the current state of the game board
     void printBoard();
