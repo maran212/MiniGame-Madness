@@ -1,7 +1,5 @@
 
 #include "screenBuffer.h"
-#include <iostream>
-
 
 /**
  * Class for creating and controlling a screen buffers

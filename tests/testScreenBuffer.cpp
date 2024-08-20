@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "../src/screenBuffer.h"
 
-
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ScreenBufferTests

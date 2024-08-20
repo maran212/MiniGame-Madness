@@ -1,6 +1,4 @@
-// Purpose: Precompiled header file for the tests project.
 #pragma once
 
-// Add headers that you want to pre-compile here
+// Include files for precompiled header
 #include "CppUnitTest.h"
-

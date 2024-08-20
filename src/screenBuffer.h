@@ -7,6 +7,8 @@
 #include <vector>
 #include <stdexcept>
 #include <windows.h>
+#include <iostream>
+
 
 class screenBuffer
 {
