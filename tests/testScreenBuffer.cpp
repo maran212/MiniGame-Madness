@@ -1,13 +1,15 @@
+#include "pch.h"
 #include "CppUnitTest.h"
 #include "../src/screenBuffer.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace ScreenBufferTests
+namespace tests
 {
-     TEST_CLASS(ScreenBufferTests)
-    {
-    public:
+	TEST_CLASS(tests)
+	{
+	public:
+        HANDLE handle;
 
         TEST_METHOD(Constructor)
         {
@@ -18,7 +20,7 @@ namespace ScreenBufferTests
         TEST_METHOD(Destructor)
         {
             screenBuffer buffer;
-            HANDLE handle = buffer.getScreenHandle();
+            handle = buffer.getScreenHandle();
             buffer.~screenBuffer();
             // Destructor will be called automatically
             Assert::IsFalse(CloseHandle(handle));
@@ -49,5 +51,6 @@ namespace ScreenBufferTests
             int height = static_cast<int>(info.dwSize.Y);
             Assert::AreEqual(height, buffer.getScreenHeight());
         }
-    };
+		
+	};
 }
