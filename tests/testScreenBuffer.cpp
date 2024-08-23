@@ -4,9 +4,9 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace tests
+namespace testScreenBuffer
 {
-	TEST_CLASS(TEST)
+	TEST_CLASS(testScreenBuffer)
 	{
 	public:
         HANDLE handle;
