@@ -371,16 +371,7 @@ void HnefataflGame::play() {
                     source = getMove(input.substr(0, 2));
                     target = getMove(input.substr(3, 2));
 
-                    // Validate the move
-                    if (board[source.first][source.second] != player &&
-                        board[target.first][target.second] == 0 &&
-                        (source.first == target.first || source.second == target.second)) {
-
-                        validInput = true;
-                    }
-                    else {
-                        std::cout << "Invalid move. Please try again." << std::endl;
-                    }
+                    validInput = true;
                 }
                 else {
                     std::cout << "Invalid input format. Please use the format 'A1 B2'." << std::endl;
