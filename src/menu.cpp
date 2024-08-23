@@ -78,7 +78,7 @@ void menu()
     try
     {
         // Clear the console
-        std::cout << "\033[2J\033[H" << std::endl ;
+        std::cout << "\033[2J" << std::endl;
 
         // Define menu options
         std::string text[] = {
@@ -101,10 +101,9 @@ void menu()
         // Print menu options to the console
         int width = 50; // Adjust width based on your console
         int startY = 2; // Starting row position
-        for (int i = 0; i < text->length(); i++)
-        {
-            int padding = (width - static_cast<int>(text[i].length())) / 2;
-            std::cout << std::string(padding, ' ') << text[i] << std::endl;
+        for (std::string line : text) {
+            int padding = (width - static_cast<int>(line.length())) / 2;
+            std::cout << std::string(padding, ' ') << line << std::endl;
         }
 
         // Wait for user input
