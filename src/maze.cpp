@@ -16,7 +16,7 @@ void generateMazeRecursive(int x, int y, int width, int height)
     std::vector<std::pair<int, int>> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
     std::random_shuffle(directions.begin(), directions.end());
 
-    for (std::pair<int, int> dir : directions)
+    for (const auto& dir : directions)
     {
         int newX = x + dir.first * 2;
         int newY = y + dir.second * 2;
@@ -44,7 +44,7 @@ void generateMaze(int height, int width)
 }
 
 // Print the maze to the console
-void printMaze()
+void printMaze(int playerX, int playerY)
 {
     int height = maze.size();
     int width = maze[0].size();
@@ -53,7 +53,11 @@ void printMaze()
     {
         for (int x = 0; x < width; ++x)
         {
-            if (maze[x][y] == 1)
+            if (x == playerX && y == playerY)
+            {
+                std::cout << "*"; // Player representation
+            }
+            else if (maze[x][y] == 1)
             {
                 std::cout << "#";
             }
@@ -65,22 +69,7 @@ void printMaze()
         std::cout << std::endl;
     }
 
-    int entranceX, exitX;
-
-    // Ensure the entrance and exit are placed on a valid path
-    do {
-        entranceX = 2 * (rand() % (width / 2));
-    } while (maze[entranceX][0] != 0);
-
-    do {
-        exitX = 2 * (rand() % (width / 2));
-    } while (maze[exitX][height - 1] != 0);
-
-    std::cout << "Entrance at (" << entranceX << ", 0)" << std::endl;
-    std::cout << "Exit at (" << exitX << ", " << height - 1 << ")" << std::endl;
-
-    // Print the player position
-    std::cout << "Player starts at (" << entranceX << ", 0)" << std::endl;
+    
 }
 
 // Move through the maze
@@ -131,16 +120,14 @@ bool move(int input, int& playerX, int& playerY)
 void mazeGame()
 {
     // Clear the console screen
-    system("cls");
+    std::cout << "\033[2J\033[H" << std::endl;
 
     // Generate and print the maze
     generateMaze(21, 21);
-    printMaze();
 
     // Set the player's starting position
-    int playerX, playerY;
-    playerX = 2 * (rand() % (maze[0].size() / 2));
-    playerY = 0;
+    int playerX = 2 * (rand() % (maze[0].size() / 2));
+    int playerY = 0;
 
     bool finished = false;
     while (!finished)
@@ -149,8 +136,8 @@ void mazeGame()
         {
             char input = _getch();
             finished = move(input, playerX, playerY);
-            system("cls"); // Clear the console screen
-            printMaze();   // Print the maze with the updated player position
+            std::cout << "\033[2J\033[H" << std::endl;
+            printMaze(playerX, playerY); // Print the maze with the updated player position
         }
     }
 }

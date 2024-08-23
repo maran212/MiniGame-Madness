@@ -1,6 +1,5 @@
 
 #include "screenBuffer.h"
-#include <iostream>
 
 /**
  * Class for creating and controlling a screen buffers
@@ -12,7 +11,7 @@
  * @param result The result to check
  * @param message The message to throw
  */
-void screenBuffer::throwError(BOOL result, std::string message) const
+void screenBuffer::throwError(BOOL result, const std::string& message) const
 {
     if (!result)
     {
@@ -29,7 +28,7 @@ void screenBuffer::throwError(BOOL result, std::string message) const
  * @param text The text to write
  * @return result The result of the operation
  */
-BOOL screenBuffer::writeToScreenBuffer(int x, int y, const std::string text)
+BOOL screenBuffer::writeToScreenBuffer(int x, int y, const std::string& text)
 {
     // Number of characters written
     DWORD written;
@@ -272,7 +271,7 @@ std::pair<WORD, WORD> screenBuffer::getScreenColours(int x, int y, int length) c
  * @param textColour The color of the text
  * @param backgroundColour The color of the background
  */
-std::string screenBuffer::setTextColours(std::string text, WORD textColour, WORD backgroundColour)
+std::string screenBuffer::setTextColours(const std::string& text, WORD textColour, WORD backgroundColour)
 {
     // String to hold the VT sequence
     std::string vtSequence = "\033[";
@@ -391,7 +390,7 @@ std::string screenBuffer::getAllScreenText() const
  * @param y The y coordinate
  * @param text The text to write
  */
-void screenBuffer::writeToScreen(int x, int y, std::string text)
+void screenBuffer::writeToScreen(int x, int y, const std::string& text)
 {
     // Write the text to the screen
     BOOL result = writeToScreenBuffer(x, y, text);
@@ -408,7 +407,7 @@ void screenBuffer::writeToScreen(int x, int y, std::string text)
  * @param textColour The colour of the text
  * @param backgroundColour The colour of the background
  */
-void screenBuffer::writeToScreen(int x, int y, std::string text, WORD textColour, WORD backgroundColour)
+void screenBuffer::writeToScreen(int x, int y, const std::string& text, WORD textColour, WORD backgroundColour)
 {
     // write the text to the screen
     writeToScreen(x, y, setTextColours(text, textColour, backgroundColour));
