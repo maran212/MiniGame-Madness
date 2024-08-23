@@ -120,7 +120,7 @@ bool move(int input, int& playerX, int& playerY)
 void mazeGame()
 {
     // Clear the console screen
-    system("cls");
+    std::cout << "\033[2J\033[H" << std::endl;
 
     // Generate and print the maze
     generateMaze(21, 21);
@@ -136,7 +136,7 @@ void mazeGame()
         {
             char input = _getch();
             finished = move(input, playerX, playerY);
-            system("cls"); // Clear the console screen
+            std::cout << "\033[2J\033[H" << std::endl;
             printMaze(playerX, playerY); // Print the maze with the updated player position
         }
     }
