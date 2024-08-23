@@ -6,7 +6,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace tests
 {
-	TEST_CLASS(tests)
+	TEST_CLASS(TEST)
 	{
 	public:
         HANDLE handle;

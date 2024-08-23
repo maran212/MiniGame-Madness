@@ -1,6 +1,4 @@
 # Ignore build output
-*.exe
-*.obj
 *.o
 *.log
 *.pdb
