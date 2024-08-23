@@ -15,7 +15,7 @@ jobs:
         id: setup_msbuild
       - name: Run MSBuild
         id: run_msbuild
-        run: msbuild /p:Configuration=Debug /p:Platform=x86 HelloCovDemo.sln
+        run: msbuild /p:Configuration=Debug /p:Platform=x86 MiniGame-Madness.sln
       - name: Setup VSTest and add to PATH
         uses: darenm/Setup-VSTest@v1
         id: setup_vstest
@@ -27,7 +27,7 @@ jobs:
       - name: Generate Report
         id: generate_test_report
         shell: cmd
-        run: OpenCppCoverage.exe --sources HelloCov --export_type cobertura:HelloCov.xml -- "vstest.console.exe" Debug\HelloTest.dll
+        run: OpenCppCoverage.exe --sources HelloCov --export_type cobertura:HelloCov.xml -- "vstest.console.exe" Debug\tests.dll
       - name: Upload Report to Codecov
         uses: codecov/codecov-action@v2
         with:
