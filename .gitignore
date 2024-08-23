@@ -1,6 +1,10 @@
 # Ignore build output
-
-
+*.o
+*.log
+*.pdb
+*.ilk
+*.idb
+*.tlog
 
 # Ignore IDE specific files
 .vscode
