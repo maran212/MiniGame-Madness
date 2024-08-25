@@ -12,7 +12,7 @@
 using namespace std;
 
 // Function to clear the screen
-void clearScreen();
+void clearScreen2();
 
 // Function to display the hangman figure based on the number of wrong guesses
 void displayHangman(int wrongGuesses);

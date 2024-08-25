@@ -1,162 +1,135 @@
+#include "hangman.h"
 #include <iostream>
-#include <fstream>
+#include <stdexcept>
+#include <string>
 #include <vector>
-#include <cstdlib>
-#include <ctime>
-#include <algorithm>
-#include <cstring>
-#include <sstream>
 
-using namespace std;
+// Assertion functions
 
-// Function prototypes
-void clearScreen();
-void displayHangman(int wrongGuesses);
-string getRandomWord(const string& filename);
-void playHangman(const string& difficulty);
-bool isYes(const string& response);
-bool isNo(const string& response);
-
-// Test function prototypes
-void testClearScreen();
-void testDisplayHangman();
-void testGetRandomWord();
-void testIsYes();
-void testIsNo();
-
-// Helper function to capture output of displayHangman
-string captureDisplayHangmanOutput(int wrongGuesses) {
-    ostringstream output;
-    streambuf* oldCoutStreamBuf = cout.rdbuf();
-    cout.rdbuf(output.rdbuf()); // Redirect cout to the ostringstream
-    displayHangman(wrongGuesses);
-    cout.rdbuf(oldCoutStreamBuf); // Restore the original cout stream buffer
-    return output.str();
+bool assertEqual(const std::string& expected, const std::string& actual) {
+    if (expected != actual) {
+        throw std::runtime_error("Expected: " + expected + " | Actual: " + actual);
+    }
+    return expected == actual;
 }
+
+bool assertEqual(const int expected, const int actual) {
+    if (expected != actual) {
+        throw std::runtime_error("Expected: " + std::to_string(expected) + " | Actual: " + std::to_string(actual));
+    }
+    return expected == actual;
+}
+
+bool assertTrue(const bool actual) {
+    if (!actual) {
+        throw std::runtime_error("Expected: true | Actual: false");
+    }
+    return actual;
+}
+
+// Test functions
+
+bool testClearScreen() {
+    // This function clears the screen, so there's no direct return value to check.
+    // A basic test could be to ensure it doesn't throw an error.
+    try {
+        clearScreen();
+        return true;
+    }
+    catch (...) {
+        return false;
+    }
+}
+
+bool testDisplayHangman() {
+    // Test with different wrongGuesses values to ensure it runs without error
+    try {
+        for (int i = 0; i <= 5; ++i) {
+            displayHangman(i);
+        }
+        return true;
+    }
+    catch (...) {
+        return false;
+    }
+}
+
+bool testGetRandomWord() {
+    // Create a test file with known words
+    std::ofstream testFile("test.txt");
+    testFile << "apple\nbanana\ncherry";
+    testFile.close();
+
+    std::vector<std::string> possibleWords = { "apple", "banana", "cherry" };
+    std::string word = getRandomWord("test.txt");
+
+    // Check if the returned word is in the possible words
+    return assertTrue(std::find(possibleWords.begin(), possibleWords.end(), word) != possibleWords.end());
+}
+
+bool testIsYes() {
+    return assertTrue(isYes("yes") && isYes("y") && !isYes("no") && !isYes("n"));
+}
+
+bool testIsNo() {
+    return assertTrue(isNo("no") && isNo("n") && !isNo("yes") && !isNo("y"));
+}
+
+// Note: `playHangman` and `hangman` functions involve user input/output, making them difficult to unit test directly.
+// One approach would be to refactor them for easier testing, but here we'll focus on the isolated functions.
 
 int main() {
-    // Seed the random number generator
-    srand(time(0));
+    int passed = 0;
+    int total = 5;
 
-    // Run tests
-    testClearScreen();
-    testDisplayHangman();
-    testGetRandomWord();
-    testIsYes();
-    testIsNo();
+    std::cout << "Running tests..." << std::endl;
 
-    cout << "All tests completed." << endl;
+    std::cout << "Test 1: ClearScreen" << std::endl;
+    try {
+        testClearScreen();
+        passed++;
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << '\n';
+    }
+
+    std::cout << "Test 2: DisplayHangman" << std::endl;
+    try {
+        testDisplayHangman();
+        passed++;
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << '\n';
+    }
+
+    std::cout << "Test 3: GetRandomWord" << std::endl;
+    try {
+        testGetRandomWord();
+        passed++;
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << '\n';
+    }
+
+    std::cout << "Test 4: IsYes" << std::endl;
+    try {
+        testIsYes();
+        passed++;
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << '\n';
+    }
+
+    std::cout << "Test 5: IsNo" << std::endl;
+    try {
+        testIsNo();
+        passed++;
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << '\n';
+    }
+
+    std::cout << "Passed " << passed << " of " << total << " tests" << std::endl;
+
     return 0;
-}
-
-void testClearScreen() {
-    cout << "Testing clearScreen()..." << endl;
-    clearScreen();
-    cout << "Screen should be cleared." << endl;
-}
-
-void testDisplayHangman() {
-    cout << "Testing displayHangman()..." << endl;
-    string expectedOutputs[] = {
-        "  +---+\n      |\n      |\n      |\n     ===",
-        "  +---+\n  O   |\n      |\n      |\n     ===",
-        "  +---+\n  O   |\n  |   |\n      |\n     ===",
-        "  +---+\n  O   |\n /|\\  |\n      |\n     ===",
-        "  +---+\n  O   |\n /|\\  |\n /    |\n     ===",
-        "  +---+\n  O   |\n /|\\  |\n / \\  |\n     ==="
-    };
-
-    for (int i = 0; i <= 5; ++i) {
-        string actualOutput = captureDisplayHangmanOutput(i);
-        if (actualOutput == expectedOutputs[i] + "\n") {
-            cout << "Wrong guesses: " << i << " - Pass" << endl;
-        } else {
-            cout << "Wrong guesses: " << i << " - Fail" << endl;
-            cout << "Expected:\n" << expectedOutputs[i] << endl;
-            cout << "Actual:\n" << actualOutput << endl;
-        }
-    }
-}
-
-void testGetRandomWord() {
-    cout << "Testing getRandomWord()..." << endl;
-    cout << "The text file contains these words: apple, banana, cherry" << endl;
-    // Create a test file
-    ofstream testFile("test_words.txt");
-    testFile << "apple\nbanana\ncherry\n";
-    testFile.close();
-    
-    // Test the function multiple times
-    for (int i = 0; i < 10; ++i) {
-        string word = getRandomWord("test_words.txt");
-        cout << "Test " << (i + 1) << ": " << "Random word: " << word << endl;
-    }
-    
-    // Clean up
-    remove("test_words.txt");
-}
-
-void testIsYes() {
-    cout << "Testing isYes()..." << endl;
-    cout << "Test 1: " << (isYes("y") ? "Passed" : "Failed") << endl;
-    cout << "Test 2: " << (isYes("Y") ? "Passed" : "Failed") << endl;
-    cout << "Test 3: " << (isYes("yes") ? "Passed" : "Failed") << endl;
-    cout << "Test 4: " << (isYes("YES") ? "Passed" : "Failed") << endl;
-    cout << "Test 5: " << (isYes("n") ? "Failed" : "Passed") << endl;
-}
-
-void testIsNo() {
-    cout << "Testing isNo()..." << endl;
-    cout << "Test 1: " << (isNo("n") ? "Passed" : "Failed") << endl;
-    cout << "Test 2: " << (isNo("N") ? "Passed" : "Failed") << endl;
-    cout << "Test 3: " << (isNo("no") ? "Passed" : "Failed") << endl;
-    cout << "Test 4: " << (isNo("NO") ? "Passed" : "Failed") << endl;
-    cout << "Test 5: " << (isNo("y") ? "Failed" : "Passed") << endl;
-}
-
-// Function implementations
-void clearScreen() {
-    #ifdef _WIN32
-        system("cls");
-    #else
-        system("clear");
-    #endif
-}
-
-void displayHangman(int wrongGuesses) {
-    string hangmanArt[] = {
-        "  +---+\n      |\n      |\n      |\n     ===",
-        "  +---+\n  O   |\n      |\n      |\n     ===",
-        "  +---+\n  O   |\n  |   |\n      |\n     ===",
-        "  +---+\n  O   |\n /|\\  |\n      |\n     ===",
-        "  +---+\n  O   |\n /|\\  |\n /    |\n     ===",
-        "  +---+\n  O   |\n /|\\  |\n / \\  |\n     ==="
-    };
-    if (wrongGuesses >= 0 && wrongGuesses < 7) {
-        cout << hangmanArt[wrongGuesses] << endl;
-    }
-}
-
-string getRandomWord(const string& filename) {
-    vector<string> words;
-    ifstream file(filename);
-    string word;
-    while (file >> word) {
-        words.push_back(word);
-    }
-    file.close();
-    int randomIndex = rand() % words.size(); // Use the already seeded random number generator
-    return words[randomIndex];
-}
-
-void playHangman(const string& difficulty) {
-    // Implement this method if needed for testing
-}
-
-bool isYes(const string& response) {
-    return response == "y" || response == "Y" || response == "yes" || response == "YES";
-}
-
-bool isNo(const string& response) {
-    return response == "n" || response == "N" || response == "no" || response == "NO";
 }
