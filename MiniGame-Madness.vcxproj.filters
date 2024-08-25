@@ -33,6 +33,15 @@
     <ClInclude Include="src\hnefatafl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\battleShips.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NaughtsxCrossess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wordScrambler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\con4.cpp">
@@ -54,6 +63,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\hnefatafl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\battleShips.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NaughtsxCrossess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wordScrambler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

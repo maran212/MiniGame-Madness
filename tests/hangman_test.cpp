@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "hangman.h"
 #include <iostream>
 #include <stdexcept>
