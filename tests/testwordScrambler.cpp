@@ -4,7 +4,7 @@
 #include <algorithm> // For std::sort
 #include <fstream>   // For std::ofstream
 #include <sstream>   // For std::ostringstream
-#include "wordScrambler.h"  // Include your header file
+#include "../src/wordScrambler.h"  // Include your header file
 
 using namespace std;
 

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "hangman.h"
+#include "../src/hangman.h"
 #include <iostream>
 #include <stdexcept>
 #include <string>

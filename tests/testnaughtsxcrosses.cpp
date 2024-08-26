@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "NaughtsAndCrosses.h"
+#include "../src/NaughtsxCrossess.h"
 #include <iostream>
 #include <stdexcept>
 #include <string>

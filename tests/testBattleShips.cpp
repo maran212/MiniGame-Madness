@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "BattleshipGame.h"
+#include "../src/battleShips.h"
 #include <iostream>
 #include <stdexcept>
 #include <string>
