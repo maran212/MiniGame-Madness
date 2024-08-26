@@ -7,6 +7,8 @@
 #include <vector>
 #include <stdexcept>
 #include <windows.h>
+#include <iostream>
+
 
 class screenBuffer
 {
@@ -18,7 +20,7 @@ private:
      * Throw an error if the result is false
      * @param result The result of the operation
      */
-    void throwError(BOOL result, const std::string message) const;
+    void throwError(BOOL result, const std::string& message) const;
 
     /**
      * Write to the screen buffer
@@ -27,11 +29,10 @@ private:
      * @param text The text to write
      * @return result The result of the operation
      */
-    BOOL writeToScreenBuffer(int x, int y, const std::string text);
+    BOOL writeToScreenBuffer(int x, int y, const std::string& text);
 
     /**
      * Return the text and background colours to the default
-     * @return void
      */
     void resetColours();
 
@@ -108,9 +109,8 @@ public:
      * @param text The text to have its colour set
      * @param textColour The color of the text
      * @param backgroundColour The color of the background
-     * @return void
      */
-    std::string setTextColours(std::string text, WORD textColour, WORD backgroundColour);
+    std::string setTextColours(const std::string& text, WORD textColour, WORD backgroundColour);
 
     /**
      * Set cursor visibility
@@ -152,7 +152,7 @@ public:
      * @param y The y coordinate
      * @param text The text to write
      */
-    void writeToScreen(int x, int y, const std::string text);
+    void writeToScreen(int x, int y, const std::string& text);
 
     /**
      * Write text to the screen at a specific location with a specific color
@@ -162,13 +162,13 @@ public:
      * @param textColour The color of the text
      * @param backgroundColour The color of the background
      */
-    void writeToScreen(int x, int y, const std::string text, WORD textColour, WORD backgroundColour);
+    void writeToScreen(int x, int y, const std::string& text, WORD textColour, WORD backgroundColour);
 
     /**
      * Fill the screen buffer with a specific character
      * @param character The character to write
      */
-    void fillScreen(std::string text);
+    void fillScreen(const std::string& text);
 
     /**
      * Fill the screen buffer with a specific character and color
@@ -176,7 +176,7 @@ public:
      * @param textColour The color of the text
      * @param backgroundColour The color of the background
      */
-    void fillScreen(std::string text, WORD textColour, WORD backgroundColour);
+    void fillScreen(const std::string& text, WORD textColour, WORD backgroundColour);
 };
 
 #endif // SCREENBUFFER_H

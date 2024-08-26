@@ -8,12 +8,8 @@
 
 using namespace std;
 
-void clearScreen() {
-    #ifdef _WIN32
-        system("cls");
-    #else
-        system("clear");
-    #endif
+void clearScreen2() {
+    cout << '\033[2j';
 }
 
 void displayHangman(int wrongGuesses) {
@@ -33,12 +29,24 @@ void displayHangman(int wrongGuesses) {
 string getRandomWord(const string& filename) {
     vector<string> words;
     ifstream file(filename);
+
+    if (!file.is_open()) {  // Check if the file was opened successfully
+        cerr << "Error: Could not open file " << filename << endl;
+        return "";  // Return an empty string if the file cannot be opened
+    }
+
     string word;
     while (file >> word) {
         words.push_back(word);
     }
     file.close();
-    srand(time(0));
+
+    if (words.empty()) {  // Check if the file was empty
+        cerr << "Error: No words found in file " << filename << endl;
+        return "";  // Return an empty string if no words were found
+    }
+
+    srand(static_cast<unsigned int>(time(0)));
     int randomIndex = rand() % words.size();
     return words[randomIndex];
 }
@@ -62,7 +70,7 @@ string word = getRandomWord(filename);
     vector<char> guessedLetters;
 
     while (wrongGuesses < maxWrongGuesses && guessedWord != word) {
-        clearScreen(); // Clear the screen
+        clearScreen2(); // Clear the screen
 
         cout << "Guessed word: " << guessedWord << endl;
         displayHangman(wrongGuesses);
@@ -108,7 +116,7 @@ string word = getRandomWord(filename);
         }
     }
 
-    clearScreen(); // Clear the screen before ending the game
+    clearScreen2(); // Clear the screen before ending the game
     if (guessedWord == word) {
         cout << "Congratulations! You guessed the word: " << word << endl;
     } else {
@@ -126,18 +134,17 @@ bool isNo(const string& response) {
     return response == "n" || response == "N" || response == "no" || response == "NO";
 }
 
-int main() {
+void hangman() {
     string playAgain;
 
     do {
-        clearScreen(); // Clear the screen at the start of each game
+        clearScreen2(); // Clear the screen at the start of each game
         cout << "Choose difficulty (1:easy, 2:medium, 3:hard) or type 'stop' to exit: ";
         string difficulty;
         cin >> difficulty;
 
         if (difficulty == "stop") {
             cout << "Game stopped. Exiting..." << endl;
-            return 0;
         }
 
         playHangman(difficulty);
@@ -147,11 +154,9 @@ int main() {
 
         if (playAgain == "stop") {
             cout << "Game stopped. Exiting..." << endl;
-            return 0;
         }
 
     } while (isYes(playAgain));
 
     cout << "Thanks for playing!" << endl;
-    return 0;
 }
