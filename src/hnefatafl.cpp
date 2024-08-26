@@ -79,6 +79,15 @@ void HnefataflGame::populateWhiteSquares() {
 };
 
 /**
+* Get the piece at the given position
+* @param std::pair<int, int> position The position to check
+* @return int The piece at the given position
+*/
+int HnefataflGame::getPiece(int row, int col) {
+	return board[row][col];
+};
+
+/**
 * Moves a piece from the source to the target position
 * @param std::pair<int, int> source The source position of the piece
 * @param std::pair<int, int> target The target position of the piece

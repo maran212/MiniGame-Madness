@@ -6,9 +6,9 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace testScreenBuffer
 {
-	TEST_CLASS(testScreenBuffer)
-	{
-	public:
+    TEST_CLASS(testScreenBuffer)
+    {
+    public:
         HANDLE handle;
 
         TEST_METHOD(Constructor)
@@ -51,6 +51,6 @@ namespace testScreenBuffer
             int height = static_cast<int>(info.dwSize.Y);
             Assert::AreEqual(height, buffer.getScreenHeight());
         }
-		
-	};
+
+    };
 }

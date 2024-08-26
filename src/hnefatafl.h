@@ -30,6 +30,9 @@ public:
     // Initializes the game board
     void populateBoard();
 
+	// Get the pices at the given position
+	int getPiece(int row, int col);
+
     // Moves a piece from the source to the target position
     std::pair<int, int> move(std::pair<int, int> source, std::pair<int, int> target);
 
@@ -53,6 +56,9 @@ public:
 
     // The main game loop
     void play();
+
+	// Friend class for unit testing
+	friend class HnefataflGameTest;
 };
 
 #endif // HNEFATAFL_H

@@ -21,7 +21,7 @@ void input(int input)
         break;
     case 3:
         // Call function to start Maze
-        mazeGame();
+        //mazeGame();
         break;
     case 4:
         // Call function to start Naughts and Crosses
