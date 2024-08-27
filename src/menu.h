@@ -6,6 +6,10 @@
 #include "con4.h"
 #include "maze.h"
 #include "hnefatafl.h"
+#include "wordScrambler.h"
+#include "battleShips.h"
+#include "NaughtsxCrossess.h"
+#include "chckrs.h"
 #include <iostream>
 #include <conio.h>
 

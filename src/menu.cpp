@@ -1,5 +1,6 @@
 #include "menu.h"
 
+
 // Initialize games
 HnefataflGame hnefataflGame;
 
@@ -9,6 +10,8 @@ HnefataflGame hnefataflGame;
 */
 void input(int input)
 {
+	int output;
+
     switch (input)
     {
     case 1:
@@ -25,11 +28,11 @@ void input(int input)
         break;
     case 4:
         // Call function to start Naughts and Crosses
-		std::cout << "Comming Soon" << std::endl;
+		output = NaughtsxCrossess();
         break;
     case 5:
         // Call function to start Checkers
-        std::cout << "Comming Soon" << std::endl;
+		checkers();
         break;
     case 6:
         // Call the class to start Hnefatafl
@@ -42,11 +45,11 @@ void input(int input)
         break;
     case 8:
         // Call function to start Word Scramble
-        std::cout << "Comming Soon" << std::endl;
+		//output = wordScrambler();
         break;
     case 9:
         // Call function to start Battleship
-        std::cout << "Comming Soon" << std::endl;
+		output = Battleship();
         break;
     case 10:
         // Call function to start Minesweeper
