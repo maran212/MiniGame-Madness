@@ -51,7 +51,7 @@ jobs:
         
     - name: Generate Coverage Report
       shell: cmd
-      run: OpenCppCoverage --modules Debug --export_type cobertura:MiniGame-Madness.xml -- "vstest.console.exe" ..\MiniGame-Madness\x64\Debug\tests.dll
+      run: OpenCppCoverage --modules Debug --export_type cobertura:MiniGame-Madness.xml -- "vstest.console.exe" MiniGame-Madness\x64\Debug\tests.dll
 
     - name: Upload Report to Codecov
       uses: codecov/codecov-action@v4
