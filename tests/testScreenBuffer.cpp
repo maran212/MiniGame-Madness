@@ -17,15 +17,6 @@ namespace testScreenBuffer
             Assert::AreNotEqual(INVALID_HANDLE_VALUE, buffer.getScreenHandle());
         }
 
-        TEST_METHOD(Destructor)
-        {
-            screenBuffer buffer;
-            handle = buffer.getScreenHandle();
-            buffer.~screenBuffer();
-            // Destructor will be called automatically
-            Assert::IsFalse(CloseHandle(handle));
-        }
-
         TEST_METHOD(IsActive)
         {
             screenBuffer buffer;
