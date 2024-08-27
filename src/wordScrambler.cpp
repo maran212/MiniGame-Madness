@@ -1,72 +1,49 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <cstdlib>
-#include <ctime>
-#include <algorithm>
-#include <limits>
-#include <cctype>
-#include <cassert>
-#include <sstream>
-//#include <wordScrambler.h>
+#include "WordScrambler.h"
 
-using namespace std;
-
-// Clears the screen based on the operating system
-void clearScreen1() {
-    cout << '\033[2j';
+void WordScrambler::clearScreen() const {
+    std::cout << '\033[2j';
 }
 
-// Retrieves a random word from a specified text file
-string getRandomWord1(const string& filename) {
-    vector<string> words;
-    ifstream file(filename);
-    string word;
+std::string WordScrambler::getRandomWord(const std::string& filename) const {
+    std::vector<std::string> words;
+    std::ifstream file(filename);
+    std::string word;
 
-    // Reads all words from the file and stores them in a vector
     while (file >> word) {
         words.push_back(word);
     }
     file.close();
 
-    // Seed the random number generator and select a random word
     srand(static_cast<unsigned int>(time(0)));
     int randomIndex = rand() % words.size();
     return words[randomIndex];
 }
 
-// Scrambles the characters in a given word
-string scrambleWord(const string& word) {
-    string scrambled = word;
-    random_shuffle(scrambled.begin(), scrambled.end());  // Randomly shuffle the characters
+std::string WordScrambler::scrambleWord(const std::string& word) const {
+    std::string scrambled = word;
+    std::random_shuffle(scrambled.begin(), scrambled.end());
     return scrambled;
 }
 
-// Converts a string to lowercase
-string toLowerCase(const string& str) {
-    string lowerStr = str;
-    // Transform each character to its lowercase equivalent
-    transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
+std::string WordScrambler::toLowerCase(const std::string& str) const {
+    std::string lowerStr = str;
+    std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
     return lowerStr;
 }
 
-// Displays a hint with the first, middle, and last characters of the word
-void displayHint(const string& word) {
+void WordScrambler::displayHint(const std::string& word) const {
     int length = word.length();
     char firstChar = word[0];
     char middleChar = word[length / 2];
     char lastChar = word[length - 1];
 
-    // Display the hint to the player
-    cout << "Hint: The first letter is '" << firstChar << "', the middle letter is '" << middleChar << "', and the last letter is '" << lastChar << "'." << endl;
+    std::cout << "Hint: The first letter is '" << firstChar << "', the middle letter is '" << middleChar << "', and the last letter is '" << lastChar << "'." << std::endl;
 }
 
-// Main gameplay loop for the Word Scrambler game
-void playWordScrambler(const string& difficulty) {
-    const int maxGuesses = 10; // Fixed number of guesses
-    string filename;
+void WordScrambler::playWordScrambler(const std::string& difficulty) {
+    const int maxGuesses = 10;
+    std::string filename;
 
-    // Determine the file to load based on the chosen difficulty
     if (difficulty == "1" || difficulty == "easy") {
         filename = "easy.txt";
     }
@@ -77,162 +54,94 @@ void playWordScrambler(const string& difficulty) {
         filename = "hard.txt";
     }
     else {
-        cout << "Invalid difficulty level. Exiting game." << endl;
+        std::cout << "Invalid difficulty level. Exiting game." << std::endl;
         return;
     }
 
-    string word = getRandomWord1(filename);  // Get a random word from the selected file
-    string scrambledWord = scrambleWord(word);  // Scramble the word
-    string guess;
+    std::string word = getRandomWord(filename);
+    std::string scrambledWord = scrambleWord(word);
+    std::string guess;
     bool guessedCorrectly = false;
     int attempts = 0;
 
-    // Game loop: continues until the player guesses correctly or runs out of attempts
     while (attempts < maxGuesses && !guessedCorrectly) {
-        clearScreen1();
-        cout << "Scrambled word: " << scrambledWord << endl;
-        cout << "Guess the word (or type 'stop' to exit, or 'hint' for a hint that costs 2 lives): ";
-        cin >> guess;
+        clearScreen();
+        std::cout << "Scrambled word: " << scrambledWord << std::endl;
+        std::cout << "Guess the word (or type 'stop' to exit, or 'hint' for a hint that costs 2 lives): ";
+        std::cin >> guess;
 
-        // If the player types 'stop', end the game
         if (guess == "stop") {
-            cout << "Game stopped. Exiting..." << endl;
+            std::cout << "Game stopped. Exiting..." << std::endl;
             return;
         }
-        // If the player requests a hint
         else if (guess == "hint") {
-            cout << "Are you sure? You will lose 2 lives (y/n): ";
-            string response;
-            cin >> response;
-            // If the player confirms the hint
+            std::cout << "Are you sure? You will lose 2 lives (y/n): ";
+            std::string response;
+            std::cin >> response;
             if (response == "y" || response == "Y") {
-                displayHint(word);  // Display the hint
-                attempts += 2;  // Deduct 2 lives
+                displayHint(word);
+                attempts += 2;
                 if (attempts >= maxGuesses) {
-                    break;  // If lives run out, exit the loop
+                    break;
                 }
             }
-            cout << "Press Enter to continue...";
-            cin.ignore(); // Ignore any leftover newline characters
-            cin.get(); // Wait for Enter key press
+            std::cout << "Press Enter to continue...";
+            std::cin.ignore();
+            std::cin.get();
             continue;
         }
 
-        // Compare the player's guess to the actual word, ignoring case
         if (toLowerCase(guess) == toLowerCase(word)) {
             guessedCorrectly = true;
         }
         else {
-            cout << "Incorrect! Try again." << endl;
-            attempts++;  // Increment the number of attempts
-            cout << "Attempts left: " << maxGuesses - attempts << endl;
-            cout << "Press Enter to continue...";
-            cin.ignore(); // Ignore any leftover newline characters
-            cin.get(); // Wait for Enter key press
+            std::cout << "Incorrect! Try again." << std::endl;
+            attempts++;
+            std::cout << "Attempts left: " << maxGuesses - attempts << std::endl;
+            std::cout << "Press Enter to continue...";
+            std::cin.ignore();
+            std::cin.get();
         }
     }
 
-    clearScreen1();
-    // If the player guesses the word correctly
+    clearScreen();
     if (guessedCorrectly) {
-        cout << "Congratulations! You guessed the word: " << word << endl;
+        std::cout << "Congratulations! You guessed the word: " << word << std::endl;
     }
     else {
-        // If the player runs out of attempts
-        cout << "Sorry, you've run out of attempts. The word was: " << word << endl;
+        std::cout << "Sorry, you've run out of attempts. The word was: " << word << std::endl;
     }
 }
 
-// Test functions
-void testToLowerCase() {
-    assert(toLowerCase("Hello") == "hello");
-    assert(toLowerCase("WORLD") == "world");
-    assert(toLowerCase("TeSt") == "test");
-    assert(toLowerCase("cOdE") == "code");
-    cout << "toLowerCase() passed all tests!" << endl;
-}
+void WordScrambler::run() {
+    WordScrambler game;
 
-void testScrambleWord() {
-    string word = "hello";
-    string scrambled = scrambleWord(word);
-    // Check that scrambled word is not the same as the original but contains the same letters
-    assert(scrambled != word);
-    sort(scrambled.begin(), scrambled.end());
-    sort(word.begin(), word.end());
-    assert(scrambled == word);
-    cout << "scrambleWord() passed all tests!" << endl;
-}
-
-void testGetRandomWord() {
-    string filename = "testWords.txt";
-    ofstream outFile(filename);
-    outFile << "apple banana cherry date" << endl;
-    outFile.close();
-
-    string word = getRandomWord1(filename);
-    assert(word == "apple" || word == "banana" || word == "cherry" || word == "date");
-    cout << "getRandomWord() passed all tests!" << endl;
-}
-
-void testDisplayHint() {
-    string word = "testing";
-
-    // Redirect output to a string stream
-    ostringstream output;
-    streambuf* oldCoutBuffer = cout.rdbuf(output.rdbuf());  // Redirect cout to output
-
-    displayHint(word);  // Call the function to generate the hint output
-
-    cout.rdbuf(oldCoutBuffer);  // Restore cout to its original buffer
-
-    string expectedOutput = "Hint: The first letter is 't', the middle letter is 't', and the last letter is 'g'.\n";
-    assert(output.str() == expectedOutput);  // Check if the generated output matches the expected string
-    cout << "displayHint() passed the test!" << endl;
-}
-
-// Main function that can run either the game or tests based on the argument
-int wordScrambler(int argc, char* argv[]) {
-    if (argc > 1 && string(argv[1]) == "test") {
-        // Run tests if "test" argument is provided
-        testToLowerCase();
-        testScrambleWord();
-        testGetRandomWord();
-        testDisplayHint();
-        cout << "All tests passed!" << endl;
-    }
-    else {
-        // Run the game if no argument or a different argument is provided
-        string playAgain;
-
+        std::string playAgain;
         do {
-            clearScreen1(); // Clear the screen at the start of each game
-            cout << "Choose difficulty (1: easy, 2: medium, 3: hard) or type 'stop' to exit: ";
-            string difficulty;
-            cin >> difficulty;
+            game.clearScreen();
+            std::cout << "Choose difficulty (1: easy, 2: medium, 3: hard) or type 'stop' to exit: ";
+            std::string difficulty;
+            std::cin >> difficulty;
 
-            // If the player types 'stop', end the program
             if (difficulty == "stop") {
-                cout << "Game stopped. Exiting..." << endl;
-                return 0;
+                std::cout << "Game stopped. Exiting..." << std::endl;
+                return;
             }
 
-            // Start the game with the chosen difficulty
-            playWordScrambler(difficulty);
+            game.playWordScrambler(difficulty);
 
-            // Ask if the player wants to play again
-            cout << "Do you want to play again? (y/n or type 'stop' to exit): ";
-            cin >> playAgain;
+            std::cout << "Do you want to play again? (y/n or type 'stop' to exit): ";
+            std::cin >> playAgain;
 
-            // If the player types 'stop', end the program
             if (playAgain == "stop") {
-                cout << "Game stopped. Exiting..." << endl;
-                return 0;
+                std::cout << "Game stopped. Exiting..." << std::endl;
+                return;
             }
 
-        } while (playAgain == "y" || playAgain == "Y");  // Loop if the player wants to play again
+        } while (playAgain == "y" || playAgain == "Y");
 
-        cout << "Thanks for playing!" << endl;
-    }
+        std::cout << "Thanks for playing!" << std::endl;
+    
 
-    return 0;
+    return;
 }

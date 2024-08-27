@@ -1,151 +1,73 @@
 #include "pch.h"
-#include "BattleshipGame.h"
+#include "CppUnitTest.h"
+#include "../src/battleShips.h"
 #include <iostream>
 #include <stdexcept>
 #include <string>
 
-// Assertion functions
-bool assertEqual(const int expected, const int actual)
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace BattleShipsTests
 {
-    if (expected != actual)
-    {
-        throw std::runtime_error("Expected: " + std::to_string(expected) + " | Actual: " + std::to_string(actual));
-    }
-    return true;
-}
+	TEST_CLASS(BattleShipsTests)
+	{
+	public:
 
-bool assertEqual(const std::pair<int, int>& expected, const std::pair<int, int>& actual)
-{
-    if (expected != actual)
-    {
-        throw std::runtime_error("Expected: (" + std::to_string(expected.first) + ", " + std::to_string(expected.second) + ") | Actual: (" + std::to_string(actual.first) + ", " + std::to_string(actual.second) + ")");
-    }
-    return true;
-}
+		TEST_METHOD(TestPlaceShip)
+		{
+			Player player;
+			Ship ship("Destroyer", 2);
+			bool placed = player.placeShip(ship, 0, 0, true);
 
-bool assertTrue(const bool actual)
-{
-    if (!actual)
-    {
-        throw std::runtime_error("Expected: true | Actual: false");
-    }
-    return true;
-}
+			Assert::IsTrue(placed, L"Ship was not placed correctly.");
+			Assert::AreEqual(2, static_cast<int>(ship.positions.size()), L"Ship size does not match expected size.");
+		}
 
-// Test functions
-bool testPlaceShip()
-{
-    Player player;
-    Ship ship("Destroyer", 2);
-    bool placed = placeShip(player, ship, 0, 0, true);
-    return assertTrue(placed) && assertEqual(2, static_cast<int>(ship.positions.size()));
-}
+		TEST_METHOD(TestPlaceShipOverlap)
+		{
+			Player player;
+			Ship ship1("Destroyer", 2);
+			Ship ship2("Submarine", 3);
+			player.placeShip(ship1, 0, 0, true);
+			bool placed = player.placeShip(ship2, 0, 1, true);
 
-bool testPlaceShipOverlap()
-{
-    Player player;
-    Ship ship1("Destroyer", 2);
-    Ship ship2("Submarine", 3);
-    placeShip(player, ship1, 0, 0, true);
-    bool placed = placeShip(player, ship2, 0, 1, true);
-    return assertTrue(!placed);
-}
+			Assert::IsFalse(placed, L"Ship was placed where it should have overlapped.");
+		}
 
-bool testAutoPlaceShips()
-{
-    Player player;
-    vector<Ship> ships = {
-        {"Carrier", 5},
-        {"Battleship", 4},
-        {"Cruiser", 3},
-        {"Submarine", 3},
-        {"Destroyer", 2}
-    };
-    autoPlaceShips(player, ships);
-    return assertEqual(5, static_cast<int>(player.ships.size()));
-}
+		TEST_METHOD(TestAutoPlaceShips)
+		{
+			Player player;
+			std::vector<Ship> ships = {
+				{"Carrier", 5},
+				{"Battleship", 4},
+				{"Cruiser", 3},
+				{"Submarine", 3},
+				{"Destroyer", 2}
+			};
+			player.autoPlaceShips(ships);
 
-bool testIsGameOver()
-{
-    Player player;
-    Ship ship("Destroyer", 2);
-    placeShip(player, ship, 0, 0, true);
-    player.ships[0].hits = 2;
-    return assertTrue(isGameOver(player));
-}
+			Assert::AreEqual(5, static_cast<int>(player.ships.size()), L"Number of placed ships does not match expected.");
+		}
 
-bool testAIShot()
-{
-    Player player;
-    Ship ship("Destroyer", 2);
-    placeShip(player, ship, 0, 0, true);
-    pair<int, int> shot = getAIShot(player);
-    return assertTrue(player.grid[shot.first][shot.second] != MISS && player.grid[shot.first][shot.second] != HIT);
-}
+		TEST_METHOD(TestIsGameOver)
+		{
+			Player player;
+			Ship ship("Destroyer", 2);
+			player.placeShip(ship, 0, 0, true);
+			player.ships[0].hits = 2;
 
-int main()
-{
-    int passed = 0;
-    int total = 5;
+			Assert::IsTrue(player.isGameOver(), L"Game should be over but is not detected as such.");
+		}
 
-    std::cout << "Running tests..." << std::endl;
+		TEST_METHOD(TestAIShot)
+		{
+			Player player;
+			Ship ship("Destroyer", 2);
+			player.placeShip(ship, 0, 0, true);
+			std::pair<int, int> shot = player.getAIShot();
 
-    std::cout << "Test 1: Place Ship" << std::endl;
-    try
-    {
-        testPlaceShip();
-        passed++;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-
-    std::cout << "Test 2: Place Ship Overlap" << std::endl;
-    try
-    {
-        testPlaceShipOverlap();
-        passed++;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-
-    std::cout << "Test 3: Auto Place Ships" << std::endl;
-    try
-    {
-        testAutoPlaceShips();
-        passed++;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-
-    std::cout << "Test 4: Is Game Over" << std::endl;
-    try
-    {
-        testIsGameOver();
-        passed++;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-
-    std::cout << "Test 5: AI Shot" << std::endl;
-    try
-    {
-        testAIShot();
-        passed++;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-
-    std::cout << "Passed " << passed << " of " << total << " tests" << std::endl;
-
-    return 0;
+			Assert::IsTrue(player.grid[shot.first][shot.second] != MISS && player.grid[shot.first][shot.second] != HIT,
+				L"AI shot resulted in an invalid outcome (MISS or HIT on an invalid tile).");
+		}
+	};
 }
