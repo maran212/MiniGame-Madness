@@ -2,53 +2,38 @@
 
 void Player::displayGrid(bool revealShips) {
     std::cout << "  ";
-#include "battleShips.h"
-
-void Player::displayGrid(bool revealShips) {
-    std::cout << "  ";
     for (int i = 0; i < gridSize; ++i) {
         std::cout << i << " ";
-        std::cout << i << " ";
     }
-    std::cout << std::endl;
     std::cout << std::endl;
 
     for (int row = 0; row < gridSize; ++row) {
         std::cout << row << " ";
-        std::cout << row << " ";
         for (int col = 0; col < gridSize; ++col) {
             if (grid[row][col] == SHIP && revealShips) {
-                std::cout << "S ";
                 std::cout << "S ";
             }
             else if (grid[row][col] == MISS) {
                 std::cout << "M ";
-                std::cout << "M ";
             }
             else if (grid[row][col] == HIT) {
-                std::cout << "H ";
                 std::cout << "H ";
             }
             else {
                 std::cout << ". ";
-                std::cout << ". ";
             }
         }
-        std::cout << std::endl;
         std::cout << std::endl;
     }
 }
 
 bool Player::placeShip(Ship& ship, int row, int col, bool horizontal) {
-bool Player::placeShip(Ship& ship, int row, int col, bool horizontal) {
     if (horizontal) {
         if (col + ship.size > gridSize) return false;
         for (int i = 0; i < ship.size; ++i) {
             if (grid[row][col + i] != EMPTY) return false;
-            if (grid[row][col + i] != EMPTY) return false;
         }
         for (int i = 0; i < ship.size; ++i) {
-            grid[row][col + i] = SHIP;
             grid[row][col + i] = SHIP;
             ship.positions.push_back({ row, col + i });
         }
@@ -57,22 +42,18 @@ bool Player::placeShip(Ship& ship, int row, int col, bool horizontal) {
         if (row + ship.size > gridSize) return false;
         for (int i = 0; i < ship.size; ++i) {
             if (grid[row + i][col] != EMPTY) return false;
-            if (grid[row + i][col] != EMPTY) return false;
         }
         for (int i = 0; i < ship.size; ++i) {
-            grid[row + i][col] = SHIP;
             grid[row + i][col] = SHIP;
             ship.positions.push_back({ row + i, col });
         }
     }
     ships.push_back(ship);
     shipsRemaining++;
-    ships.push_back(ship);
-    shipsRemaining++;
     return true;
 }
 
-void Player::autoPlaceShips(std::vector<Ship>& ships) {
+
 void Player::autoPlaceShips(std::vector<Ship>& ships) {
     for (auto& ship : ships) {
         bool placed = false;
@@ -81,13 +62,11 @@ void Player::autoPlaceShips(std::vector<Ship>& ships) {
             int col = rand() % gridSize;
             bool horizontal = rand() % 2;
             placed = placeShip(ship, row, col, horizontal);
-            placed = placeShip(ship, row, col, horizontal);
         }
     }
 }
 
-bool Player::isGameOver() const {
-    for (const auto& ship : ships) {
+
 bool Player::isGameOver() const {
     for (const auto& ship : ships) {
         if (ship.hits < ship.size) {
@@ -98,26 +77,20 @@ bool Player::isGameOver() const {
 }
 
 std::pair<int, int> Player::getAIShot() {
-std::pair<int, int> Player::getAIShot() {
     int row, col;
     do {
         row = rand() % gridSize;
         col = rand() % gridSize;
     } while (grid[row][col] == MISS || grid[row][col] == HIT);
-    } while (grid[row][col] == MISS || grid[row][col] == HIT);
 
     return { row, col };
 }
 
-void Player::playerTurn(Player& opponent) {
-    std::string input;
+
 void Player::playerTurn(Player& opponent) {
     std::string input;
     int row, col;
 
-    displayGrid(false);
-    std::cout << "Enter row and column to fire (e.g., '27' or '2 7') or type 'show' to see both boards: ";
-    std::getline(std::cin >> std::ws, input);  // Read the entire line of input, including any spaces
     displayGrid(false);
     std::cout << "Enter row and column to fire (e.g., '27' or '2 7') or type 'show' to see both boards: ";
     std::getline(std::cin >> std::ws, input);  // Read the entire line of input, including any spaces
@@ -142,8 +115,6 @@ void Player::playerTurn(Player& opponent) {
     else {
         std::cout << "Invalid input. Please enter two digits, such as '27' or '2 7'." << std::endl;
         playerTurn(opponent);  // Let the player retry the turn
-        std::cout << "Invalid input. Please enter two digits, such as '27' or '2 7'." << std::endl;
-        playerTurn(opponent);  // Let the player retry the turn
         return;
     }
 
@@ -151,14 +122,11 @@ void Player::playerTurn(Player& opponent) {
     if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
         std::cout << "Invalid coordinates. Please enter values within the grid." << std::endl;
         playerTurn(opponent);  // Let the player retry the turn
-        std::cout << "Invalid coordinates. Please enter values within the grid." << std::endl;
-        playerTurn(opponent);  // Let the player retry the turn
         return;
     }
 
     // Fire at the opponent's grid
     if (opponent.grid[row][col] == SHIP) {
-        std::cout << "Hit!" << std::endl;
         std::cout << "Hit!" << std::endl;
         opponent.grid[row][col] = HIT;
         for (auto& ship : opponent.ships) {
@@ -172,13 +140,11 @@ void Player::playerTurn(Player& opponent) {
     }
     else {
         std::cout << "Miss!" << std::endl;
-        std::cout << "Miss!" << std::endl;
         opponent.grid[row][col] = MISS;
     }
 }
 
-void Player::aiTurn(Player& opponent) {
-    auto shot = getAIShot();
+
 void Player::aiTurn(Player& opponent) {
     auto shot = getAIShot();
     int row = shot.first;
@@ -188,11 +154,6 @@ void Player::aiTurn(Player& opponent) {
         std::cout << "AI hit your ship!" << std::endl;
         opponent.grid[row][col] = HIT;
         for (auto& ship : opponent.ships) {
-    std::cout << "AI fires at " << row << ", " << col << std::endl;
-    if (opponent.grid[row][col] == SHIP) {
-        std::cout << "AI hit your ship!" << std::endl;
-        opponent.grid[row][col] = HIT;
-        for (auto& ship : opponent.ships) {
             for (auto& pos : ship.positions) {
                 if (pos.first == row && pos.second == col) {
                     ship.hits++;
@@ -204,13 +165,10 @@ void Player::aiTurn(Player& opponent) {
     else {
         std::cout << "AI missed!" << std::endl;
         opponent.grid[row][col] = MISS;
-        std::cout << "AI missed!" << std::endl;
-        opponent.grid[row][col] = MISS;
     }
 }
 
-void Player::setupGame(bool isAI) {
-    std::vector<Ship> ships = {
+
 void Player::setupGame(bool isAI) {
     std::vector<Ship> ships = {
         {"Carrier", 5},
@@ -224,13 +182,8 @@ void Player::setupGame(bool isAI) {
         char choice;
         std::cout << "Do you want to manually place your ships or auto-place them? (m/a): ";
         std::cin >> choice;
-        std::cout << "Do you want to manually place your ships or auto-place them? (m/a): ";
-        std::cin >> choice;
 
         if (choice == 'a' || choice == 'A') {
-            autoPlaceShips(ships);
-            std::cout << "Ships have been auto-placed. Here's your board:" << std::endl;
-            displayGrid(true);
             autoPlaceShips(ships);
             std::cout << "Ships have been auto-placed. Here's your board:" << std::endl;
             displayGrid(true);
@@ -241,17 +194,12 @@ void Player::setupGame(bool isAI) {
                 while (!placed) {
                     displayGrid(true);
                     std::cout << "Place your " << ship.name << " (size " << ship.size << ") at row, col and orientation (h/v): ";
-                    displayGrid(true);
-                    std::cout << "Place your " << ship.name << " (size " << ship.size << ") at row, col and orientation (h/v): ";
                     int row, col;
                     char orientation;
                     std::cin >> row >> col >> orientation;
-                    std::cin >> row >> col >> orientation;
                     bool horizontal = (orientation == 'h');
                     placed = placeShip(ship, row, col, horizontal);
-                    placed = placeShip(ship, row, col, horizontal);
                     if (!placed) {
-                        std::cout << "Invalid placement, try again." << std::endl;
                         std::cout << "Invalid placement, try again." << std::endl;
                     }
                 }
@@ -260,15 +208,12 @@ void Player::setupGame(bool isAI) {
     }
     else {
         autoPlaceShips(ships);  // Auto-place for AI
-        autoPlaceShips(ships);  // Auto-place for AI
     }
 }
 
 void Player::showBoards(Player& ai) {
     std::cout << "\nYour Board:" << std::endl;
     displayGrid(true);
-    std::cout << "\nAI's Board:" << std::endl;
-    ai.displayGrid(false);
 }
 
 int Battleship() {

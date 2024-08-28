@@ -2,16 +2,12 @@
 
 // Initialize games
 HnefataflGame hnefataflGame;
-Hangman hangmanGame;
-NaughtsxCrossess naughtsAndCrossesGame;
-WordScrambler wordScramblerGame;
 
 NaughtsxCrossess naughtsxCrossessGame;
 Hangman hangmanGame;
 WordScrambler wordScramblerGame;
 
 Con4 con4Game;
-
 
 
 // Input function to start each game
