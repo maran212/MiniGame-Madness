@@ -273,6 +273,3 @@ char NaughtsxCrossess::getBoardValue(int row, int col) const {
     return board[row][col];
 }
 
-char NaughtsxCrossess::getBoardValue(int row, int col) const {
-	return board[row][col];
-}
