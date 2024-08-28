@@ -11,7 +11,7 @@ extern int checkersGrid[8][8];
 extern int player1, player2, currentplayer;
 extern bool winquestionmark;
 
-void populategrid();
+void populateCheckersGrid();
 void forcejump(int playerturn, std::string piece);
 void checkwin();
 void playerturn(int curre);

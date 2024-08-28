@@ -49,6 +49,16 @@ public:
 
     /*!
      * @brief Initializes the game board.
+     * 
+     * @detail The board is represented as a 2D array of integers:
+     * @detail 0: Empty square
+     * @detail 1: White piece
+     * @detail 2: Black piece
+     * @detail 3: King piece
+     * @detail 4: King's square 
+     * @detail The board is 11x11 with the center square initially occupied by the king.
+     * @detail The white pieces are placed in a star pattern around the king, with the black pieces in the middle of each side.
+     * @detailThe king's squares are in the corners of the board and are the win condition for the king.
      */
     void populateBoard();
 

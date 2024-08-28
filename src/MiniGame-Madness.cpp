@@ -2,8 +2,11 @@
 
 int main()
 {	
+	system("cls");
+
 	// Call the menu function
-	menu();	
+	Menu mainMenu;
+	mainMenu.displayMenu();
 
 	return 0;
 }

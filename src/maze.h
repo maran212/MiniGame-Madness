@@ -1,6 +1,11 @@
 #ifndef MAZEGAME_H
 #define MAZEGAME_H
 
+/*!
+ * @file maze.h
+ * @brief Contains the declaration of the maze game functions.
+ */
+
 #include <iostream>
 #include <vector>
 #include <algorithm>

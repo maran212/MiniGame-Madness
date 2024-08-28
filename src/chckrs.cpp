@@ -2,10 +2,11 @@
 
 using namespace std;
 
+int checkersGrid[8][8];
 int player1 = 1, player2 = 2, currentplayer = 1;
 bool winquestionmark = false;
 
-void populatecheckersGrid()
+void populateCheckersGrid()
 {
     for (int i = 0; i < 7; i++)
     {
@@ -121,7 +122,7 @@ void display()
 
 void checkers()
 {
-    populatecheckersGrid();
+    populateCheckersGrid();
 
     while (winquestionmark == false)
     {

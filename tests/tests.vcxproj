@@ -101,8 +101,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>../x64/Debug;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>screenBuffer.obj;NaughtsxCrossess.obj;battleShips.obj;hangman.obj;wordScrambler.obj</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../MiniGame-Madness/x64/Debug;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>screenBuffer.obj;NaughtsxCrossess.obj;battleShips.obj;hangman.obj;wordScrambler.obj;hnefatafl.obj</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -155,8 +155,8 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>screenBuffer.obj;NaughtsxCrossess.obj;battleShips.obj;hangman.obj;wordScrambler.obj</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../x64/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>screenBuffer.obj;NaughtsxCrossess.obj;battleShips.obj;hangman.obj;wordScrambler.obj;hnefatafl.obj</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../MiniGame-Madness/x64/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -168,6 +168,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="testBattleShips.cpp" />
+    <ClCompile Include="testHnefatafl.h.cpp" />
     <ClCompile Include="testnaughtsxcrosses.cpp" />
     <ClCompile Include="testScreenBuffer.cpp" />
     <ClCompile Include="tests.cpp" />
