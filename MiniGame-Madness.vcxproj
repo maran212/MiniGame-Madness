@@ -156,7 +156,7 @@
     <ClCompile Include="src\wordScrambler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\easy.text" />
+    <None Include="src\easy.txt" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\hard.txt" />

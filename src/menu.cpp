@@ -2,6 +2,9 @@
 
 // Initialize games
 HnefataflGame hnefataflGame;
+Hangman hangmanGame;
+NaughtsxCrossess naughtsAndCrossesGame;
+WordScrambler wordScramblerGame;
 
 NaughtsxCrossess naughtsxCrossessGame;
 Hangman hangmanGame;

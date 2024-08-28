@@ -17,6 +17,9 @@
 #include "chckrs.h"
 #include <iostream>
 #include <conio.h>
+#include "NaughtsxCrossess.h"
+#include "WordScrambler.h"
+#include "battleShips.h"
 
 /*!
 * @class Menu
