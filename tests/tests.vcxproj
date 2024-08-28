@@ -169,7 +169,6 @@
     </ClCompile>
     <ClCompile Include="testBattleShips.cpp" />
     <ClCompile Include="testHnefatafl.h.cpp" />
-    <ClCompile Include="testnaughtsxcrosses.cpp" />
     <ClCompile Include="testScreenBuffer.cpp" />
     <ClCompile Include="tests.cpp" />
     <ClCompile Include="testwordScrambler.cpp" />
