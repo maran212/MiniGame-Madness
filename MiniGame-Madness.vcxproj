@@ -147,15 +147,15 @@
     <ClCompile Include="src\maze.cpp" />
     <ClCompile Include="src\menu.cpp" />
     <ClCompile Include="src\MiniGame-Madness.cpp" />
+    <ClCompile Include="src\NaughtsxCrossess.cpp" />
     <ClCompile Include="src\screenBuffer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="src\NaughtsxCrossess.cpp" />
     <ClCompile Include="src\wordScrambler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\easy.text" />
+    <None Include="src\easy.txt" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\hard.txt" />
