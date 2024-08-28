@@ -11,6 +11,9 @@
 # Ignore IDE specific files
 .vscode
 .vs
+/tests/x64/*
+x64/*
+MiniGame-Madness/*
 
 
 
