@@ -1,71 +1,66 @@
 #include "pch.h"
-#include <iostream>
-#include <cassert>
+#include "CppUnitTest.h"
 #include <algorithm> // For std::sort
 #include <fstream>   // For std::ofstream
 #include <sstream>   // For std::ostringstream
-#include "wordScrambler.h"  // Include your header file
+#include "../src/WordScrambler.h"
 
-using namespace std;
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-// Test function for toLowerCase
-void testToLowerCase() {
-    assert(toLowerCase("Hello") == "hello");
-    assert(toLowerCase("WORLD") == "world");
-    assert(toLowerCase("TeSt") == "test");
-    assert(toLowerCase("cOdE") == "code");
-    cout << "toLowerCase() passed all tests!" << endl;
-}
 
-// Test function for scrambleWord
-void testScrambleWord() {
-    string word = "hello";
-    string scrambled = scrambleWord(word);
-    // Check that scrambled word is not the same as the original but contains the same letters
-    assert(scrambled != word);
-    sort(scrambled.begin(), scrambled.end());  // Sort for comparison
-    sort(word.begin(), word.end());
-    assert(scrambled == word);
-    cout << "scrambleWord() passed all tests!" << endl;
-}
+namespace WordScramblerTests
+{
+    TEST_CLASS(WordScramblerTests)
+    {
+    public:
+        TEST_METHOD(TestToLowerCase)
+        {
+            WordScrambler game;
+            Assert::AreEqual(std::string("hello"), game.toLowerCase("Hello"), L"Failed on input 'Hello'");
+            Assert::AreEqual(std::string("world"), game.toLowerCase("WORLD"), L"Failed on input 'WORLD'");
+            Assert::AreEqual(std::string("test"), game.toLowerCase("TeSt"), L"Failed on input 'TeSt'");
+            Assert::AreEqual(std::string("code"), game.toLowerCase("cOdE"), L"Failed on input 'cOdE'");
+        }
 
-// Test function for getRandomWord
-void testGetRandomWord() {
-    string filename = "testWords.txt";
-    ofstream outFile(filename);
-    outFile << "apple banana cherry date" << endl;
-    outFile.close();
-    
-    string word = getRandomWord(filename);
-    assert(word == "apple" || word == "banana" || word == "cherry" || word == "date");
-    cout << "getRandomWord() passed all tests!" << endl;
-}
+        TEST_METHOD(TestScrambleWord)
+        {
+            WordScrambler game;
+            std::string word = "hello";
+            std::string scrambled = game.scrambleWord(word);
 
-// Test function for displayHint
-void testDisplayHint() {
-    string word = "testing";
+            Assert::AreNotEqual(word, scrambled, L"Scrambled word should not match the original word.");
 
-    // Redirect output to a string stream
-    ostringstream output;
-    streambuf* oldCoutBuffer = cout.rdbuf(output.rdbuf());  // Redirect cout to output
+            std::sort(scrambled.begin(), scrambled.end());
+            std::sort(word.begin(), word.end());
+            Assert::AreEqual(word, scrambled, L"Scrambled word should contain the same letters as the original.");
+        }
 
-    displayHint(word);  // Call the function to generate the hint output
+        TEST_METHOD(TestGetRandomWord)
+        {
+            WordScrambler game;
+            std::string filename = "testWords.txt";
+            std::ofstream outFile(filename);
+            outFile << "apple banana cherry date" << std::endl;
+            outFile.close();
 
-    cout.rdbuf(oldCoutBuffer);  // Restore cout to its original buffer
+            std::string word = game.getRandomWord(filename);
+            Assert::IsTrue(word == "apple" || word == "banana" || word == "cherry" || word == "date", L"getRandomWord returned an unexpected word.");
+        }
 
-    string expectedOutput = "Hint: The first letter is 't', the middle letter is 't', and the last letter is 'g'.\n";
-    assert(output.str() == expectedOutput);  // Check if the generated output matches the expected string
-    cout << "displayHint() passed the test!" << endl;
-}
+        TEST_METHOD(TestDisplayHint)
+        {
+            WordScrambler game;
+            std::string word = "testing";
 
-// Test runner
-int main() {
-    // Run all the tests
-    testToLowerCase();
-    testScrambleWord();
-    testGetRandomWord();
-    testDisplayHint();
-    
-    cout << "All tests passed!" << endl;
-    return 0;
+            std::ostringstream output;
+            std::streambuf* oldCoutBuffer = std::cout.rdbuf(output.rdbuf());
+
+            game.displayHint(word);
+
+            std::cout.rdbuf(oldCoutBuffer);
+
+            std::string expectedOutput = "Hint: The first letter is 't', the middle letter is 't', and the last letter is 'g'.\n";
+            Assert::AreEqual(expectedOutput, output.str(), L"displayHint output did not match expected output.");
+        }
+    };
 }

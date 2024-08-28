@@ -1,6 +1,9 @@
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
 # documentation.
 
 name: MSBuild
@@ -41,21 +44,25 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:DebugSymbols=true /p:DebugType=full ${{env.SOLUTION_FILE_PATH}} 
+      
+    - name: Setup VSTest and add to PATH
+      uses: darenm/Setup-VSTest@v1
+      id: setup_vstest
+      
     - name: Install OpenCppCoverage
       run: |
         choco install OpenCppCoverage
         echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
-
+        
     - name: Generate Coverage Report
       shell: cmd
-      run: OpenCppCoverage --modules Debug --export_type cobertura:MiniGame-Madness.xml -- "vstest.console.exe" x64\Debug\tests.dll
+      run: OpenCppCoverage --modules=D:\a\MiniGame-Madness\MiniGame-Madness\x64\Debug --export_type cobertura:MiniGame-Madness.xml  -- "vstest.console.exe" x64\Debug\tests.dll 
 
     - name: Upload Report to Codecov
       uses: codecov/codecov-action@v4
       with:
         fail_ci_if_error: true
-        files: winci.xml
+        files: MiniGame-Madness.xml
         token: ${{ secrets.CODECOV_TOKEN }}
-

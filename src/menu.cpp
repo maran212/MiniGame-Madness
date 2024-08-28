@@ -2,6 +2,9 @@
 
 // Initialize games
 HnefataflGame hnefataflGame;
+Hangman hangmanGame;
+NaughtsxCrossess naughtsAndCrossesGame;
+WordScrambler wordScramblerGame;
 
 /**
 * Input function to start each game
@@ -13,7 +16,7 @@ void input(int input)
     {
     case 1:
         // Call function to start Hangman
-        hangman();
+        hangmanGame.hangman();
         break;
     case 2:
         // Call function to start Connect 4
@@ -25,7 +28,7 @@ void input(int input)
         break;
     case 4:
         // Call function to start Naughts and Crosses
-		std::cout << "Comming Soon" << std::endl;
+        naughtsAndCrossesGame.run();
         break;
     case 5:
         // Call function to start Checkers
@@ -42,11 +45,11 @@ void input(int input)
         break;
     case 8:
         // Call function to start Word Scramble
-        std::cout << "Comming Soon" << std::endl;
+        wordScramblerGame.run();
         break;
     case 9:
         // Call function to start Battleship
-        std::cout << "Comming Soon" << std::endl;
+        Battleship();
         break;
     case 10:
         // Call function to start Minesweeper

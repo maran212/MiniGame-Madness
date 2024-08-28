@@ -8,6 +8,9 @@
 #include "hnefatafl.h"
 #include <iostream>
 #include <conio.h>
+#include "NaughtsxCrossess.h"
+#include "WordScrambler.h"
+#include "battleShips.h"
 
 /**
 * Input function to start each game

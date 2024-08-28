@@ -2,10 +2,10 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\maran212\source\repos\COSC345-MiniGame-Madness\MiniGame-Madness\x64\Debug\MiniGame-Madness.exe</FullPath>
+      <FullPath>C:\Users\widows-server\source\repos\MiniGame-Madness\x64\Debug\MiniGame-Madness.exe</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>C:\Users\maran212\source\repos\COSC345-MiniGame-Madness\MiniGame-Madness\x64\Debug\tests.dll</FullPath>
+      <FullPath>C:\Users\widows-server\source\repos\MiniGame-Madness\x64\Debug\tests.dll</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

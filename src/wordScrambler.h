@@ -12,30 +12,38 @@
 #include <cassert>
 #include <sstream>
 
-using namespace std;
+/// @brief Class representing the Word Scrambler game.
+class WordScrambler {
+public:
+    /// @brief Clears the screen based on the operating system.
+    void clearScreen() const;
 
-// Clears the screen based on the operating system
-void clearScreen1();
+    /// @brief Retrieves a random word from a specified text file.
+    /// @param filename The name of the file containing the words.
+    /// @return A randomly selected word from the file.
+    std::string getRandomWord(const std::string& filename) const;
 
-// Retrieves a random word from a specified text file
-string getRandomWord1(const string& filename);
+    /// @brief Scrambles the characters in a given word.
+    /// @param word The word to be scrambled.
+    /// @return A scrambled version of the word.
+    std::string scrambleWord(const std::string& word) const;
 
-// Scrambles the characters in a given word
-string scrambleWord(const string& word);
+    /// @brief Converts a string to lowercase.
+    /// @param str The string to be converted.
+    /// @return The lowercase version of the string.
+    std::string toLowerCase(const std::string& str) const;
 
-// Converts a string to lowercase
-string toLowerCase(const string& str);
+    /// @brief Displays a hint with the first, middle, and last characters of the word.
+    /// @param word The word for which the hint is generated.
+    void displayHint(const std::string& word) const;
 
-// Displays a hint with the first, middle, and last characters of the word
-void displayHint(const string& word);
+    /// @brief Main gameplay loop for the Word Scrambler game.
+    /// @param difficulty The difficulty level selected by the player.
+    void playWordScrambler(const std::string& difficulty);
 
-// Main gameplay loop for the Word Scrambler game
-void playWordScrambler(const string& difficulty);
+    /// @brief Runs the Word Scrambler game.
+    void run();
 
-// Test functions
-void testToLowerCase();
-void testScrambleWord();
-void testGetRandomWord();
-void testDisplayHint();
+};
 
 #endif // WORDSCRAMBLER_H

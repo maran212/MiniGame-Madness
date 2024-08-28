@@ -101,8 +101,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\Users\maran212\source\repos\COSC345-MiniGame-Madness\MiniGame-Madness\tests\x64\Debug;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>../x64/Debug/screenBuffer.obj</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\widows-server\source\repos\MiniGame-Madness\MiniGame-Madness\x64\Debug;MiniGame-Madness\x64\Debug;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>screenBuffer.obj;hangman.obj;battleShips.obj;NaughtsxCrossess.obj;wordScrambler.obj</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

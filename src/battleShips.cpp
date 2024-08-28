@@ -1,135 +1,72 @@
-#include <iostream>
-#include <vector>
-#include <ctime>
-#include <cstdlib>
-#include <string>
+#include "battleShips.h"
 
-using namespace std;
-
-const int gridSize = 10;
-
-enum CellState { EMPTY, SHIP, MISS, HIT };
-
-struct Ship {
-    string name;
-    int size;
-    vector<pair<int, int>> positions;
-    int hits;
-
-    Ship(string n, int s) : name(n), size(s), hits(0) {}
-};
-
-struct Player {
-    vector<vector<CellState>> grid;
-    vector<Ship> ships;
-    int shipsRemaining;
-
-    Player() : grid(gridSize, vector<CellState>(gridSize, EMPTY)), shipsRemaining(0) {}
-};
-
-// Function declarations
-void displayGrid(const vector<vector<CellState>>& grid, bool revealShips);
-bool placeShip(Player& player, Ship& ship, int row, int col, bool horizontal);
-void autoPlaceShips(Player& player, vector<Ship>& ships);
-bool isGameOver(const Player& player);
-pair<int, int> getAIShot(Player& player);
-void playerTurn(Player& player, Player& opponent);
-void aiTurn(Player& player, Player& opponent);
-void setupGame(Player& player, bool isAI);
-void showBoards(Player& player, Player& ai);
-
-int Battleship() {
-    srand(static_cast<unsigned int>(time(0))); // Seed the random number generator with the current time
-
-    Player player, ai;
-    setupGame(player, false); // Player setup
-    setupGame(ai, true); // AI setup
-
-    // Main game loop
-    while (!isGameOver(player) && !isGameOver(ai)) {
-        playerTurn(player, ai);
-        if (!isGameOver(ai)) {
-            aiTurn(ai, player);
-        }
-    }
-
-    if (isGameOver(player)) {
-        cout << "You lost!" << endl;
-    }
-    else {
-        cout << "You won!" << endl;
-    }
-
-    return 0;
-}
-
-void displayGrid(const vector<vector<CellState>>& grid, bool revealShips) {
-    cout << "  ";
+void Player::displayGrid(bool revealShips) {
+    std::cout << "  ";
     for (int i = 0; i < gridSize; ++i) {
-        cout << i << " ";
+        std::cout << i << " ";
     }
-    cout << endl;
+    std::cout << std::endl;
 
     for (int row = 0; row < gridSize; ++row) {
-        cout << row << " ";
+        std::cout << row << " ";
         for (int col = 0; col < gridSize; ++col) {
             if (grid[row][col] == SHIP && revealShips) {
-                cout << "S ";
+                std::cout << "S ";
             }
             else if (grid[row][col] == MISS) {
-                cout << "M ";
+                std::cout << "M ";
             }
             else if (grid[row][col] == HIT) {
-                cout << "H ";
+                std::cout << "H ";
             }
             else {
-                cout << ". ";
+                std::cout << ". ";
             }
         }
-        cout << endl;
+        std::cout << std::endl;
     }
 }
 
-bool placeShip(Player& player, Ship& ship, int row, int col, bool horizontal) {
+bool Player::placeShip(Ship& ship, int row, int col, bool horizontal) {
     if (horizontal) {
         if (col + ship.size > gridSize) return false;
         for (int i = 0; i < ship.size; ++i) {
-            if (player.grid[row][col + i] != EMPTY) return false;
+            if (grid[row][col + i] != EMPTY) return false;
         }
         for (int i = 0; i < ship.size; ++i) {
-            player.grid[row][col + i] = SHIP;
+            grid[row][col + i] = SHIP;
             ship.positions.push_back({ row, col + i });
         }
     }
     else {
         if (row + ship.size > gridSize) return false;
         for (int i = 0; i < ship.size; ++i) {
-            if (player.grid[row + i][col] != EMPTY) return false;
+            if (grid[row + i][col] != EMPTY) return false;
         }
         for (int i = 0; i < ship.size; ++i) {
-            player.grid[row + i][col] = SHIP;
+            grid[row + i][col] = SHIP;
             ship.positions.push_back({ row + i, col });
         }
     }
-    player.ships.push_back(ship);
-    player.shipsRemaining++;
+    ships.push_back(ship);
+    shipsRemaining++;
     return true;
 }
 
-void autoPlaceShips(Player& player, vector<Ship>& ships) {
+void Player::autoPlaceShips(std::vector<Ship>& ships) {
     for (auto& ship : ships) {
         bool placed = false;
         while (!placed) {
             int row = rand() % gridSize;
             int col = rand() % gridSize;
             bool horizontal = rand() % 2;
-            placed = placeShip(player, ship, row, col, horizontal);
+            placed = placeShip(ship, row, col, horizontal);
         }
     }
 }
 
-bool isGameOver(const Player& player) {
-    for (const auto& ship : player.ships) {
+bool Player::isGameOver() const {
+    for (const auto& ship : ships) {
         if (ship.hits < ship.size) {
             return false;  // Game is not over if any ship has not been fully hit
         }
@@ -137,27 +74,27 @@ bool isGameOver(const Player& player) {
     return true;  // All ships have been sunk
 }
 
-pair<int, int> getAIShot(Player& player) {
+std::pair<int, int> Player::getAIShot() {
     int row, col;
     do {
         row = rand() % gridSize;
         col = rand() % gridSize;
-    } while (player.grid[row][col] == MISS || player.grid[row][col] == HIT);
+    } while (grid[row][col] == MISS || grid[row][col] == HIT);
 
     return { row, col };
 }
 
-void playerTurn(Player& player, Player& opponent) {
-    string input;
+void Player::playerTurn(Player& opponent) {
+    std::string input;
     int row, col;
 
-    displayGrid(opponent.grid, false);
-    cout << "Enter row and column to fire (e.g., '27' or '2 7') or type 'show' to see both boards: ";
-    getline(cin >> ws, input);  // Read the entire line of input, including any spaces
+    displayGrid(false);
+    std::cout << "Enter row and column to fire (e.g., '27' or '2 7') or type 'show' to see both boards: ";
+    std::getline(std::cin >> std::ws, input);  // Read the entire line of input, including any spaces
 
     if (input == "show") {
-        showBoards(player, opponent);
-        playerTurn(player, opponent);  // Recur to let the player make a move after showing the boards
+        showBoards(opponent);
+        playerTurn(opponent);  // Recur to let the player make a move after showing the boards
         return;
     }
 
@@ -171,21 +108,21 @@ void playerTurn(Player& player, Player& opponent) {
         col = input[2] - '0';
     }
     else {
-        cout << "Invalid input. Please enter two digits, such as '27' or '2 7'." << endl;
-        playerTurn(player, opponent);  // Let the player retry the turn
+        std::cout << "Invalid input. Please enter two digits, such as '27' or '2 7'." << std::endl;
+        playerTurn(opponent);  // Let the player retry the turn
         return;
     }
 
     // Validate row and col
     if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
-        cout << "Invalid coordinates. Please enter values within the grid." << endl;
-        playerTurn(player, opponent);  // Let the player retry the turn
+        std::cout << "Invalid coordinates. Please enter values within the grid." << std::endl;
+        playerTurn(opponent);  // Let the player retry the turn
         return;
     }
 
     // Fire at the opponent's grid
     if (opponent.grid[row][col] == SHIP) {
-        cout << "Hit!" << endl;
+        std::cout << "Hit!" << std::endl;
         opponent.grid[row][col] = HIT;
         for (auto& ship : opponent.ships) {
             for (auto& pos : ship.positions) {
@@ -197,20 +134,20 @@ void playerTurn(Player& player, Player& opponent) {
         }
     }
     else {
-        cout << "Miss!" << endl;
+        std::cout << "Miss!" << std::endl;
         opponent.grid[row][col] = MISS;
     }
 }
 
-void aiTurn(Player& ai, Player& player) {
-    pair<int, int> shot = getAIShot(player);
+void Player::aiTurn(Player& opponent) {
+    auto shot = getAIShot();
     int row = shot.first;
     int col = shot.second;
-    cout << "AI fires at " << row << ", " << col << endl;
-    if (player.grid[row][col] == SHIP) {
-        cout << "AI hit your ship!" << endl;
-        player.grid[row][col] = HIT;
-        for (auto& ship : player.ships) {
+    std::cout << "AI fires at " << row << ", " << col << std::endl;
+    if (opponent.grid[row][col] == SHIP) {
+        std::cout << "AI hit your ship!" << std::endl;
+        opponent.grid[row][col] = HIT;
+        for (auto& ship : opponent.ships) {
             for (auto& pos : ship.positions) {
                 if (pos.first == row && pos.second == col) {
                     ship.hits++;
@@ -220,13 +157,13 @@ void aiTurn(Player& ai, Player& player) {
         }
     }
     else {
-        cout << "AI missed!" << endl;
-        player.grid[row][col] = MISS;
+        std::cout << "AI missed!" << std::endl;
+        opponent.grid[row][col] = MISS;
     }
 }
 
-void setupGame(Player& player, bool isAI) {
-    vector<Ship> ships = {
+void Player::setupGame(bool isAI) {
+    std::vector<Ship> ships = {
         {"Carrier", 5},
         {"Battleship", 4},
         {"Cruiser", 3},
@@ -236,40 +173,65 @@ void setupGame(Player& player, bool isAI) {
 
     if (!isAI) {
         char choice;
-        cout << "Do you want to manually place your ships or auto-place them? (m/a): ";
-        cin >> choice;
+        std::cout << "Do you want to manually place your ships or auto-place them? (m/a): ";
+        std::cin >> choice;
 
         if (choice == 'a' || choice == 'A') {
-            autoPlaceShips(player, ships);
-            cout << "Ships have been auto-placed. Here's your board:" << endl;
-            displayGrid(player.grid, true);
+            autoPlaceShips(ships);
+            std::cout << "Ships have been auto-placed. Here's your board:" << std::endl;
+            displayGrid(true);
         }
         else {
             for (auto& ship : ships) {
                 bool placed = false;
                 while (!placed) {
-                    displayGrid(player.grid, true);
-                    cout << "Place your " << ship.name << " (size " << ship.size << ") at row, col and orientation (h/v): ";
+                    displayGrid(true);
+                    std::cout << "Place your " << ship.name << " (size " << ship.size << ") at row, col and orientation (h/v): ";
                     int row, col;
                     char orientation;
-                    cin >> row >> col >> orientation;
+                    std::cin >> row >> col >> orientation;
                     bool horizontal = (orientation == 'h');
-                    placed = placeShip(player, ship, row, col, horizontal);
+                    placed = placeShip(ship, row, col, horizontal);
                     if (!placed) {
-                        cout << "Invalid placement, try again." << endl;
+                        std::cout << "Invalid placement, try again." << std::endl;
                     }
                 }
             }
         }
     }
     else {
-        autoPlaceShips(player, ships);  // Auto-place for AI
+        autoPlaceShips(ships);  // Auto-place for AI
     }
 }
 
-void showBoards(Player& player, Player& ai) {
-    cout << "\nYour Board:" << endl;
-    displayGrid(player.grid, true);
-    cout << "\nAI's Board:" << endl;
-    displayGrid(ai.grid, true);
+void Player::showBoards(Player& ai) {
+    std::cout << "\nYour Board:" << std::endl;
+    displayGrid(true);
+    std::cout << "\nAI's Board:" << std::endl;
+    ai.displayGrid(false);
+}
+
+int Battleship() {
+    srand(static_cast<unsigned int>(time(0))); // Seed the random number generator with the current time
+
+    Player player, ai;
+    player.setupGame(false); // Player setup
+    ai.setupGame(true); // AI setup
+
+    // Main game loop
+    while (!player.isGameOver() && !ai.isGameOver()) {
+        player.playerTurn(ai);
+        if (!ai.isGameOver()) {
+            ai.aiTurn(player);
+        }
+    }
+
+    if (player.isGameOver()) {
+        std::cout << "You lost!" << std::endl;
+    }
+    else {
+        std::cout << "You won!" << std::endl;
+    }
+
+    return 0;
 }
