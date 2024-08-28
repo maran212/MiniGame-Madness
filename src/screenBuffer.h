@@ -5,6 +5,7 @@
 /*!
  * @file screenBuffer.h
  * @brief Contains the declaration of the screenBuffer class and its member functions.
+ * @author Angus Martin
  */
 
 #include <string>

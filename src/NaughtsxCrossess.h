@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 
-const int BOARD_SIZE = 3; ///< Updated constant name to avoid conflicts
+    const int BOARD_SIZE = 3; ///< Updated constant name to avoid conflicts
 
 /// @brief Class representing the Noughts and Crosses (Tic-Tac-Toe) game.
 class NaughtsxCrossess {
@@ -56,6 +56,12 @@ public:
 
     /// @brief Clears the console screen.
     void clearScreen() const;
+
+    /// @brief Get the value of the board at a specific position.
+    /// @param row The row index of the board.
+    /// @param col The column index of the board.
+    /// @return char The value at the specified position.
+    char getBoardValue(int row, int col) const;
 
 private:
     char board[BOARD_SIZE][BOARD_SIZE]; ///< The game board.

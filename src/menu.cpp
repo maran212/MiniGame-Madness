@@ -26,6 +26,7 @@ void Menu::input(int input)
     case 3:
         // Call function to start Maze
         //mazeGame();
+        std::cout << "Comming Soon" << std::endl;
         break;
     case 4:
         // Call function to start Naughts and Crosses

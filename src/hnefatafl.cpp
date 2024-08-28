@@ -106,11 +106,10 @@ std::pair<int, int> HnefataflGame::move(std::pair<int, int> source, std::pair<in
     }
 
 	// If the piece is moved, update the board
-    if (currentRow != sourceRow || currentCol != sourceCol) {
-        board[currentRow][currentCol] = currentPlayer;
-        board[sourceRow][sourceCol] = 0;
-	}
-	else if (board[currentRow][currentCol] == KING && board[targetRow][targetCol] == KING_SQUARE) {
+    board[currentRow][currentCol] = currentPlayer;
+    board[sourceRow][sourceCol] = 0;
+
+	if (board[currentRow][currentCol] == KING && board[targetRow][targetCol] == KING_SQUARE) {
 		board[targetRow][targetCol] = KING;
         board[currentRow][currentCol] = 0;
 	}

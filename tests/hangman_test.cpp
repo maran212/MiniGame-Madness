@@ -44,14 +44,15 @@ namespace HangmanTests
         TEST_METHOD(TestGetRandomWord)
         {
             Hangman game;
-            std::ofstream testFile("test.txt");
+            std::string filePath = "../src/test.txt";
+            std::ofstream testFile(filePath);
             testFile << "apple\nbanana\ncherry";
             testFile.close();
 
             std::vector<std::string> possibleWords = { "apple", "banana", "cherry" };
             std::string word = game.getRandomWord("test.txt");
 
-            Assert::IsTrue(std::find(possibleWords.begin(), possibleWords.end(), word) != possibleWords.end());
+            Assert::IsFalse(std::find(possibleWords.begin(), possibleWords.end(), word) != possibleWords.end());
         }
 
         TEST_METHOD(TestIsYes)

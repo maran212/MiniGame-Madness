@@ -4,6 +4,7 @@
 /*!
  * @file menu.h
  * @brief Contains the declaration of the Menu class and its member functions.
+ * @author Angus Martin
  */
 
 #include "screenBuffer.h" 
