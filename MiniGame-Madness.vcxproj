@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\battleShips.h" />
+    <ClInclude Include="src\chckrs.h" />
     <ClInclude Include="src\con4.h" />
     <ClInclude Include="src\hangman.h" />
     <ClInclude Include="src\hnefatafl.h" />
@@ -139,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\battleShips.cpp" />
+    <ClCompile Include="src\chckrs.cpp" />
     <ClCompile Include="src\con4.cpp" />
     <ClCompile Include="src\hangman.cpp" />
     <ClCompile Include="src\hnefatafl.cpp" />
@@ -150,6 +152,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="src\NaughtsxCrossess.cpp" />
     <ClCompile Include="src\wordScrambler.cpp" />
   </ItemGroup>
   <ItemGroup>

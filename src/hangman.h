@@ -45,3 +45,4 @@ public:
 };
 
 #endif // HANGMAN_H
+

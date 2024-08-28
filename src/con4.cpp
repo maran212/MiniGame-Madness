@@ -1,22 +1,23 @@
 #include <iostream>
 #include "con4.h"
 
-int grid[7][6];
-int player1 = 1, player2 = 2; //1 for player 1, 2 for 2, 0 for empty space.
-int currentplayer;
-bool winquestionmark = false;
 
-bool endgame() // 
+Con4::Con4()
+{
+	populategrid();
+}
+
+bool Con4::endgame() // 
 {
     return false;
 }
 
-void playerturn(int player)
+void Con4::playerturn(int player)
 {
     
 }
 
-void populategrid()
+void Con4::populategrid()
 {
     for(int i = 0; i < 7; i++)
     {
@@ -27,11 +28,11 @@ void populategrid()
     }
 }
 
-void dropcoin(int column, int playercoin)
+void Con4::dropcoin(int column, int playercoin)
 {
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 7; i++)
     {
-        if (grid[column][i-1] != 0 || i == 6)
+        if (grid[column][i+1] != 0 || i == 6)
         {
             grid[column][i] = playercoin;
             
@@ -40,7 +41,7 @@ void dropcoin(int column, int playercoin)
     }
 }
 
-void checkdraw()
+void Con4::checkdraw()
 {
     bool full = true;
 
@@ -58,7 +59,7 @@ void checkdraw()
     }
 }
 
-void checkwin()
+void Con4::checkwin()
 {
     for(int i = 0; i < 7; i++)
     {
@@ -99,12 +100,12 @@ void checkwin()
     }
 }
 
-int randomstarter()
+int Con4::randomstarter()
 {
     return 1 + (rand() % 2);
 }
 
-void swapturn(int playert)
+void Con4::swapturn(int playert)
 {
     if (playert == 1)
     {
@@ -115,7 +116,7 @@ void swapturn(int playert)
     }
 }
 
-void connect4()
+void Con4::connect4()
 {
     std::cout << "Hello World" << std::endl;
 

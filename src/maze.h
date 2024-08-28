@@ -1,6 +1,11 @@
 #ifndef MAZEGAME_H
 #define MAZEGAME_H
 
+/*!
+ * @file maze.h
+ * @brief Contains the declaration of the maze game functions.
+ */
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -22,10 +27,10 @@ void generateMazeRecursive(int x, int y, int width, int height);
 void generateMaze(int height, int width);
 
 // Print the maze
-void printMaze(screenBuffer& sb);
+void printMaze();
 
 // Move through the maze
-bool move(int input, screenBuffer& sb);
+bool move(int input);
 
 // Start the maze game
 void mazeGame();

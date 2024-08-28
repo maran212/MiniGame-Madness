@@ -1,6 +1,4 @@
 #include "maze.h"
-#include <iostream>
-#include <conio.h>
 
 std::vector<std::vector<int>> maze;
 

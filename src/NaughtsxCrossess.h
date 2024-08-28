@@ -18,7 +18,7 @@ public:
 
     /// @brief Prints the current state of the board.
     void printBoard() const;
-    
+
     /// @brief runs and manages the game.
     void run();
 

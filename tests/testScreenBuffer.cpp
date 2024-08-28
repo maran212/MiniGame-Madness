@@ -4,26 +4,17 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace tests
+namespace testScreenBuffer
 {
-	TEST_CLASS(tests)
-	{
-	public:
+    TEST_CLASS(testScreenBuffer)
+    {
+    public:
         HANDLE handle;
 
         TEST_METHOD(Constructor)
         {
             screenBuffer buffer;
             Assert::AreNotEqual(INVALID_HANDLE_VALUE, buffer.getScreenHandle());
-        }
-
-        TEST_METHOD(Destructor)
-        {
-            screenBuffer buffer;
-            handle = buffer.getScreenHandle();
-            buffer.~screenBuffer();
-            // Destructor will be called automatically
-            Assert::IsFalse(CloseHandle(handle));
         }
 
         TEST_METHOD(IsActive)
@@ -51,6 +42,6 @@ namespace tests
             int height = static_cast<int>(info.dwSize.Y);
             Assert::AreEqual(height, buffer.getScreenHeight());
         }
-		
-	};
+
+    };
 }

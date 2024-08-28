@@ -116,32 +116,32 @@ void WordScrambler::playWordScrambler(const std::string& difficulty) {
 void WordScrambler::run() {
     WordScrambler game;
 
-        std::string playAgain;
-        do {
-            game.clearScreen();
-            std::cout << "Choose difficulty (1: easy, 2: medium, 3: hard) or type 'stop' to exit: ";
-            std::string difficulty;
-            std::cin >> difficulty;
+    std::string playAgain;
+    do {
+        game.clearScreen();
+        std::cout << "Choose difficulty (1: easy, 2: medium, 3: hard) or type 'stop' to exit: ";
+        std::string difficulty;
+        std::cin >> difficulty;
 
-            if (difficulty == "stop") {
-                std::cout << "Game stopped. Exiting..." << std::endl;
-                return;
-            }
+        if (difficulty == "stop") {
+            std::cout << "Game stopped. Exiting..." << std::endl;
+            return;
+        }
 
-            game.playWordScrambler(difficulty);
+        game.playWordScrambler(difficulty);
 
-            std::cout << "Do you want to play again? (y/n or type 'stop' to exit): ";
-            std::cin >> playAgain;
+        std::cout << "Do you want to play again? (y/n or type 'stop' to exit): ";
+        std::cin >> playAgain;
 
-            if (playAgain == "stop") {
-                std::cout << "Game stopped. Exiting..." << std::endl;
-                return;
-            }
+        if (playAgain == "stop") {
+            std::cout << "Game stopped. Exiting..." << std::endl;
+            return;
+        }
 
-        } while (playAgain == "y" || playAgain == "Y");
+    } while (playAgain == "y" || playAgain == "Y");
 
-        std::cout << "Thanks for playing!" << std::endl;
-    
+    std::cout << "Thanks for playing!" << std::endl;
+
 
     return;
 }
