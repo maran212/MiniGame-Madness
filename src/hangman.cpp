@@ -20,7 +20,7 @@ void Hangman::displayHangman(int wrongGuesses) const {
 
 std::string Hangman::getRandomWord(const std::string& filename) const {
     std::vector<std::string> words;
-    std::ifstream file("../src/" + filename);
+    std::ifstream file(filename);
 
     if (!file.is_open()) {
         cerr << "Error: Could not open file " << filename << endl;

@@ -160,6 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="hangman_test.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -168,6 +169,7 @@
     </ClCompile>
     <ClCompile Include="testBattleShips.cpp" />
     <ClCompile Include="testHnefatafl.h.cpp" />
+    <ClCompile Include="testnaughtsxcrosses.cpp" />
     <ClCompile Include="testScreenBuffer.cpp" />
     <ClCompile Include="tests.cpp" />
     <ClCompile Include="testwordScrambler.cpp" />
