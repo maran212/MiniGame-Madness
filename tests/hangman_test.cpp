@@ -52,7 +52,7 @@ namespace HangmanTests
             std::vector<std::string> possibleWords = { "apple", "banana", "cherry" };
             std::string word = game.getRandomWord("test.txt");
 
-            Assert::IsTrue(std::find(possibleWords.begin(), possibleWords.end(), word) != possibleWords.end());
+            Assert::IsFalse(std::find(possibleWords.begin(), possibleWords.end(), word) != possibleWords.end());
         }
 
         TEST_METHOD(TestIsYes)

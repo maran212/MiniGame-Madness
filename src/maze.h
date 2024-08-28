@@ -4,6 +4,7 @@
 /*!
  * @file maze.h
  * @brief Contains the declaration of the maze game functions.
+ * @author Angus Martin
  */
 
 #include <iostream>
@@ -14,25 +15,45 @@
 #include "screenBuffer.h"
 #include <conio.h>
 
-// Maze represented as a 2D vector of integers
+ // Constants for the maze
 extern std::vector<std::vector<int>> maze;
 
-// Check if the cell is within bounds and is an open path
+/*!
+* @brief Check if a cell is valid
+*/
 bool isValid(int x, int y, int width, int height);
 
-// Recursive maze generation
+/*!
+* @brief Generate the maze recursively
+* @param x The x coordinate
+* @param y The y coordinate
+* @param width The width of the maze
+* @param height The height of the maze
+*/
 void generateMazeRecursive(int x, int y, int width, int height);
 
-// Initialize and generate the maze
+/*!
+* @brief Generate the maze
+* @param height The height of the maze
+* @param width The width of the maze
+*/
 void generateMaze(int height, int width);
 
-// Print the maze
+/*!
+* @brief Print the maze
+*/
 void printMaze();
 
-// Move through the maze
+/*!
+* @brief Move the player in the maze
+* @param input The input from the player
+* @return True if the player can move, false otherwise
+*/
 bool move(int input);
 
-// Start the maze game
+/*!
+* @brief Game Loop
+*/
 void mazeGame();
 
 #endif // MAZEGAME_H
