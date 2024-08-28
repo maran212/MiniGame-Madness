@@ -30,9 +30,6 @@
     <ClCompile Include="testwordScrambler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hangman_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="testHnefatafl.h.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

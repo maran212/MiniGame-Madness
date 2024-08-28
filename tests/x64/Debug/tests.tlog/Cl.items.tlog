@@ -1,3 +1,6 @@
-C:\Users\Angus\source\repos\MiniGame-Madness\src\screenBuffer.cpp;C:\Users\Angus\source\repos\MiniGame-Madness\tests\x64\Debug\screenBuffer.obj
-C:\Users\Angus\source\repos\MiniGame-Madness\tests\tests.cpp;C:\Users\Angus\source\repos\MiniGame-Madness\tests\x64\Debug\tests.obj
+C:\Users\Angus\source\repos\MiniGame-Madness\tests\pch.cpp;C:\Users\Angus\source\repos\MiniGame-Madness\tests\x64\Debug\pch.obj
+C:\Users\Angus\source\repos\MiniGame-Madness\tests\testBattleShips.cpp;C:\Users\Angus\source\repos\MiniGame-Madness\tests\x64\Debug\testBattleShips.obj
+C:\Users\Angus\source\repos\MiniGame-Madness\tests\testHnefatafl.h.cpp;C:\Users\Angus\source\repos\MiniGame-Madness\tests\x64\Debug\testHnefatafl.h.obj
 C:\Users\Angus\source\repos\MiniGame-Madness\tests\testScreenBuffer.cpp;C:\Users\Angus\source\repos\MiniGame-Madness\tests\x64\Debug\testScreenBuffer.obj
+C:\Users\Angus\source\repos\MiniGame-Madness\tests\tests.cpp;C:\Users\Angus\source\repos\MiniGame-Madness\tests\x64\Debug\tests.obj
+C:\Users\Angus\source\repos\MiniGame-Madness\tests\testwordScrambler.cpp;C:\Users\Angus\source\repos\MiniGame-Madness\tests\x64\Debug\testwordScrambler.obj
