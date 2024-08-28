@@ -44,8 +44,9 @@ namespace HangmanTests
         TEST_METHOD(TestGetRandomWord)
         {
             Hangman game;
+            std::string filename = "testWords.txt";
             std::string filePath = "test.txt";
-            std::ofstream testFile(filePath);
+            std::ofstream testFile(filename);
             testFile << "apple\nbanana\ncherry";
             testFile.close();
 
