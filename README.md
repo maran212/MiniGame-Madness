@@ -1,5 +1,6 @@
 # MiniGame-Madness
-[![MSBuild](https://github.com/COSC345-MiniGame-Madness/MiniGame-Madness/actions/workflows/msbuild.yml/badge.svg)](https://github.com/COSC345-MiniGame-Madness/MiniGame-Madness/actions/workflows/msbuild.yml)
+[![MSBuild](https://github.com/COSC345-MiniGame-Madness/MiniGame-Madness/actions/workflows/msbuild.yml/badge.svg)](https://github.com/COSC345-MiniGame-Madness/MiniGame-Madness/actions/workflows/msbuild.yml) 
+[![codecov](https://codecov.io/github/COSC345-MiniGame-Madness/MiniGame-Madness/graph/badge.svg?token=WJUV5TAS1U)](https://codecov.io/github/COSC345-MiniGame-Madness/MiniGame-Madness)
 ## Project Overview
 Our project, titled "Back to Basics," focuses on creating a collection of mini-games, each implemented as a simple command-line application. The essence of our project lies in its minimalist design, utilising ASCII art for the user interface while maintaining the core functionality of the original games. The aim is to recreate classic games like Tetris and Battleships, adhering to the 'back to basics' theme by stripping down the design to its most fundamental elements.
 ## Project process/goals
