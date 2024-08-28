@@ -5,6 +5,8 @@
 *.ilk
 *.idb
 *.tlog
+*.obj
+*.exe
 
 # Ignore IDE specific files
 .vscode

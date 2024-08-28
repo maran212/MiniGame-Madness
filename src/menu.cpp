@@ -3,36 +3,42 @@
 // Initialize games
 HnefataflGame hnefataflGame;
 
-/**
-* Input function to start each game
-* @param input - The input from the user
-*/
-void input(int input)
+NaughtsxCrossess naughtsxCrossessGame;
+Hangman hangmanGame;
+WordScrambler wordScramblerGame;
+
+Con4 con4Game;
+
+
+
+// Input function to start each game
+void Menu::input(int input)
 {
     switch (input)
     {
     case 1:
         // Call function to start Hangman
-        hangman();
+        hangmanGame.hangman();
         break;
     case 2:
         // Call function to start Connect 4
-        connect4();
+        con4Game.connect4();
         break;
     case 3:
         // Call function to start Maze
-        mazeGame();
+        //mazeGame();
         break;
     case 4:
         // Call function to start Naughts and Crosses
-		std::cout << "Comming Soon" << std::endl;
+		naughtsxCrossessGame.run();
         break;
     case 5:
         // Call function to start Checkers
-        std::cout << "Comming Soon" << std::endl;
+		checkers();
         break;
     case 6:
         // Call the class to start Hnefatafl
+        
         hnefataflGame.play();
 
         break;
@@ -42,11 +48,11 @@ void input(int input)
         break;
     case 8:
         // Call function to start Word Scramble
-        std::cout << "Comming Soon" << std::endl;
+        wordScramblerGame.run();
         break;
     case 9:
         // Call function to start Battleship
-        std::cout << "Comming Soon" << std::endl;
+		Battleship();
         break;
     case 10:
         // Call function to start Minesweeper
@@ -66,19 +72,14 @@ void input(int input)
     }
 }
 
-/**
-* Menu function for MiniGame Madness
-*/
-/**
- * Menu function for MiniGame Madness
- * @return void
- */
-void menu()
+
+// Main menu function to display the menu options
+void Menu::displayMenu()
 {
     try
     {
         // Clear the console
-        std::cout << "\033[2J" << std::endl;
+		system("cls");
 
         // Define menu options
         std::string text[] = {

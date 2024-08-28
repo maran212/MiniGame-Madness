@@ -1,18 +1,10 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <cstdlib>
-#include <ctime>
-#include <algorithm>
-#include <cstring> // For std::strcmp
+#include "Hangman.h"
 
-using namespace std;
-
-void clearScreen2() {
+void Hangman::clearScreen() const {
     cout << '\033[2j';
 }
 
-void displayHangman(int wrongGuesses) {
+void Hangman::displayHangman(int wrongGuesses) const {
     string hangmanArt[] = {
         "  +---+\n      |\n      |\n      |\n     ===",
         "  +---+\n  O   |\n      |\n      |\n     ===",
@@ -26,24 +18,24 @@ void displayHangman(int wrongGuesses) {
     }
 }
 
-string getRandomWord(const string& filename) {
-    vector<string> words;
-    ifstream file(filename);
+std::string Hangman::getRandomWord(const std::string& filename) const {
+    std::vector<std::string> words;
+    std::ifstream file("../src/" + filename);
 
-    if (!file.is_open()) {  // Check if the file was opened successfully
+    if (!file.is_open()) {
         cerr << "Error: Could not open file " << filename << endl;
-        return "";  // Return an empty string if the file cannot be opened
+        return "";
     }
 
-    string word;
+    std::string word;
     while (file >> word) {
         words.push_back(word);
     }
     file.close();
 
-    if (words.empty()) {  // Check if the file was empty
+    if (words.empty()) {
         cerr << "Error: No words found in file " << filename << endl;
-        return "";  // Return an empty string if no words were found
+        return "";
     }
 
     srand(static_cast<unsigned int>(time(0)));
@@ -51,31 +43,35 @@ string getRandomWord(const string& filename) {
     return words[randomIndex];
 }
 
-void playHangman(const string& difficulty) {
-    string filename;
+void Hangman::playHangman(const std::string& difficulty) {
+    std::string filename;
     if (difficulty == "1" || difficulty == "easy") {
         filename = "easy.txt";
-    } else if (difficulty == "2" || difficulty == "medium") {
+    }
+    else if (difficulty == "2" || difficulty == "medium") {
         filename = "medium.txt";
-    } else if (difficulty == "3" || difficulty == "hard") {
+    }
+    else if (difficulty == "3" || difficulty == "hard") {
         filename = "hard.txt";
-    } else {
+    }
+    else {
         cout << "Invalid difficulty level. Exiting game." << endl;
         return;
     }
-string word = getRandomWord(filename);
-    string guessedWord(word.length(), '_');
+
+    std::string word = getRandomWord(filename);
+    std::string guessedWord(word.length(), '_');
     int wrongGuesses = 0;
     const int maxWrongGuesses = 6;
-    vector<char> guessedLetters;
+    std::vector<char> guessedLetters;
 
     while (wrongGuesses < maxWrongGuesses && guessedWord != word) {
-        clearScreen2(); // Clear the screen
+        clearScreen(); // Clear the screen
 
         cout << "Guessed word: " << guessedWord << endl;
         displayHangman(wrongGuesses);
         cout << "Guess a letter (or type 'stop' to exit): ";
-        string input;
+        std::string input;
         cin >> input;
 
         if (input == "stop") {
@@ -89,16 +85,16 @@ string word = getRandomWord(filename);
         if (input.length() != 1 || !isalpha(guess)) {
             cout << "Invalid input. Please enter a single letter." << endl;
             validInput = false;
-        } else if (find(guessedLetters.begin(), guessedLetters.end(), guess) != guessedLetters.end()) {
+        }
+        else if (find(guessedLetters.begin(), guessedLetters.end(), guess) != guessedLetters.end()) {
             cout << "You already guessed that letter!" << endl;
             validInput = false;
         }
 
         if (!validInput) {
-            // Wait for user to acknowledge the message
             cout << "Press Enter to continue...";
-            cin.ignore(); // Ignore any leftover newline characters
-            cin.get(); // Wait for Enter key press
+            cin.ignore();
+            cin.get();
             continue;
         }
 
@@ -116,35 +112,36 @@ string word = getRandomWord(filename);
         }
     }
 
-    clearScreen2(); // Clear the screen before ending the game
+    clearScreen(); // Clear the screen before ending the game
     if (guessedWord == word) {
         cout << "Congratulations! You guessed the word: " << word << endl;
-    } else {
+    }
+    else {
         displayHangman(5);
         cout << "Sorry, you lost. The word was: " << word << endl;
     }
 }
 
-
-bool isYes(const string& response) {
+bool Hangman::isYes(const std::string& response) const {
     return response == "y" || response == "Y" || response == "yes" || response == "YES";
 }
 
-bool isNo(const string& response) {
+bool Hangman::isNo(const std::string& response) const {
     return response == "n" || response == "N" || response == "no" || response == "NO";
 }
 
-void hangman() {
-    string playAgain;
+void Hangman::hangman() {
+    std::string playAgain;
 
     do {
-        clearScreen2(); // Clear the screen at the start of each game
+        clearScreen(); // Clear the screen at the start of each game
         cout << "Choose difficulty (1:easy, 2:medium, 3:hard) or type 'stop' to exit: ";
-        string difficulty;
+        std::string difficulty;
         cin >> difficulty;
 
         if (difficulty == "stop") {
             cout << "Game stopped. Exiting..." << endl;
+            return;
         }
 
         playHangman(difficulty);
@@ -154,6 +151,7 @@ void hangman() {
 
         if (playAgain == "stop") {
             cout << "Game stopped. Exiting..." << endl;
+            return;
         }
 
     } while (isYes(playAgain));

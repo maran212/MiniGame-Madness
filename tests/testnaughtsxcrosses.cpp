@@ -1,158 +1,88 @@
 #include "pch.h"
+#include "CppUnitTest.h"
 #include "../src/NaughtsxCrossess.h"
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
-// Assertion functions
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-bool assertEqual(const std::string &expected, const std::string &actual)
-{
-    if (expected != actual)
-    {
-        throw std::runtime_error("Expected: " + expected + " | Actual: " + actual);
-    }
-    return true;
+namespace Microsoft {
+	namespace VisualStudio {
+		namespace CppUnitTestFramework {
+			template<> static std::wstring ToString<std::pair<int, int>>(const std::pair<int, int>& pair) {
+				return L"(" + std::to_wstring(pair.first) + L", " + std::to_wstring(pair.second) + L")";
+			}
+		}
+	}
 }
 
-bool assertEqual(const int expected, const int actual)
+namespace NaughtsCrossesTests
 {
-    if (expected != actual)
-    {
-        throw std::runtime_error("Expected: " + std::to_string(expected) + " | Actual: " + std::to_string(actual));
-    }
-    return true;
-}
+	TEST_CLASS(NaughtsCrossesTests)
+	{
+	public:
 
-bool assertTrue(const bool actual)
-{
-    if (!actual)
-    {
-        throw std::runtime_error("Expected: true | Actual: false");
-    }
-    return true;
-}
+		TEST_METHOD(TestEvaluateEmptyBoard)
+		{
+			NaughtsxCrossess game;
+			// Reset the board to an empty state
+			for (int i = 0; i < BOARD_SIZE; ++i)
+				for (int j = 0; j < BOARD_SIZE; ++j)
+					game.playerMove(' ');  // Resetting the board
 
-// Test functions
+			// Test that the evaluation of an empty board is 0
+			Assert::AreEqual(0, game.evaluate(), L"Empty board evaluation failed.");
+		}
 
-bool testEvaluateEmptyBoard()
-{
-    // Reset the board to an empty state
-    for (int i = 0; i < SIZE; ++i)
-        for (int j = 0; j < SIZE; ++j)
-            board[i][j] = ' ';
-    
-    // Test that the evaluation of an empty board is 0
-    return assertEqual(0, evaluate());
-}
+		TEST_METHOD(TestEvaluateRowVictory)
+		{
+			NaughtsxCrossess game;
+			// Simulate a row victory for 'x'
+			game.playerMove('x');  // Simulate player move
+			game.playerMove('x');
+			game.playerMove('x');  // Ensure to place 'x' in a row
 
-bool testEvaluateRowVictory()
-{
-    // Simulate a row victory for 'x'
-    board[0][0] = board[0][1] = board[0][2] = 'x';
-    return assertEqual(10, evaluate());
-}
+			Assert::AreEqual(10, game.evaluate(), L"Row victory evaluation failed.");
+		}
 
-bool testEvaluateColumnVictory()
-{
-    // Reset the board and simulate a column victory for 'o'
-    for (int i = 0; i < SIZE; ++i)
-        for (int j = 0; j < SIZE; ++j)
-            board[i][j] = ' ';
-    
-    board[0][1] = board[1][1] = board[2][1] = 'o';
-    return assertEqual(-10, evaluate());
-}
+		TEST_METHOD(TestEvaluateColumnVictory)
+		{
+			NaughtsxCrossess game;
+			// Simulate a column victory for 'o'
+			game.playerMove('o');  // Place 'o' in a column
+			game.playerMove('o');
+			game.playerMove('o');
 
-bool testEvaluateDiagonalVictory()
-{
-    // Reset the board and simulate a diagonal victory for 'x'
-    for (int i = 0; i < SIZE; ++i)
-        for (int j = 0; j < SIZE; ++j)
-            board[i][j] = ' ';
-    
-    board[0][0] = board[1][1] = board[2][2] = 'x';
-    return assertEqual(10, evaluate());
-}
+			Assert::AreEqual(-10, game.evaluate(), L"Column victory evaluation failed.");
+		}
 
-bool testFindBestMove()
-{
-    // Reset the board and set up a scenario
-    for (int i = 0; i < SIZE; ++i)
-        for (int j = 0; j < SIZE; ++j)
-            board[i][j] = ' ';
-    
-    board[0][0] = 'x';
-    board[0][1] = 'x';
-    board[0][2] = ' ';
-    
-    auto bestMove = findBestMove(3);
-    return assertEqual(std::make_pair(0, 2), bestMove);
-}
+		TEST_METHOD(TestEvaluateDiagonalVictory)
+		{
+			NaughtsxCrossess game;
+			// Simulate a diagonal victory for 'x'
+			game.playerMove('x');  // Place 'x' in a diagonal
+			game.playerMove('x');
+			game.playerMove('x');
 
-int main()
-{
-    int passed = 0;
-    int total = 5;
+			Assert::AreEqual(10, game.evaluate(), L"Diagonal victory evaluation failed.");
+		}
 
-    std::cout << "Running tests..." << std::endl;
+		TEST_METHOD(TestFindBestMove)
+		{
+			NaughtsxCrossess game;
+			// Reset the board and set up a scenario
+			for (int i = 0; i < BOARD_SIZE; ++i)
+				for (int j = 0; j < BOARD_SIZE; ++j)
+					game.playerMove(' ');  // Resetting the board
 
-    std::cout << "Test 1: Evaluate Empty Board" << std::endl;
-    try
-    {
-        testEvaluateEmptyBoard();
-        passed++;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
+			game.playerMove('x');  // Simulate player move
+			game.playerMove('x');  // Set up board with 2 'x' in a row
 
-    std::cout << "Test 2: Evaluate Row Victory" << std::endl;
-    try
-    {
-        testEvaluateRowVictory();
-        passed++;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
+			auto bestMove = game.findBestMove(3);
 
-    std::cout << "Test 3: Evaluate Column Victory" << std::endl;
-    try
-    {
-        testEvaluateColumnVictory();
-        passed++;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-
-    std::cout << "Test 4: Evaluate Diagonal Victory" << std::endl;
-    try
-    {
-        testEvaluateDiagonalVictory();
-        passed++;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-
-    std::cout << "Test 5: Find Best Move" << std::endl;
-    try
-    {
-        testFindBestMove();
-        passed++;
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-
-    std::cout << "Passed " << passed << " of " << total << " tests" << std::endl;
-
-    return 0;
+			Assert::AreEqual(std::make_pair(0, 2), bestMove, L"Best move evaluation failed.");
+		}
+	};
 }
