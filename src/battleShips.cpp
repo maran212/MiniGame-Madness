@@ -53,6 +53,7 @@ bool Player::placeShip(Ship& ship, int row, int col, bool horizontal) {
     return true;
 }
 
+
 void Player::autoPlaceShips(std::vector<Ship>& ships) {
     for (auto& ship : ships) {
         bool placed = false;
@@ -64,6 +65,7 @@ void Player::autoPlaceShips(std::vector<Ship>& ships) {
         }
     }
 }
+
 
 bool Player::isGameOver() const {
     for (const auto& ship : ships) {
@@ -84,6 +86,7 @@ std::pair<int, int> Player::getAIShot() {
     return { row, col };
 }
 
+
 void Player::playerTurn(Player& opponent) {
     std::string input;
     int row, col;
@@ -93,6 +96,8 @@ void Player::playerTurn(Player& opponent) {
     std::getline(std::cin >> std::ws, input);  // Read the entire line of input, including any spaces
 
     if (input == "show") {
+        showBoards(opponent);
+        playerTurn(opponent);  // Recur to let the player make a move after showing the boards
         showBoards(opponent);
         playerTurn(opponent);  // Recur to let the player make a move after showing the boards
         return;
@@ -139,6 +144,7 @@ void Player::playerTurn(Player& opponent) {
     }
 }
 
+
 void Player::aiTurn(Player& opponent) {
     auto shot = getAIShot();
     int row = shot.first;
@@ -161,6 +167,7 @@ void Player::aiTurn(Player& opponent) {
         opponent.grid[row][col] = MISS;
     }
 }
+
 
 void Player::setupGame(bool isAI) {
     std::vector<Ship> ships = {
@@ -207,8 +214,6 @@ void Player::setupGame(bool isAI) {
 void Player::showBoards(Player& ai) {
     std::cout << "\nYour Board:" << std::endl;
     displayGrid(true);
-    std::cout << "\nAI's Board:" << std::endl;
-    ai.displayGrid(false);
 }
 
 int Battleship() {

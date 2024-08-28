@@ -8,7 +8,6 @@
 *.obj
 *.exe
 
-
 # Ignore IDE specific files
 .vscode
 .vs

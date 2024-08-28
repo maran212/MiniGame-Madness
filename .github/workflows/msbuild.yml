@@ -1,6 +1,9 @@
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
 # documentation.
 
 name: MSBuild
@@ -63,4 +66,3 @@ jobs:
         fail_ci_if_error: true
         files: MiniGame-Madness.xml
         token: ${{ secrets.CODECOV_TOKEN }}
-

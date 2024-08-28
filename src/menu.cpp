@@ -10,7 +10,6 @@ WordScrambler wordScramblerGame;
 Con4 con4Game;
 
 
-
 // Input function to start each game
 void Menu::input(int input)
 {
