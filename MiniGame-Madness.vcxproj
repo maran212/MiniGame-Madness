@@ -153,6 +153,7 @@
     </ClCompile>
     <ClCompile Include="src\NaughtsxCrossess.cpp" />
     <ClCompile Include="src\wordScrambler.cpp" />
+    <ClCompile Include="tests\testBattleShips.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\easy.text" />

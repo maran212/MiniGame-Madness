@@ -16,7 +16,7 @@ void input(int input)
     {
     case 1:
         // Call function to start Hangman
-        hangman();
+        Hangman().hangman();
         break;
     case 2:
         // Call function to start Connect 4
@@ -28,7 +28,7 @@ void input(int input)
         break;
     case 4:
         // Call function to start Naughts and Crosses
-		output = NaughtsxCrossess();
+		NaughtsxCrossess().run();
         break;
     case 5:
         // Call function to start Checkers
@@ -36,6 +36,7 @@ void input(int input)
         break;
     case 6:
         // Call the class to start Hnefatafl
+        
         hnefataflGame.play();
 
         break;
@@ -45,11 +46,11 @@ void input(int input)
         break;
     case 8:
         // Call function to start Word Scramble
-		//output = wordScrambler();
+        WordScrambler().run();
         break;
     case 9:
         // Call function to start Battleship
-		output = Battleship();
+		Battleship();
         break;
     case 10:
         // Call function to start Minesweeper
