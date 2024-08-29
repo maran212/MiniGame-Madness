@@ -7,7 +7,7 @@
  */
 
 /*!
- * @class Connect4
+ * @class Con4
  * @brief Class to handle the Connect 4 game logic.
  */
 class Con4 {
