@@ -11,7 +11,7 @@ Con4 con4Game;
 
 
 // Input function to start each game
-void Menu::input(int input)
+void Menu::startGame(int input)
 {
     switch (input)
     {
@@ -78,44 +78,39 @@ void Menu::displayMenu()
 {
     try
     {
-        // Clear the console
-		system("cls");
+		// Create a new screen buffer
+		ScreenBuffer screenBuffer;
 
         // Define menu options
-        std::string text[] = {
-            "MINIGAME MADNESS",
-            "1. Hangman",
-            "2. Connect 4",
-            "3. Maze",
-            "4. Naughts and Crosses",
-            "5. Checkers",
-            "6. Hnefatafl",
-            "7. Sudoku",
-            "8. Word Scramble",
-            "9. Battleship",
-            "10. Minesweeper",
-            "11. Multiplayer Chess",
-            "13. Exit",
-            "Enter a number to select a game: "
+        std::wstring text[] = {
+            L"MINIGAME MADNESS",
+            L"1. Hangman",
+            L"2. Connect 4",
+            L"3. Maze",
+            L"4. Naughts and Crosses",
+            L"5. Checkers",
+            L"6. Hnefatafl",
+            L"7. Sudoku",
+            L"8. Word Scramble",
+            L"9. Battleship",
+            L"10. Minesweeper",
+            L"11. Multiplayer Chess",
+            L"13. Exit",
+            L"Enter a number to select a game: "
         };
 
         // Print menu options to the console
         int width = 50; // Adjust width based on your console
         int startY = 2; // Starting row position
-        for (std::string line : text) {
-            int padding = (width - static_cast<int>(line.length())) / 2;
-            std::cout << std::string(padding, ' ') << line << std::endl;
-        }
+        
+		for (int i = 0; i < sizeof(text) / sizeof(text[0]); i++)
+		{
+			screenBuffer.writeToScreen(width, startY + i, text[i]);
+		}
 
-        // Wait for user input
-        while (true)
-        {
-            if (_kbhit())
-            {
-                int ch = _getch() - '0';  // Convert char to int
-                input(ch);
-            }
-        }
+		// Set screen buffer to active
+		screenBuffer.setActive();
+ 
     }
     catch (const std::exception& e)
     {

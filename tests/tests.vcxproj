@@ -101,7 +101,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>../x64/Debug;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../MiniGame-Madness/x64/Debug;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>screenBuffer.obj;NaughtsxCrossess.obj;battleShips.obj;hangman.obj;wordScrambler.obj;hnefatafl.obj</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -155,8 +155,8 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>screenBuffer.obj;NaughtsxCrossess.obj;battleShips.obj;hangman.obj;wordScrambler.obj;hnefatafl.obj</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../x64/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ScreenBuffer.obj;NaughtsxCrossess.obj;battleShips.obj;hangman.obj;wordScrambler.obj;hnefatafl.obj</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../MiniGame-Madness/x64/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

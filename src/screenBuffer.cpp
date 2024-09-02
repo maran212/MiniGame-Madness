@@ -1,10 +1,9 @@
 
-#include "screenBuffer.h"
-
+#include "ScreenBuffer.h"
 
 
 // Throws an error if the result is false
-void screenBuffer::throwError(BOOL result, const std::string& message) const
+void ScreenBuffer::throwError(BOOL result, const std::string& message) const
 {
     if (!result)
     {
@@ -15,66 +14,51 @@ void screenBuffer::throwError(BOOL result, const std::string& message) const
 }
 
 
-// Write string to specified position in the screen buffer
-BOOL screenBuffer::writeToScreenBuffer(int x, int y, const std::string& text)
+// Write string screen buffer at a specific location
+BOOL ScreenBuffer::writeToScreenBuffer(int x, int y, const std::wstring& text)
 {
-    // Number of characters written
-    DWORD written;
-
     // Move the cursor to the specified position
     setCursorPosition(x, y);
 
-    return WriteConsole(
-        screenHandle,  // Console screen buffer handle
-        text.c_str(),  // Buffer containing the text to write
-        text.length(), // Number of characters to write
-        &written,      // Variable to receive the number of characters written
-        nullptr        // Not using asynchronous writing
-    );
+	// Write the text to the screen buffer
+	return writeToScreenBuffer(text);
 }
 
-
-//Return the text and background colours to the default
-void screenBuffer::resetColours()
+// Write string to screen buffer at current cursor position
+BOOL ScreenBuffer::writeToScreenBuffer(const std::wstring& text)
 {
-    // Set the text and background colours to the default
-    BOOL result = writeToScreenBuffer(0, 0, "\033[0m");
+	// Number of characters written
+	DWORD written;
 
-    // Check if the colours were reset successfully
-    throwError(result, "Error resetting colours");
+	return WriteConsoleW(
+		screenHandle,  // Console screen buffer handle
+		text.c_str(),  // Buffer containing the text to write
+		text.length(), // Number of characters to write
+		&written,      // Variable to receive the number of characters written
+		nullptr        // Not using asynchronous writing
+	);
 }
 
-
-// Constructor for the screenBuffer class
-screenBuffer::screenBuffer()
+// Constructor for the ScreenBuffer class
+ScreenBuffer::ScreenBuffer()
 {
-    // Create a new screen buffer
-    screenHandle = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
-
     // Check if the screen buffer was created successfully
     throwError(screenHandle != INVALID_HANDLE_VALUE, "Error creating screen buffer");
 
-    // clear the screen buffer
-    clearScreen();
-
     // set screen buffer size to window size
-    CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo = getScreenBufferInfo();
+    CONSOLE_SCREEN_BUFFER_INFO ScreenBufferInfo = getScreenBufferInfo();
 
-    // Get console mod and set it to enable virtual terminal processing
-    DWORD consoleModeOut;
-    DWORD consoleModeIn;
+    // Enable virtual terminal processing
+    DWORD consoleMode;
+    GetConsoleMode(screenHandle, &consoleMode);
+    consoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(screenHandle, consoleMode);
 
-    GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &consoleModeIn);
-    GetConsoleMode(screenHandle, &consoleModeOut);
-
-    consoleModeIn = ENABLE_VIRTUAL_TERMINAL_INPUT;
-    consoleModeOut = ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
-    
-    //SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), consoleModeIn);
-    SetConsoleMode(screenHandle, consoleModeOut);
+	// Clear the screen buffer
+	clearScreen();
 
     // Extract window size to set screen buffer size
-    SMALL_RECT windowSize = screenBufferInfo.srWindow;
+    SMALL_RECT windowSize = ScreenBufferInfo.srWindow;
     int width = windowSize.Right - windowSize.Left + 1;
     int height = windowSize.Bottom - windowSize.Top + 1;
 
@@ -82,8 +66,8 @@ screenBuffer::screenBuffer()
 }
 
 
-// Destructor for the screenBuffer class
-screenBuffer::~screenBuffer()
+// Destructor for the ScreenBuffer class
+ScreenBuffer::~ScreenBuffer()
 {
     // Close the screen buffer
     CloseHandle(screenHandle);
@@ -91,38 +75,48 @@ screenBuffer::~screenBuffer()
 
 
 // Get the screen buffer handle
-HANDLE screenBuffer::getScreenHandle() const
+HANDLE ScreenBuffer::getScreenHandle() const
 {
     return screenHandle;
 }
 
 
 // Is screen buffer active
-bool screenBuffer::isActive() const
+bool ScreenBuffer::isActive() const
 {
     HANDLE currentScreenHandle = GetStdHandle(STD_OUTPUT_HANDLE);
     return screenHandle == currentScreenHandle;
 }
 
+// Set the screen buffer to active
+void ScreenBuffer::setActive()
+{
+    // Set the screen buffer to active
+    BOOL result = SetConsoleActiveScreenBuffer(screenHandle);
+
+    // Check if the screen buffer was set to active successfully
+    throwError(result, "Error setting screen buffer to active");
+}
+
 
 // Get screen buffer info
-CONSOLE_SCREEN_BUFFER_INFO screenBuffer::getScreenBufferInfo() const
+CONSOLE_SCREEN_BUFFER_INFO ScreenBuffer::getScreenBufferInfo() const
 {
-    CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo;
-    BOOL result = GetConsoleScreenBufferInfo(screenHandle, &screenBufferInfo);
+    CONSOLE_SCREEN_BUFFER_INFO ScreenBufferInfo;
+    BOOL result = GetConsoleScreenBufferInfo(screenHandle, &ScreenBufferInfo);
 
     // Check if the screen buffer info was retrieved successfully
     throwError(result, "Error getting screen buffer info");
 
-    return screenBufferInfo;
+    return ScreenBufferInfo;
 }
 
 
 // Clears the screen buffer
-void screenBuffer::clearScreen()
+void ScreenBuffer::clearScreen()
 {
     // Escape sequence to clear the screen and move cursor to the top left
-    const char *clearScreenSequence = "\033[2J\033[H";
+    const std::wstring clearScreenSequence = L"\033[2J\033[H";
 
     // Write the escape sequence to the screen buffer
     BOOL result = writeToScreenBuffer(0, 0, clearScreenSequence);
@@ -133,76 +127,67 @@ void screenBuffer::clearScreen()
 
 
 // Get the screen buffer width
-int screenBuffer::getScreenWidth() const
+int ScreenBuffer::getScreenWidth() const
 {
     // Get the screen buffer info
-    CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo = getScreenBufferInfo();
+    CONSOLE_SCREEN_BUFFER_INFO ScreenBufferInfo = getScreenBufferInfo();
 
-    return screenBufferInfo.dwSize.X;
+    return ScreenBufferInfo.dwSize.X;
 }
 
 
 // Get the screen buffer height
-int screenBuffer::getScreenHeight() const
+int ScreenBuffer::getScreenHeight() const
 {
     // Get the screen buffer info
-    CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo = getScreenBufferInfo();
+    CONSOLE_SCREEN_BUFFER_INFO ScreenBufferInfo = getScreenBufferInfo();
 
-    return screenBufferInfo.dwSize.Y;
+    return ScreenBufferInfo.dwSize.Y;
 }
 
 
 // Gets the size of the screen buffer
-int screenBuffer::getScreenSize() const
+int ScreenBuffer::getScreenSize() const
 {
     // Get the screen buffer info
-    CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo = getScreenBufferInfo();
+    CONSOLE_SCREEN_BUFFER_INFO ScreenBufferInfo = getScreenBufferInfo();
 
-    return screenBufferInfo.dwSize.X * screenBufferInfo.dwSize.Y;
+    return ScreenBufferInfo.dwSize.X * ScreenBufferInfo.dwSize.Y;
 }
 
 
 // Sets the size of the screen buffer and window
-void screenBuffer::setScreenSize(int width, int height)
+void ScreenBuffer::setScreenSize(int width, int height)
 {
-    // Making screen size smaller than current screen size (screen buffer can't be smaller than the window)
-    if (width < getScreenWidth() || height < getScreenHeight())
+    // Get the current screen buffer info
+    CONSOLE_SCREEN_BUFFER_INFO ScreenBufferInfo = getScreenBufferInfo();
+
+    // Calculate the new window size
+    SMALL_RECT windowSize = { 0, 0, static_cast<SHORT>(width) - 1, static_cast<SHORT>(height) - 1 };
+
+    // If the new size is smaller, adjust the window size first
+    if (width < ScreenBufferInfo.dwSize.X || height < ScreenBufferInfo.dwSize.Y)
     {
-        // Set the window size to the specified size and converting to shorts for the functions
-        SMALL_RECT windowSize = {0, 0, static_cast<SHORT>(width) - 1, static_cast<SHORT>(height) - 1};
-        BOOL result2 = SetConsoleWindowInfo(screenHandle, TRUE, &windowSize);
-
-        // check if the screen buffer size was set successfully
-        throwError(result2, "Error setting console window size");
-
-        // Set the screen buffer size to the specified size and converting to shorts for the functions
-        COORD size = {static_cast<SHORT>(width), static_cast<SHORT>(height)};
-        BOOL result1 = SetConsoleScreenBufferSize(screenHandle, size);
-
-        // Check if the screen buffer size was set successfully
-        throwError(result1, "Error setting screen buffer size");
+        BOOL result1 = SetConsoleWindowInfo(screenHandle, TRUE, &windowSize);
+        throwError(result1, "Error setting console window size");
     }
-    else
+
+    // Set the screen buffer size to the specified size
+    COORD size = { static_cast<SHORT>(width), static_cast<SHORT>(height)};
+    BOOL result2 = SetConsoleScreenBufferSize(screenHandle, size);
+    throwError(result2, "Error setting screen buffer size");
+
+    // If the new size is larger, adjust the window size after setting the buffer size
+    if (width > ScreenBufferInfo.dwSize.X || height > ScreenBufferInfo.dwSize.Y)
     {
-        // Set the screen buffer size to the specified size and converting to shorts for the functions
-        COORD size = {static_cast<SHORT>(width), static_cast<SHORT>(height)};
-        BOOL result1 = SetConsoleScreenBufferSize(screenHandle, size);
-
-        // Check if the screen buffer size was set successfully
-        throwError(result1, "Error setting screen buffer size");
-
-        // Set the window size to the specified size and converting to shorts for the functions
-        SMALL_RECT windowSize = {0, 0, static_cast<SHORT>(width) - 1, static_cast<SHORT>(height) - 1};
-        BOOL result2 = SetConsoleWindowInfo(screenHandle, TRUE, &windowSize);
-
-        // check if the screen buffer size was set successfully
-        throwError(result2, "Error setting console window size");
+        BOOL result3 = SetConsoleWindowInfo(screenHandle, TRUE, &windowSize);
+        throwError(result3, "Error setting console window size");
     }
 }
 
 
 // Get the screen text and background colours
-std::pair<WORD, WORD> screenBuffer::getScreenColours(int x, int y, int length) const
+std::pair<WORD, WORD> ScreenBuffer::getScreenColours(int x, int y, int length) const
 {
     // Start coordiante based on x and y
     COORD position = {static_cast<SHORT>(x), static_cast<SHORT>(y)};
@@ -230,16 +215,16 @@ std::pair<WORD, WORD> screenBuffer::getScreenColours(int x, int y, int length) c
 
 
 // Set the screen text colour and background colour
-std::string screenBuffer::setTextColours(const std::string& text, WORD textColour, WORD backgroundColour)
+std::wstring ScreenBuffer::setTextColours(const std::wstring& text, WORD textColour, WORD backgroundColour)
 {
     // String to hold the VT sequence
-    std::string vtSequence = "\033[";
+    std::wstring vtSequence = L"\033[";
 
     // Apply text color if specified
 
     if (textColour != NO_COLOUR)
     {
-        vtSequence += std::to_string(30 + textColour);
+        vtSequence += std::to_wstring(30 + textColour);
     }
 
     // Apply background color if specified
@@ -247,24 +232,30 @@ std::string screenBuffer::setTextColours(const std::string& text, WORD textColou
     {
         if (textColour != NO_COLOUR)
         {
-            vtSequence += ";";
+            vtSequence += L";";
         }
-        vtSequence += std::to_string(40 + backgroundColour);
+        vtSequence += std::to_wstring(40 + backgroundColour);
     }
 
-    vtSequence += "m" + text + "\033[0m"; // Append text and reset sequence
+    vtSequence += L"m" + text + L"\033[0m"; // Append text and reset sequence
 
     return vtSequence;
 }
 
 
 // Change curser visablitly
-void screenBuffer::setCursorVisibility(bool isVisible)
+void ScreenBuffer::setCursorVisibility(bool isVisible)
 {
-    CONSOLE_CURSOR_INFO info;
-    info.dwSize = 100;
-    info.bVisible = isVisible;
-    BOOL result = SetConsoleCursorInfo(screenHandle, &info);
+	BOOL result;
+
+	if (isVisible)
+	{
+		result = writeToScreenBuffer(L"\033[?25h");
+	}
+	else
+	{
+		result = writeToScreenBuffer(L"\033[?25l");
+	}
 
     // Check if the cursor visibility was set successfully
     throwError(result, "Error setting cursor visibility");
@@ -272,7 +263,7 @@ void screenBuffer::setCursorVisibility(bool isVisible)
 
 
 // Moves the curser to the specified location
-void screenBuffer::setCursorPosition(int x, int y)
+void ScreenBuffer::setCursorPosition(int x, int y)
 {
     COORD coord;
     coord.X = static_cast<SHORT>(x);
@@ -285,30 +276,30 @@ void screenBuffer::setCursorPosition(int x, int y)
 
 
 // Gets the current location of the curse
-std::pair<int, int> screenBuffer::getCursorPosition() const
+std::pair<int, int> ScreenBuffer::getCursorPosition() const
 {
     // Get the screen buffer info
-    CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo = getScreenBufferInfo();
+    CONSOLE_SCREEN_BUFFER_INFO ScreenBufferInfo = getScreenBufferInfo();
 
-    return std::make_pair(screenBufferInfo.dwCursorPosition.X, screenBufferInfo.dwCursorPosition.Y);
+    return std::make_pair(ScreenBufferInfo.dwCursorPosition.X, ScreenBufferInfo.dwCursorPosition.Y);
 }
 
 
 // Get text from a section of the screen buffer
-std::string screenBuffer::getScreenText(int x, int y, int length) const
+std::wstring ScreenBuffer::readScreenText(int x, int y, int length) const
 {
 
     // Start coordiante based on x and y
     COORD position = {static_cast<SHORT>(x), static_cast<SHORT>(y)};
 
     // Create a buffer to store the text
-    std::string text(length, ' ');
+	std::wstring text(length, ' ');
 
     // Number of characters read
     DWORD read;
 
     // Read the text from the console buffer at the specified position
-    BOOL result = ReadConsoleOutputCharacterA(
+    BOOL result = ReadConsoleOutputCharacterW(
         screenHandle, // Console screen buffer handle
         &text[0],     // Buffer to store the text
         length,       // Number of characters to read
@@ -323,15 +314,15 @@ std::string screenBuffer::getScreenText(int x, int y, int length) const
 
 
 // Get all of the text from the screen buffer
-std::string screenBuffer::getAllScreenText() const
+std::wstring ScreenBuffer::readAllScreenText() const
 {
     // Get the text from the screen buffer
-    return getScreenText(0, 0, getScreenSize());
+    return readScreenText(0, 0, getScreenSize());
 }
 
 
 // Writes text to the screen at a specific location
-void screenBuffer::writeToScreen(int x, int y, const std::string& text)
+void ScreenBuffer::writeToScreen(int x, int y, const std::wstring& text)
 {
     // Write the text to the screen
     BOOL result = writeToScreenBuffer(x, y, text);
@@ -342,12 +333,9 @@ void screenBuffer::writeToScreen(int x, int y, const std::string& text)
 
 
 // Writes text to the screen at a specific location with a specific colour
-void screenBuffer::writeToScreen(int x, int y, const std::string& text, WORD textColour, WORD backgroundColour)
+void ScreenBuffer::writeToScreen(int x, int y, const std::wstring& text, WORD textColour, WORD backgroundColour)
 {
     // write the text to the screen
     writeToScreen(x, y, setTextColours(text, textColour, backgroundColour));
-
-    // Reset the text and background colours to defaults
-    // resetColours();
 }
 
