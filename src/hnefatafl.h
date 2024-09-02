@@ -129,11 +129,6 @@ public:
      */
     void play();
 
-    /*!
-     * @class HnefataflGameTest
-     * @brief A friend class for unit testing HnefataflGame.
-     */
-    friend class HnefataflGameTest;
 };
 
 #endif // HNEFATAFL_H

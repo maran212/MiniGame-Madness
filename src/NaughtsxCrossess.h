@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 
-const int BOARD_SIZE = 3; ///< Updated constant name to avoid conflicts
+    const int BOARD_SIZE = 3; ///< Updated constant name to avoid conflicts
 
 /// @brief Class representing the Noughts and Crosses (Tic-Tac-Toe) game.
 class NaughtsxCrossess {

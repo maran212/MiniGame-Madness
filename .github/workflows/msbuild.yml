@@ -21,7 +21,7 @@ env:
   # Configuration type to build.
   # You can convert this to a build matrix if you need coverage of multiple configuration types.
   # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-  BUILD_CONFIGURATION: Release
+  BUILD_CONFIGURATION: Debug
 
 permissions:
   contents: read
@@ -58,6 +58,7 @@ jobs:
         
     - name: Generate Coverage Report
       shell: cmd
+
       run: OpenCppCoverage --modules=D:\a\MiniGame-Madness\MiniGame-Madness\x64\Debug --export_type cobertura:MiniGame-Madness.xml  -- "vstest.console.exe" x64\Debug\tests.dll 
 
     - name: Upload Report to Codecov
