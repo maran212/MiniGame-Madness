@@ -15,7 +15,6 @@
 #include <windows.h>
 #include <iostream>
 
-
 /*!
  * @class screenBuffer
  * @brief A class that represents the screen buffer.
@@ -61,10 +60,29 @@ private:
 
 
 public:
+	// Constants for text and background colours
+	static const WORD FOREGROUND_NORMAL = -3;
+	static const WORD BACKGROUND_NORMAL = -13;
+	static const WORD BLACK = 0;
+	static const WORD RED = 1;
+	static const WORD GREEN = 2;
+	static const WORD YELLOW = 3;
+	static const WORD BLUE = 4;
+	static const WORD MAGENTA = 5;
+	static const WORD CYAN = 6;
+	static const WORD WHITE = 7;
+
     /*!
      * @brief Constructor for the screenBuffer class
      */
     ScreenBuffer();
+
+	/*!
+	 * @brief Constructor for the screenBuffer class
+	 * @param width The width of the screen buffer
+	 * @param height The height of the screen buffer
+	 */
+	ScreenBuffer(int width, int height);
 
     /*!
      * @brief Destructor for the screenBuffer class
@@ -110,12 +128,6 @@ public:
      * @return int The height of the screen buffer
      */
     int getScreenHeight() const;
-
-    /*!
-     * @brief Get the size of the screen buffer
-     * @return int The size of the screen
-     */
-    int getScreenSize() const;
 
     /*!
      * @brief Set the size of the screen buffer and window

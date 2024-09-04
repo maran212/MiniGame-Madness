@@ -12,6 +12,7 @@
 #include <utility>
 #include <vector>
 #include <map>
+#include "ScreenBuffer.h"
 
 /*!
  * @class HnefataflGame
@@ -20,7 +21,7 @@
  * This class provides methods to initialize the game board, handle player moves,
  * check game conditions, and implement a basic bot for playing against the player.
  */
-class HnefataflGame {
+class Hnefatafl{
 private:
     // Constants for the game
     static const int BOARD_SIZE = 11; /*!< The size of the game board. */
@@ -31,6 +32,7 @@ private:
 
     int board[BOARD_SIZE][BOARD_SIZE]; /*!< The 2D array representing the game board. */
     int currentPlayer;                 /*!< The current player (WHITE or BLACK). */
+	ScreenBuffer screenBuffer;         /*!< The screen buffer for displaying the game. */
 
     /*!
      * @brief Populates the board with black pieces in their initial positions.
@@ -46,7 +48,7 @@ public:
     /*!
      * @brief Constructs a new HnefataflGame object.
      */
-    HnefataflGame();
+    Hnefatafl();
 
     /*!
      * @brief Initializes the game board.
@@ -124,11 +126,11 @@ public:
      */
     void printBoard();
 
-    /*!
-     * @brief The main game loop.
-     */
-    void play();
-
+	/*!
+	 * @brief Run the game
+	 * @return Whether should return to the main menu (0) or exit the program (1)
+	 */
+	int run();
 };
 
 #endif // HNEFATAFL_H

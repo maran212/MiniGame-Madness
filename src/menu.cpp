@@ -1,7 +1,7 @@
 #include "menu.h"
 
 // Initialize games
-HnefataflGame hnefataflGame;
+Hnefatafl hnefataflGame;
 
 NaughtsxCrossess naughtsxCrossessGame;
 Hangman hangmanGame;
@@ -11,7 +11,7 @@ Con4 con4Game;
 
 
 // Input function to start each game
-void Menu::startGame(int input)
+int Menu::startGame(int input)
 {
     switch (input)
     {
@@ -39,7 +39,7 @@ void Menu::startGame(int input)
     case 6:
         // Call the class to start Hnefatafl
         
-        hnefataflGame.play();
+        hnefataflGame.run();
 
         break;
     case 7:
@@ -74,29 +74,31 @@ void Menu::startGame(int input)
 
 
 // Main menu function to display the menu options
-void Menu::displayMenu()
+int Menu::displayMenu()
 {
     try
     {
 		// Create a new screen buffer
 		ScreenBuffer screenBuffer;
 
+		// Set cursor visibility
+		screenBuffer.setCursorVisibility(false);
+
         // Define menu options
         std::wstring text[] = {
             L"MINIGAME MADNESS",
-            L"1. Hangman",
-            L"2. Connect 4",
-            L"3. Maze",
-            L"4. Naughts and Crosses",
-            L"5. Checkers",
-            L"6. Hnefatafl",
-            L"7. Sudoku",
-            L"8. Word Scramble",
-            L"9. Battleship",
-            L"10. Minesweeper",
-            L"11. Multiplayer Chess",
-            L"13. Exit",
-            L"Enter a number to select a game: "
+            L"Hangman",
+            L"Connect 4",
+            L"Maze",
+            L"Naughts and Crosses",
+            L"Checkers",
+            L"Hnefatafl",
+            L"Sudoku",
+            L"Word Scramble",
+            L"Battleship",
+            L"Minesweeper",
+            L"Multiplayer Chess",
+            L"Exit",
         };
 
         // Print menu options to the console
@@ -108,12 +110,51 @@ void Menu::displayMenu()
 			screenBuffer.writeToScreen(width, startY + i, text[i]);
 		}
 
+		// Highlight the first option
+		screenBuffer.writeToScreen(width, startY + 1, text[1], ScreenBuffer::FOREGROUND_NORMAL, 4);
+
 		// Set screen buffer to active
 		screenBuffer.setActive();
+
+		// Row used to track the current selection
+        int row = 1;
+
+        while (true) {
+            int ch = _getch();  // Read first input character
+
+            // Arrow keys send two codes, so we need to check the first and read the second
+            if (ch == 0 || ch == 224) {  // Arrow keys usually start with 0 or 224
+                ch = _getch();  // Get the second code
+
+                switch (ch) {
+                case 72:  // Up arrow
+					if (row > 1) {
+						screenBuffer.writeToScreen(width, startY + row, text[row], ScreenBuffer::FOREGROUND_NORMAL, ScreenBuffer::BACKGROUND_NORMAL);
+						row--;
+						screenBuffer.writeToScreen(width, startY + row, text[row], ScreenBuffer::FOREGROUND_NORMAL, 4);
+					}
+                    break;
+                case 80:  // Down arrow
+					if (row < 12) {
+						screenBuffer.writeToScreen(width, startY + row, text[row], ScreenBuffer::FOREGROUND_NORMAL, ScreenBuffer::BACKGROUND_NORMAL);
+						row++;
+						screenBuffer.writeToScreen(width, startY + row, text[row], ScreenBuffer::FOREGROUND_NORMAL, 4);
+					}
+                    break;
+				default:
+					break;
+                }
+			}
+            else if (ch == 13) {  // Enter key
+				int output = startGame(row);
+            }
+        }
  
     }
     catch (const std::exception& e)
     {
         std::cerr << "Exception: " << e.what() << std::endl;
     }
+
+	return 0;
 }

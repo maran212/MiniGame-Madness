@@ -29,17 +29,16 @@
 * @brief A class that represents the menu of the game.
 */
 class Menu {
-public:
     /*!
-	* @brief function to start a game based on the user input
+    * @brief function to start a game based on the user input
     * @param input - The input from the user
     */
-    void startGame(int input);
-
+    int startGame(int input);
+public:
     /*!
     * @brief Function to display the menu
     */
-    void displayMenu();
+    int displayMenu();
 };
 
 #endif // MENU_H

@@ -43,16 +43,6 @@ namespace testScreenBuffer
             Assert::AreEqual(height, buffer.getScreenHeight());
         }
 
-		TEST_METHOD(GetScreenSize)
-		{
-			ScreenBuffer buffer;
-			CONSOLE_SCREEN_BUFFER_INFO info;
-			GetConsoleScreenBufferInfo(buffer.getScreenHandle(), &info);
-
-			int size = static_cast<int>(info.dwSize.X * info.dwSize.Y);
-			Assert::AreEqual(size, buffer.getScreenSize());
-		}
-
         TEST_METHOD(SetScreenSizeSmaller)
         {
 			ScreenBuffer buffer;

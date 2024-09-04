@@ -36,7 +36,7 @@ public:
 	 * @brief Run the game
 	 * @return Whether should return to the main menu (0) or exit the program (1)
 	 */
-	virtual int run();
+	virtual int Run();
 };
 
 #endif // GAME_H

@@ -31,11 +31,11 @@ BOOL ScreenBuffer::writeToScreenBuffer(const std::wstring& text)
 	DWORD written;
 
 	return WriteConsoleW(
-		screenHandle,  // Console screen buffer handle
-		text.c_str(),  // Buffer containing the text to write
-		text.length(), // Number of characters to write
-		&written,      // Variable to receive the number of characters written
-		nullptr        // Not using asynchronous writing
+		screenHandle,                      // Console screen buffer handle
+		text.c_str(),                      // Buffer containing the text to write
+        static_cast<DWORD>(text.length()), // Number of characters to write
+		&written,                          // Variable to receive the number of characters written
+		nullptr                            // Not using asynchronous writing
 	);
 }
 
@@ -63,6 +63,32 @@ ScreenBuffer::ScreenBuffer()
     int height = windowSize.Bottom - windowSize.Top + 1;
 
     setScreenSize(width, height);
+}
+
+// Constructor for the ScreenBuffer class with specified width and height
+ScreenBuffer::ScreenBuffer(int width, int height)
+{
+	// Check if the screen buffer was created successfully
+	throwError(screenHandle != INVALID_HANDLE_VALUE, "Error creating screen buffer");
+
+	// Enable virtual terminal processing
+	DWORD consoleMode;
+	GetConsoleMode(screenHandle, &consoleMode);
+	consoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+	SetConsoleMode(screenHandle, consoleMode);
+
+	// Clear the screen buffer
+	clearScreen();
+
+	//check if the width and height are valid
+	SMALL_RECT windowSize = getScreenBufferInfo().srWindow;
+	int windowWidth = windowSize.Right - windowSize.Left + 1;
+	int windowHeight = windowSize.Bottom - windowSize.Top + 1;
+	throwError(width < 0 && height < 0, "Screen buffer size to small");
+	throwError(width > windowWidth && height > windowHeight, "Screen buffer size larger than window size");
+
+	// Set the screen buffer size
+	setScreenSize(width, height);
 }
 
 
@@ -144,17 +170,6 @@ int ScreenBuffer::getScreenHeight() const
 
     return ScreenBufferInfo.dwSize.Y;
 }
-
-
-// Gets the size of the screen buffer
-int ScreenBuffer::getScreenSize() const
-{
-    // Get the screen buffer info
-    CONSOLE_SCREEN_BUFFER_INFO ScreenBufferInfo = getScreenBufferInfo();
-
-    return ScreenBufferInfo.dwSize.X * ScreenBufferInfo.dwSize.Y;
-}
-
 
 // Sets the size of the screen buffer and window
 void ScreenBuffer::setScreenSize(int width, int height)
@@ -317,7 +332,7 @@ std::wstring ScreenBuffer::readScreenText(int x, int y, int length) const
 std::wstring ScreenBuffer::readAllScreenText() const
 {
     // Get the text from the screen buffer
-    return readScreenText(0, 0, getScreenSize());
+    return readScreenText(0, 0, getScreenWidth() * getScreenHeight());
 }
 
 
