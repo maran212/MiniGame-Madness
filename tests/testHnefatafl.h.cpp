@@ -18,7 +18,7 @@ namespace HnefataflTests
         // Test board initialization
         TEST_METHOD(BoardInitialization)
         {
-            HnefataflGame game;
+            Hnefatafl game;
 
             // Check the king's position
             Assert::AreEqual(KING, game.getPiece(5, 5));
@@ -45,7 +45,7 @@ namespace HnefataflTests
         // Test moving a piece
         TEST_METHOD(MovePiece)
         {
-            HnefataflGame game;
+            Hnefatafl game;
 
             std::pair<int, int> source = std::make_pair(4, 4);
             std::pair<int, int> target = std::make_pair(4, 6);
@@ -58,7 +58,7 @@ namespace HnefataflTests
 		// Test capturing a piece vertically
         TEST_METHOD(CapturePieceVertical)
         {
-            HnefataflGame game;
+            Hnefatafl game;
 
             // Move black pieces to surround a white piece
             game.move(std::make_pair(0, 3), std::make_pair(4, 3));
@@ -71,7 +71,7 @@ namespace HnefataflTests
 		// Test capturing a piece horizontally
 		TEST_METHOD(CapturePieceHorizontal)
 		{
-            HnefataflGame game;
+            Hnefatafl game;
 
 			// Move black pieces to surround a white piece
 			game.move(std::make_pair(5, 3), std::make_pair(5, 2));
@@ -84,7 +84,7 @@ namespace HnefataflTests
         // Test if the king is captured
         TEST_METHOD(KingCaptured)
         {
-            HnefataflGame game;
+            Hnefatafl game;
 
             // Move White out of the way
             game.move(std::make_pair(5, 3), std::make_pair(9, 3));
@@ -108,7 +108,7 @@ namespace HnefataflTests
         // Test if the game is over
         TEST_METHOD(GameOver)
         {
-            HnefataflGame game;
+            Hnefatafl game;
 
 			Assert::IsFalse(game.isGameOver());
 
