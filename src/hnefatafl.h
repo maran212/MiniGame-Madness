@@ -12,6 +12,7 @@
 #include <utility>
 #include <vector>
 #include <map>
+#include <conio.h>
 #include "ScreenBuffer.h"
 
 /*!
@@ -29,6 +30,8 @@ private:
     static const int BLACK = 2;       /*!< The integer representation of a black piece. */
     static const int KING = 3;        /*!< The integer representation of the king piece. */
     static const int KING_SQUARE = 4; /*!< The integer representation of the king's square. */
+	static const int EMPTY = 0;       /*!< The integer representation of an empty square. */
+	static const int OUT_OF_BOUNDS = -1; /*!< The integer representation of an out-of-bounds square. */
 
     int board[BOARD_SIZE][BOARD_SIZE]; /*!< The 2D array representing the game board. */
     int currentPlayer;                 /*!< The current player (WHITE or BLACK). */
@@ -45,11 +48,6 @@ private:
     void populateWhiteSquares();
 
 public:
-    /*!
-     * @brief Constructs a new HnefataflGame object.
-     */
-    Hnefatafl();
-
     /*!
      * @brief Initializes the game board.
      * 
@@ -92,6 +90,14 @@ public:
     bool isCaptured(std::pair<int, int> position);
 
     /*!
+	 * @breif Checks if neighbouring pieces of target piece are captured.
+     * 
+	 * @param row The row index of the target piece.
+	 * @param col The column index of the target piece.
+     */
+	void handleNeighboursCaptured(int row, int col);
+    
+    /*!
      * @brief Checks if the king is captured.
      *
      * @return true if the king is captured, false otherwise.
@@ -111,7 +117,7 @@ public:
      * @param move The move as a string.
      * @return A pair representing the move as (row, col).
      */
-    std::pair<int, int> getMove(const std::string move);
+    std::pair<int, int> covertMove(const std::string move);
 
     /*!
      * @brief A basic bot to play against the player.
@@ -125,6 +131,19 @@ public:
      * @brief Prints the current state of the game board.
      */
     void printBoard();
+
+    /*!
+     * @brief Check for vaild inputs
+     * 
+	 * @param input The input from the user
+	 * @return true if the input is valid, false otherwise.
+	 */
+	bool isValidInput(const std::string& input);
+
+    /*!
+     * @brief Constructs a new Hnefatafl game object.
+     */
+    Hnefatafl();
 
 	/*!
 	 * @brief Run the game

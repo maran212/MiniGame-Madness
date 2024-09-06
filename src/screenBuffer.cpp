@@ -20,8 +20,16 @@ BOOL ScreenBuffer::writeToScreenBuffer(int x, int y, const std::wstring& text)
     // Move the cursor to the specified position
     setCursorPosition(x, y);
 
-	// Write the text to the screen buffer
-	return writeToScreenBuffer(text);
+    // Number of characters written
+    DWORD written;
+
+    return WriteConsoleW(
+        screenHandle,                      // Console screen buffer handle
+        text.c_str(),                      // Buffer containing the text to write
+        static_cast<DWORD>(text.length()), // Number of characters to write
+        &written,                          // Variable to receive the number of characters written
+        nullptr                            // Not using asynchronous writing
+    );
 }
 
 // Write string to screen buffer at current cursor position
@@ -84,8 +92,8 @@ ScreenBuffer::ScreenBuffer(int width, int height)
 	SMALL_RECT windowSize = getScreenBufferInfo().srWindow;
 	int windowWidth = windowSize.Right - windowSize.Left + 1;
 	int windowHeight = windowSize.Bottom - windowSize.Top + 1;
-	throwError(width < 0 && height < 0, "Screen buffer size to small");
-	throwError(width > windowWidth && height > windowHeight, "Screen buffer size larger than window size");
+	throwError(width < 0 || height < 0, "Screen buffer size to small");
+	throwError(width > windowWidth || height > windowHeight, "Screen buffer size larger than window size");
 
 	// Set the screen buffer size
 	setScreenSize(width, height);

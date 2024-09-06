@@ -116,10 +116,11 @@ int Menu::displayMenu()
 		// Set screen buffer to active
 		screenBuffer.setActive();
 
-		// Row used to track the current selection
+		// Row used to track the current selection and output of startGame
         int row = 1;
+		int output = -1;
 
-        while (true) {
+        while (output == -1) {
             int ch = _getch();  // Read first input character
 
             // Arrow keys send two codes, so we need to check the first and read the second
@@ -146,7 +147,8 @@ int Menu::displayMenu()
                 }
 			}
             else if (ch == 13) {  // Enter key
-				int output = startGame(row);
+				output = startGame(row);
+                return output;
             }
         }
  
@@ -156,5 +158,5 @@ int Menu::displayMenu()
         std::cerr << "Exception: " << e.what() << std::endl;
     }
 
-	return 0;
+	return EXIT_GAME;
 }
