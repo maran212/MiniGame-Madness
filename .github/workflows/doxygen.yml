@@ -30,4 +30,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/html  # Path to your generated HTML docs
+          publish_dir: ./Docs/html  # Path to your generated HTML docs
