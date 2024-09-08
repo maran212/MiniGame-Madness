@@ -1,33 +1,51 @@
-name: Generate Doxygen Documentation
+name: Generate and Deploy Doxygen Documentation
 
 on:
   push:
-    branches:
-      - hnefatafl  # Trigger on push to the 'main' branch
-  pull_request:
-    branches:
-      - hnefatafl  # Trigger on pull requests to the 'main' branch
+    branches: ["henefatafl"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    
-    steps:
-      # Checkout the latest commit
-      - name: Checkout repository
-        uses: actions/checkout@v3
 
-      # Set up Doxygen
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Install Doxygen and Graphviz
       - name: Install Doxygen
         run: sudo apt-get install doxygen graphviz
 
-      # Generate Doxygen documentation
-      - name: Generate Doxygen
+      # Step 3: Generate Doxygen documentation
+      - name: Generate Doxygen documentation
         run: doxygen Doxyfile
 
-      # Upload generated documentation to GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      # Step 4: Setup GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # Step 5: Upload the generated documentation
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./Docs/html  # Path to your generated HTML docs
+          path: 'Docs/html'  # Adjust this path to where your HTML files are generated
+
+      # Step 6: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
