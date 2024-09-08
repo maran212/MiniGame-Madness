@@ -30,15 +30,16 @@
 */
 class Menu {
 private:
-	static const int RETURN_TO_MENU = 0;
-	static const int EXIT_GAME = 1;
-
     /*!
     * @brief function to start a game based on the user input
     * @param input - The input from the user
     */
     int startGame(int input);
+
 public:
+    static const int RETURN_TO_MENU = 0;
+    static const int EXIT_GAME = 1;
+
     /*!
     * @brief Function to display the menu
     */

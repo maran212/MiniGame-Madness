@@ -63,7 +63,7 @@ namespace HnefataflTests
             // Move black pieces to surround a white piece
             game.move(std::make_pair(0, 3), std::make_pair(4, 3));
             game.move(std::make_pair(10, 3), std::make_pair(6, 3));
-
+           
             // Check if the white piece is captured
             Assert::IsTrue(game.isCaptured(std::make_pair(5, 3)));
         }

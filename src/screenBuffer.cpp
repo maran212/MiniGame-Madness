@@ -233,7 +233,37 @@ std::pair<WORD, WORD> ScreenBuffer::getScreenColours(int x, int y, int length) c
     // Check if the attributes were read successfully
     throwError(result, "Error getting screen colours");
 
-    return std::make_pair(attributes[0] & 0x0F, attributes[0] >> 4);
+	WORD textColour = attributes[0] & 0x0F;
+	WORD backgroundColour = attributes[0] >> 4;
+
+	textColour = convertColour(textColour);
+	backgroundColour = convertColour(backgroundColour);
+
+    return std::make_pair(textColour, backgroundColour);
+}
+
+//Covert from windows console 16 colours to ANSI VT 8 colours
+WORD ScreenBuffer::convertColour(WORD colour) const
+{
+	switch (colour)
+	{
+	case 1: // Blue
+		return 4;
+	case 2: // Green
+		return 2;
+	case 3: // Cyan
+		return 6;
+	case 4: // Red
+		return 1;
+	case 5: // Magenta
+		return 5;
+	case 6: // Yellow
+		return 3;
+	case 7: // White
+		return 7;
+	default:
+		return 0;
+	}
 }
 
 
@@ -361,4 +391,37 @@ void ScreenBuffer::writeToScreen(int x, int y, const std::wstring& text, WORD te
     // write the text to the screen
     writeToScreen(x, y, setTextColours(text, textColour, backgroundColour));
 }
+
+
+// Get blocking input from the user
+std::string ScreenBuffer::getBlockingInput()
+{
+    char ch;
+	std::string input;
+    std::pair<int, int> cursorPosition;
+	int offset = 1;
+
+	while (true)
+	{
+		ch = _getch();
+
+        if (ch == '\r') {
+			break;
+        } else if (ch == '\b' && !input.empty()) {
+			input.pop_back();
+            writeToScreenBuffer(L"\033[1D");
+            writeToScreenBuffer(L" ");
+            writeToScreenBuffer(L"\033[1D");
+        }
+        else {
+			input += ch;
+
+			writeToScreenBuffer(std::wstring(1, ch));
+        }
+	}
+
+	return input;
+}
+
+
 

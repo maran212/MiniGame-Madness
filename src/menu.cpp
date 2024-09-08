@@ -13,6 +13,8 @@ Con4 con4Game;
 // Input function to start each game
 int Menu::startGame(int input)
 {
+	int output = RETURN_TO_MENU;
+
     switch (input)
     {
     case 1:
@@ -38,9 +40,7 @@ int Menu::startGame(int input)
         break;
     case 6:
         // Call the class to start Hnefatafl
-        
-        hnefataflGame.run();
-
+        output = hnefataflGame.run();
         break;
     case 7:
         // Call function to start Sudoku
@@ -64,12 +64,14 @@ int Menu::startGame(int input)
         break;
     case 13:
         // Exit the program
-        exit(0);
+		output = EXIT_GAME;
         break;
     default:
         std::cerr << "Invalid input! Please select a valid option." << std::endl;
         break;
     }
+
+	return output;
 }
 
 
@@ -158,5 +160,5 @@ int Menu::displayMenu()
         std::cerr << "Exception: " << e.what() << std::endl;
     }
 
-	return EXIT_GAME;
+	return RETURN_TO_MENU;
 }

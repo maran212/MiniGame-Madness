@@ -105,5 +105,42 @@ namespace testScreenBuffer
             // Verify the written text
             Assert::AreEqual(text, buffer.readScreenText(0,0,text.length()));
         }
+
+		TEST_METHOD(ReadScreenText)
+		{
+			ScreenBuffer buffer;
+			std::wstring text = L"Hello world";
+
+			buffer.writeToScreen(0, 0, text);
+
+			// Verify the written text
+			Assert::AreEqual(text, buffer.readScreenText(0, 0, text.length()));
+		}
+
+		TEST_METHOD(GetScreenColours)
+		{
+			ScreenBuffer buffer;
+			std::wstring text = L"Hello world";
+
+			buffer.writeToScreen(0, 0, text, ScreenBuffer::BLUE, ScreenBuffer::RED);
+
+			std::pair<WORD, WORD> colours = buffer.getScreenColours(0, 0, text.length());
+			Assert::AreEqual(ScreenBuffer::BLUE, colours.first);
+		}
+
+        TEST_METHOD(ClearScreen)
+        {
+            ScreenBuffer buffer;
+            std::wstring text = L"Hello world";
+            buffer.writeToScreen(0, 0, text);
+
+            // Clear the screen
+            buffer.clearScreen();
+
+            // Verify that the screen is cleared
+            std::wstring clearedText = buffer.readScreenText(0, 0, text.length());
+            Assert::AreEqual(std::wstring(text.length(), L' '), clearedText);
+        }
+
     };
 }

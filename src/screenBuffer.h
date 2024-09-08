@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <windows.h>
 #include <iostream>
+#include <conio.h>
 
 /*!
  * @class screenBuffer
@@ -57,6 +58,14 @@ private:
      * @param backgroundColour The color of the background
      */
     std::wstring setTextColours(const std::wstring& text, WORD textColour, WORD backgroundColour);
+
+    /*!
+	 * @brief Covert from windows console 16 colours to ANSI VT 8 colours
+	 * @param Colour The windows console colour
+	 * @return The ANSI VT colour
+	 */
+	WORD convertColour(WORD colour) const;
+
 
 
 public:
@@ -196,6 +205,18 @@ public:
      * @param backgroundColour The color of the background
      */
     void writeToScreen(int x, int y, const std::wstring& text, WORD textColour, WORD backgroundColour);
+
+    /*!
+	 * @brief get blocking input from the user
+	 * @return std::wstring The input from the user
+	 */
+	std::string getBlockingInput();
+
+	/*!
+	 * @brief get non-blocking input from the user
+	 * @return std::wstring The input from the user
+	 */ 
+	std::string getNonBlockingInput();
 };
 
 #endif // SCREENBUFFER_H

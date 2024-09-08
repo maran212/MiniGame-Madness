@@ -124,21 +124,28 @@ std::pair<int, int> Hnefatafl::move(std::pair<int, int> source, std::pair<int, i
 
 // Checks if a piece at the given position is captured (surrounded on opposite sides by opponent pieces or King's squares in the corner)
 bool Hnefatafl::isCaptured(std::pair<int, int> source) {
+    
+    // Get the piece at the current source position
     int sourceRow = source.first;
     int sourceCol = source.second;
+    int piece = getPiece(sourceRow, sourceCol);
 
-	// Figure out the current player and the opponent
-    int opponentPlayer = (currentPlayer == WHITE) ? BLACK : WHITE;
+    // Get the opponent's player identifier
+    int opponentPlayer = (piece == WHITE) ? BLACK : WHITE;
 
-	// Check if the piece is on the edge of the board
-	int up = getPiece(sourceRow - 1, sourceCol);
-	int down = getPiece(sourceRow + 1, sourceCol);
-	int left = getPiece(sourceRow, sourceCol - 1);
-	int right = getPiece(sourceRow, sourceCol + 1);
+    // Check for out-of-bounds before accessing surrounding positions
+    int up = getPiece(sourceRow - 1, sourceCol);
+    int down = getPiece(sourceRow + 1, sourceCol);
+    int left = getPiece(sourceRow, sourceCol - 1);
+    int right = getPiece(sourceRow, sourceCol + 1);
 
-	// Check if the piece is surrounded by opponent pieces or King's squares on opposite sides
-    return ((up == opponentPlayer || up == KING_SQUARE) && (down == opponentPlayer || down == KING_SQUARE)) ||
-        ((left == opponentPlayer || left == KING_SQUARE) && (right == opponentPlayer || right == KING_SQUARE));
+    // Check if the piece is surrounded on opposite sides by the opponent or king's squares
+    bool horizontalCapture = (left == opponentPlayer || left == KING_SQUARE) &&
+        (right == opponentPlayer || right == KING_SQUARE);
+    bool verticalCapture = (up == opponentPlayer || up == KING_SQUARE) &&
+        (down == opponentPlayer || down == KING_SQUARE);
+
+    return horizontalCapture || verticalCapture;
 };
 
 
@@ -355,7 +362,6 @@ bool Hnefatafl::isValidInput(const std::string& input) {
 // The game loop
 int  Hnefatafl::run() {
 	int player;
-    char key;
     std::string input;
     std::pair<int, int> source, target, finalPosition;
 
@@ -365,20 +371,20 @@ int  Hnefatafl::run() {
     printBoard();
 
 	// choose starting player
-	screenBuffer.writeToScreen(0, 24, L"Choose starting player (W/B): ");
+	screenBuffer.writeToScreen(4, 24, L"Choose starting player (W/B) :");
 
 	while (true) {
-		key = _getch();
-		if (key == 'W' || key == 'w') {
+		input = screenBuffer.getBlockingInput();
+		if (input == "W" || input == "w") {
 			player = WHITE;
 			break;
 		}
-		else if (key == 'B' || key == 'b') {
+		else if (input == "B" || input == "b") {
 			player = BLACK;
 			break;
 		}
 		else {
-			screenBuffer.writeToScreen(0, 24, L"Invalid input. Please choose either 'W' or 'B':");
+			screenBuffer.writeToScreen(4, 24, L"Invalid input. Please choose either 'W' or 'B':");
 		}
 	}
         
@@ -388,9 +394,9 @@ int  Hnefatafl::run() {
 
         if (currentPlayer == player)
         { 
-            screenBuffer.writeToScreen(0, 24, L"Enter your move (e.g., A1 B2): ");
+            screenBuffer.writeToScreen(4, 24, L"Enter your move (e.g., A1 B2): ");
             while (!validInput) {
-                std::getline(std::cin, input);
+				input = screenBuffer.getBlockingInput();
 
                 if (isValidInput(input)) {
                     source = covertMove(input.substr(0, 2));
@@ -399,7 +405,7 @@ int  Hnefatafl::run() {
                     validInput = true;
                 }
                 else {
-                    screenBuffer.writeToScreen(0, 24, L"Invalid input. Please enter your move in the format 'A1 B2':");
+                    screenBuffer.writeToScreen(4, 24, L"Invalid input. Please enter your move in the format 'A1 B2':");
                 }
             }
 
@@ -424,14 +430,14 @@ int  Hnefatafl::run() {
 
 	// Print the game result
 	if (isKingCaptured()) {
-        screenBuffer.writeToScreen(0, 30, L"The king has been captured. Black wins!");
+        screenBuffer.writeToScreen(4, 30, L"The king has been captured. Black wins!");
 	}
 	else {
-        screenBuffer.writeToScreen(0, 30, L"The king has escaped. White wins!");
+        screenBuffer.writeToScreen(4, 30, L"The king has escaped. White wins!");
 	}
 
 	// Return to the main menu or exit the game
-	screenBuffer.writeToScreen(0, 31, L"Press 'r' to return to the main menu or 'q' to exit the game.");
+	screenBuffer.writeToScreen(4, 31, L"Press 'r' to return to the main menu or 'q' to exit the game.");
 
 	while (true) {
 		char key = _getch();
@@ -442,7 +448,7 @@ int  Hnefatafl::run() {
 			return 1;
 		}
 		else {
-			screenBuffer.writeToScreen(0, 31, L"Invalid input. Press 'r' to return to the main menu or 'q' to exit the game.");
+			screenBuffer.writeToScreen(4, 31, L"Invalid input. Press 'r' to return to the main menu or 'q' to exit the game.");
 		}
 	}
 };
