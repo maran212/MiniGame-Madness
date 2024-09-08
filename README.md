@@ -2,7 +2,10 @@
 [![MSBuild](https://github.com/COSC345-MiniGame-Madness/MiniGame-Madness/actions/workflows/msbuild.yml/badge.svg)](https://github.com/COSC345-MiniGame-Madness/MiniGame-Madness/actions/workflows/msbuild.yml) 
 [![codecov](https://codecov.io/github/COSC345-MiniGame-Madness/MiniGame-Madness/graph/badge.svg?token=WJUV5TAS1U)](https://codecov.io/github/COSC345-MiniGame-Madness/MiniGame-Madness)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/86cc183405184cf094a60aa70524e131)](https://app.codacy.com/gh/COSC345-MiniGame-Madness/MiniGame-Madness/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-[![Generate and Deploy Doxygen Documentation](https://github.com/COSC345-MiniGame-Madness/MiniGame-Madness/actions/workflows/doxygen.yml/badge.svg?branch=main)](https://github.com/COSC345-MiniGame-Madness/MiniGame-Madness/actions/workflows/doxygen.yml)
+[![GitHub Pages](https://img.shields.io/badge/Pages-Live-blue)](https://cosc345-minigame-madness.github.io/MiniGame-Madness/)
+
+Welcome to my project! Click the badge above to visit the GitHub Pages site.
+
 
 [Codedocs](https://codedocs.xyz/maran212/MiniGame-Madness/index.html)
 
