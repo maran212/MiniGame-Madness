@@ -7,7 +7,7 @@
  * @author Angus Martin
  */
 
-#include "screenBuffer.h" 
+#include "ScreenBuffer.h" 
 #include "hangman.h"
 #include "con4.h"
 #include "maze.h"
@@ -29,17 +29,21 @@
 * @brief A class that represents the menu of the game.
 */
 class Menu {
-public:
+private:
     /*!
-    * @brief Input function to start each game
+    * @brief function to start a game based on the user input
     * @param input - The input from the user
     */
-    void input(int input);
+    int startGame(int input);
+
+public:
+    static const int RETURN_TO_MENU = 0;
+    static const int EXIT_GAME = 1;
 
     /*!
     * @brief Function to display the menu
     */
-    void displayMenu();
+    int displayMenu();
 };
 
 #endif // MENU_H

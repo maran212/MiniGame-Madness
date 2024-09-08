@@ -2,19 +2,19 @@
 #include <iostream>
 
 
-// Constructor for the HnefataflGame class
-HnefataflGame::HnefataflGame(){
+// Constructor for the Hnefatafl class
+Hnefatafl::Hnefatafl(){
     populateBoard();
 	currentPlayer = BLACK;
 };
 
 
 // Initializes the game board
-void HnefataflGame::populateBoard() {
+void Hnefatafl::populateBoard() {
     // Initialize the board to empty
     for (int i = 0; i < BOARD_SIZE; ++i) {
         for (int j = 0; j < BOARD_SIZE; ++j) {
-            board[i][j] = 0;
+            board[i][j] = EMPTY;
         }
     }
 
@@ -34,7 +34,7 @@ void HnefataflGame::populateBoard() {
 
 
 // Helper function to populate the black squares on the board
-void HnefataflGame::populateBlackSquares() {
+void Hnefatafl::populateBlackSquares() {
     for (int col = 3; col < 8; ++col) {
         board[0][col] = BLACK;
         board[10][col] = BLACK;
@@ -52,7 +52,7 @@ void HnefataflGame::populateBlackSquares() {
 
 
 // Helper function to populate the white squares on the board
-void HnefataflGame::populateWhiteSquares() {
+void Hnefatafl::populateWhiteSquares() {
     for (int col = 4; col < 7; ++col) {
         board[4][col] = WHITE;
         board[5][col] = WHITE;
@@ -67,13 +67,17 @@ void HnefataflGame::populateWhiteSquares() {
 
 
 // Get the piece at the given position
-int HnefataflGame::getPiece(int row, int col) {
+int Hnefatafl::getPiece(int row, int col) {
+	if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
+		return -1;
+	}
+
 	return board[row][col];
 };
 
 
 // Moves a piece from the source to the target position
-std::pair<int, int> HnefataflGame::move(std::pair<int, int> source, std::pair<int, int> target) {
+std::pair<int, int> Hnefatafl::move(std::pair<int, int> source, std::pair<int, int> target) {
     int sourceRow = source.first;
     int sourceCol = source.second;
     int targetRow = target.first;
@@ -85,33 +89,33 @@ std::pair<int, int> HnefataflGame::move(std::pair<int, int> source, std::pair<in
 
     // Moving logic (up, down, left, right)
     if (currentRow > targetRow && currentCol == targetCol) {
-        while (currentRow > targetRow && board[currentRow - 1][currentCol] == 0) {
+        while (currentRow > targetRow && board[currentRow - 1][currentCol] == EMPTY) {
             currentRow--;
         }
     }
     else if (currentRow < targetRow && currentCol == targetCol) {
-        while (currentRow < targetRow && board[currentRow + 1][currentCol] == 0) {
+        while (currentRow < targetRow && board[currentRow + 1][currentCol] == EMPTY) {
             currentRow++;
         }
     }
     else if (currentCol > targetCol && currentRow == targetRow) {
-        while (currentCol > targetCol && board[currentRow][currentCol - 1] == 0) {
+        while (currentCol > targetCol && board[currentRow][currentCol - 1] == EMPTY) {
             currentCol--;
         }
     }
     else if (currentCol < targetCol && currentRow == targetRow) {
-        while (currentCol < targetCol && board[currentRow][currentCol + 1] == 0) {
+        while (currentCol < targetCol && board[currentRow][currentCol + 1] == EMPTY) {
             currentCol++;
         }
     }
 
 	// If the piece is moved, update the board
     board[currentRow][currentCol] = currentPlayer;
-    board[sourceRow][sourceCol] = 0;
+    board[sourceRow][sourceCol] = EMPTY;
 
 	if (board[currentRow][currentCol] == KING && board[targetRow][targetCol] == KING_SQUARE) {
 		board[targetRow][targetCol] = KING;
-        board[currentRow][currentCol] = 0;
+        board[currentRow][currentCol] = EMPTY;
 	}
 	
     return std::make_pair(currentRow, currentCol);
@@ -119,28 +123,60 @@ std::pair<int, int> HnefataflGame::move(std::pair<int, int> source, std::pair<in
 
 
 // Checks if a piece at the given position is captured (surrounded on opposite sides by opponent pieces or King's squares in the corner)
-bool HnefataflGame::isCaptured(std::pair<int, int> source) {
+bool Hnefatafl::isCaptured(std::pair<int, int> source) {
+    
+    // Get the piece at the current source position
     int sourceRow = source.first;
     int sourceCol = source.second;
+    int piece = getPiece(sourceRow, sourceCol);
 
-	// Figure out the current player and the opponent
-    currentPlayer = board[sourceRow][sourceCol];
-    int opponentPlayer = (currentPlayer == WHITE) ? BLACK : WHITE;
+    // Get the opponent's player identifier
+    int opponentPlayer = (piece == WHITE) ? BLACK : WHITE;
 
-	// Check if the piece is on the edge of the board
-    int up = (sourceRow > 0) ? board[sourceRow - 1][sourceCol] : -1;
-    int down = (sourceRow < BOARD_SIZE - 1) ? board[sourceRow + 1][sourceCol] : -1;
-    int left = (sourceCol > 0) ? board[sourceRow][sourceCol - 1] : -1;
-    int right = (sourceCol < BOARD_SIZE - 1) ? board[sourceRow][sourceCol + 1] : -1;
+    // Check for out-of-bounds before accessing surrounding positions
+    int up = getPiece(sourceRow - 1, sourceCol);
+    int down = getPiece(sourceRow + 1, sourceCol);
+    int left = getPiece(sourceRow, sourceCol - 1);
+    int right = getPiece(sourceRow, sourceCol + 1);
 
-	// Check if the piece is surrounded by opponent pieces or King's squares on opposite sides
-    return ((up == opponentPlayer || up == KING_SQUARE) && (down == opponentPlayer || down == KING_SQUARE)) ||
-        ((left == opponentPlayer || left == KING_SQUARE) && (right == opponentPlayer || right == KING_SQUARE));
+    // Check if the piece is surrounded on opposite sides by the opponent or king's squares
+    bool horizontalCapture = (left == opponentPlayer || left == KING_SQUARE) &&
+        (right == opponentPlayer || right == KING_SQUARE);
+    bool verticalCapture = (up == opponentPlayer || up == KING_SQUARE) &&
+        (down == opponentPlayer || down == KING_SQUARE);
+
+    return horizontalCapture || verticalCapture;
+};
+
+
+// Helper function to handle the capture of neighboring pieces
+void Hnefatafl::handleNeighboursCaptured(int row, int col) {
+
+    std::pair<int, int> neighbores[] = {
+        {row - 1, col},  // up
+        {row + 1, col},  // down
+        {row, col - 1},  // left
+        {row, col + 1}   // right
+    };
+
+	// Loop through the four neighboring positions
+    for (const auto& pos : neighbores) {
+        int newRow = pos.first;
+        int newCol = pos.second;
+
+        // Boundary check to ensure the position is within the board limits (0 to 10)
+        if (newRow > -1 && newRow < BOARD_SIZE && newCol > -1 && newCol < BOARD_SIZE) {
+            // Check if the neighboring piece is captured
+            if (isCaptured(pos)) {
+                board[newRow][newCol] = EMPTY;  
+            }
+        }
+    }
 };
 
 
 // Checks if the king is captured (surrounded on four sides by black pieces)
-bool HnefataflGame::isKingCaptured() {
+bool Hnefatafl::isKingCaptured() {
     int kingRow = -1, kingCol = -1;
 
     for (int row = 0; row < BOARD_SIZE; ++row) {
@@ -153,17 +189,17 @@ bool HnefataflGame::isKingCaptured() {
         }
     }
 
-    int up = (kingRow > 0) ? board[kingRow - 1][kingCol] : -1;
-    int down = (kingRow < BOARD_SIZE - 1) ? board[kingRow + 1][kingCol] : -1;
-    int left = (kingCol > 0) ? board[kingRow][kingCol - 1] : -1;
-    int right = (kingCol < BOARD_SIZE - 1) ? board[kingRow][kingCol + 1] : -1;
+	int up = getPiece(kingRow - 1, kingCol);
+	int down = getPiece(kingRow + 1, kingCol);
+	int left = getPiece(kingRow, kingCol - 1);
+    int right = getPiece(kingRow, kingCol + 1);
 
-    return up == BLACK && down == BLACK && left == BLACK && right == BLACK;
+    return (up == BLACK || up == OUT_OF_BOUNDS) && (down == BLACK || down == OUT_OF_BOUNDS) && (left == BLACK || left == OUT_OF_BOUNDS ) && (right == BLACK || right == OUT_OF_BOUNDS);
 };
 
 
 // Checks if the game is over (either by king capture or escape)
-bool HnefataflGame::isGameOver() {
+bool Hnefatafl::isGameOver() {
     if (isKingCaptured()) return true;
 
     if (board[0][0] == KING || board[0][10] == KING || board[10][0] == KING || board[10][10] == KING)
@@ -176,9 +212,9 @@ bool HnefataflGame::isGameOver() {
 
 
 // Converts a string-based move to board coordinates
-std::pair<int, int> HnefataflGame::getMove(std::string move) {
+std::pair<int, int> Hnefatafl::covertMove(std::string move) {
     std::string rows = "ABCDEFGHIJK";
-    int row = rows.find(move[0]);
+    int row = static_cast<int>(rows.find(move[0]));
     int col = move[1] - '1';
 
     return std::make_pair(row, col);
@@ -186,7 +222,7 @@ std::pair<int, int> HnefataflGame::getMove(std::string move) {
 
 
 // Bot to play against the player (randomly selects a piece and a move)
-std::pair<int, int> HnefataflGame::bot(int player) {
+std::pair<int, int> Hnefatafl::bot(int player) {
 	// Find if bot is white or black
 	int botPlayer = (player == WHITE) ? BLACK : WHITE;
 
@@ -204,7 +240,7 @@ std::pair<int, int> HnefataflGame::bot(int player) {
 
 				// Check possible moves up
 				for (int i = row - 1; i >= 0; i--) {
-					if (board[i][col] == 0) {
+					if (board[i][col] == EMPTY) {
 						possibleMoves.push_back(std::make_pair(i, col));
 					}
 					else {
@@ -214,7 +250,7 @@ std::pair<int, int> HnefataflGame::bot(int player) {
                 
 				// Check possible moves down
 				for (int i = row + 1; i < BOARD_SIZE; i++) {
-					if (board[i][col] == 0) {
+					if (board[i][col] == EMPTY) {
 						possibleMoves.push_back(std::make_pair(i, col));
 					}
 					else {
@@ -224,7 +260,7 @@ std::pair<int, int> HnefataflGame::bot(int player) {
 
 				// Check possible moves left
 				for (int j = col - 1; j >= 0; j--) {
-					if (board[row][j] == 0) {
+					if (board[row][j] == EMPTY) {
 						possibleMoves.push_back(std::make_pair(row, j));
 					}
 					else {
@@ -234,7 +270,7 @@ std::pair<int, int> HnefataflGame::bot(int player) {
 
 				// Check possible moves right
 				for (int j = col + 1; j < BOARD_SIZE; j++) {
-					if (board[row][j] == 0) {
+					if (board[row][j] == EMPTY) {
 						possibleMoves.push_back(std::make_pair(row, j));
 					}
 					else {
@@ -261,7 +297,7 @@ std::pair<int, int> HnefataflGame::bot(int player) {
 	std::pair<int, int> finalPosition = move(source, target);
 
     // Clear the source square after a valid move
-    board[source.first][source.second] = 0;
+    board[source.first][source.second] = EMPTY;
 
 	// Print the bot's move
 	std::string rows = "ABCDEFGHIJK";
@@ -272,58 +308,84 @@ std::pair<int, int> HnefataflGame::bot(int player) {
 
 
 // Prints the current state of the game board
-void HnefataflGame::printBoard() {
+void Hnefatafl::printBoard() {
     std::string rows = "ABCDEFGHIJK";
-    std::cout << "    1   2   3   4   5   6   7   8   9  10  11" << std::endl;
-    std::cout << "  +---+---+---+---+---+---+---+---+---+---+---+" << std::endl;
 
+    screenBuffer.clearScreen();
+
+    // Print column numbers at the top
+    screenBuffer.writeToScreen(4, 0, L"    1   2   3   4   5   6   7   8   9  10  11");
+
+    // Loop through each row and print horizontal lines and pieces
     for (int row = 0; row < BOARD_SIZE; ++row) {
-        std::cout << rows[row] << " |";
+        // Print horizontal line
+        screenBuffer.writeToScreen(4, row * 2 + 1, L"  +---+---+---+---+---+---+---+---+---+---+---+");
+
+        // Print row label and the actual pieces
+        std::wstring rowText = std::wstring(1, rows[row]) + L" |";
         for (int col = 0; col < BOARD_SIZE; ++col) {
             if (board[row][col] == 0)
-                std::cout << "   |";
+                rowText += L"   |";
             else if (board[row][col] == WHITE)
-                std::cout << " W |";
+                rowText += L" W |";
             else if (board[row][col] == BLACK)
-                std::cout << " B |";
+                rowText += L" B |";
             else if (board[row][col] == KING)
-                std::cout << " K |";
+                rowText += L" K |";
             else if (board[row][col] == KING_SQUARE)
-                std::cout << " X |";
+                rowText += L" X |";
         }
-        std::cout << std::endl;
-        std::cout << "  +---+---+---+---+---+---+---+---+---+---+---+" << std::endl;
+
+        // Print the row content
+        screenBuffer.writeToScreen(4, row * 2 + 2, rowText);
     }
+
+    // Print the final horizontal line at the bottom
+    screenBuffer.writeToScreen(4, BOARD_SIZE * 2 + 1, L"  +---+---+---+---+---+---+---+---+---+---+---+");
 };
+
+// Checks for vaild input from the user
+bool Hnefatafl::isValidInput(const std::string& input) {
+	if (input.length() == 5 && input[2] == ' ' &&
+		input[0] >= 'A' && input[0] <= 'K' &&
+		input[3] >= 'A' && input[3] <= 'K' &&
+		input[1] >= '1' && input[1] <= '9' &&
+		input[4] >= '1' && input[4] <= '9') {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
 
 // The game loop
-void HnefataflGame::play() {
+int  Hnefatafl::run() {
 	int player;
     std::string input;
     std::pair<int, int> source, target, finalPosition;
 
-	// Clear the screen
-	std::cout << "\033[2J\033[1;1H" << std::endl;
 
 	// Print the initial board
+	screenBuffer.setActive();
     printBoard();
 
 	// choose starting player
-	std::cout << "Choose starting player (W/B): ";
-	std::getline(std::cin, input);
-    if (input == "W")
-    {
-        player = WHITE;
-    }
-	else if (input == "B")
-    {
-		player = BLACK;
-	}
-	else
-	{
-		std::cout << "Invalid input. Defaulting to Black." << std::endl;
-		player = BLACK;
+	screenBuffer.writeToScreen(4, 24, L"Choose starting player (W/B) :");
+
+	while (true) {
+		input = screenBuffer.getBlockingInput();
+		if (input == "W" || input == "w") {
+			player = WHITE;
+			break;
+		}
+		else if (input == "B" || input == "b") {
+			player = BLACK;
+			break;
+		}
+		else {
+			screenBuffer.writeToScreen(4, 24, L"Invalid input. Please choose either 'W' or 'B':");
+		}
 	}
         
 	// Main game loop
@@ -332,23 +394,18 @@ void HnefataflGame::play() {
 
         if (currentPlayer == player)
         { 
+            screenBuffer.writeToScreen(4, 24, L"Enter your move (e.g., A1 B2): ");
             while (!validInput) {
-                std::cout << "Enter your move (e.g., A1 B2): ";
-                std::getline(std::cin, input);
+				input = screenBuffer.getBlockingInput();
 
-                if (input.length() == 5 && input[2] == ' ' &&
-                    input[0] >= 'A' && input[0] <= 'K' &&
-                    input[3] >= 'A' && input[3] <= 'K' &&
-                    input[1] >= '1' && input[1] <= '9' &&
-                    input[4] >= '1' && input[4] <= '9') {
-
-                    source = getMove(input.substr(0, 2));
-                    target = getMove(input.substr(3, 2));
+                if (isValidInput(input)) {
+                    source = covertMove(input.substr(0, 2));
+                    target = covertMove(input.substr(3, 2));
 
                     validInput = true;
                 }
                 else {
-                    std::cout << "Invalid input format. Please use the format 'A1 B2'." << std::endl;
+                    screenBuffer.writeToScreen(4, 24, L"Invalid input. Please enter your move in the format 'A1 B2':");
                 }
             }
 
@@ -361,29 +418,8 @@ void HnefataflGame::play() {
             finalPosition = bot(player);
 		}
 
-		// Find neighboring pieces
-		std::pair<int, int> up = std::make_pair(finalPosition.first - 1, finalPosition.second);
-		std::pair<int, int> down = std::make_pair(finalPosition.first + 1, finalPosition.second);
-		std::pair<int, int> left = std::make_pair(finalPosition.first, finalPosition.second - 1);
-		std::pair<int, int> right = std::make_pair(finalPosition.first, finalPosition.second + 1);
-
-        // Check if a piece was captured
-		if (isCaptured(up)) board[up.first][up.second] = 0;
-		if (isCaptured(down)) board[down.first][down.second] = 0;
-		if (isCaptured(left)) board[left.first][left.second] = 0;
-		if (isCaptured(right)) board[right.first][right.second] = 0;
-       
-        // Check if the game is over after the move
-        if (isGameOver()) {
-            std::cout << "Game Over!" << std::endl;
-            if (isKingCaptured()) {
-                std::cout << "The king has been captured. Black wins!" << std::endl;
-            }
-            else {
-                std::cout << "The king has escaped. White wins!" << std::endl;
-            }
-            break;
-        }
+		// Handle the capture of neighboring pieces
+		handleNeighboursCaptured(finalPosition.first, finalPosition.second);
 
         // Switch players
         currentPlayer = (currentPlayer == WHITE) ? BLACK : WHITE;
@@ -391,6 +427,30 @@ void HnefataflGame::play() {
         // Print the updated board
         printBoard();
     }
+
+	// Print the game result
+	if (isKingCaptured()) {
+        screenBuffer.writeToScreen(4, 30, L"The king has been captured. Black wins!");
+	}
+	else {
+        screenBuffer.writeToScreen(4, 30, L"The king has escaped. White wins!");
+	}
+
+	// Return to the main menu or exit the game
+	screenBuffer.writeToScreen(4, 31, L"Press 'r' to return to the main menu or 'q' to exit the game.");
+
+	while (true) {
+		char key = _getch();
+		if (key == 'r') {
+			return 0;
+		}
+		else if (key == 'q') {
+			return 1;
+		}
+		else {
+			screenBuffer.writeToScreen(4, 31, L"Invalid input. Press 'r' to return to the main menu or 'q' to exit the game.");
+		}
+	}
 };
 
 

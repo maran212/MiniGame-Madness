@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game.h" />
     <ClInclude Include="src\battleShips.h" />
     <ClInclude Include="src\chckrs.h" />
     <ClInclude Include="src\con4.h" />
@@ -135,7 +136,7 @@
     <ClInclude Include="src\maze.h" />
     <ClInclude Include="src\menu.h" />
     <ClInclude Include="src\NaughtsxCrossess.h" />
-    <ClInclude Include="src\screenBuffer.h" />
+    <ClInclude Include="src\ScreenBuffer.h" />
     <ClInclude Include="src\wordScrambler.h" />
   </ItemGroup>
   <ItemGroup>
@@ -148,7 +149,7 @@
     <ClCompile Include="src\menu.cpp" />
     <ClCompile Include="src\MiniGame-Madness.cpp" />
     <ClCompile Include="src\NaughtsxCrossess.cpp" />
-    <ClCompile Include="src\screenBuffer.cpp">
+    <ClCompile Include="src\ScreenBuffer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>

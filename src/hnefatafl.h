@@ -12,6 +12,8 @@
 #include <utility>
 #include <vector>
 #include <map>
+#include <conio.h>
+#include "ScreenBuffer.h"
 
 /*!
  * @class HnefataflGame
@@ -20,7 +22,7 @@
  * This class provides methods to initialize the game board, handle player moves,
  * check game conditions, and implement a basic bot for playing against the player.
  */
-class HnefataflGame {
+class Hnefatafl{
 private:
     // Constants for the game
     static const int BOARD_SIZE = 11; /*!< The size of the game board. */
@@ -28,9 +30,12 @@ private:
     static const int BLACK = 2;       /*!< The integer representation of a black piece. */
     static const int KING = 3;        /*!< The integer representation of the king piece. */
     static const int KING_SQUARE = 4; /*!< The integer representation of the king's square. */
+	static const int EMPTY = 0;       /*!< The integer representation of an empty square. */
+	static const int OUT_OF_BOUNDS = -1; /*!< The integer representation of an out-of-bounds square. */
 
     int board[BOARD_SIZE][BOARD_SIZE]; /*!< The 2D array representing the game board. */
     int currentPlayer;                 /*!< The current player (WHITE or BLACK). */
+	ScreenBuffer screenBuffer;         /*!< The screen buffer for displaying the game. */
 
     /*!
      * @brief Populates the board with black pieces in their initial positions.
@@ -43,11 +48,6 @@ private:
     void populateWhiteSquares();
 
 public:
-    /*!
-     * @brief Constructs a new HnefataflGame object.
-     */
-    HnefataflGame();
-
     /*!
      * @brief Initializes the game board.
      * 
@@ -90,6 +90,14 @@ public:
     bool isCaptured(std::pair<int, int> position);
 
     /*!
+	 * @breif Checks if neighbouring pieces of target piece are captured.
+     * 
+	 * @param row The row index of the target piece.
+	 * @param col The column index of the target piece.
+     */
+	void handleNeighboursCaptured(int row, int col);
+    
+    /*!
      * @brief Checks if the king is captured.
      *
      * @return true if the king is captured, false otherwise.
@@ -109,7 +117,7 @@ public:
      * @param move The move as a string.
      * @return A pair representing the move as (row, col).
      */
-    std::pair<int, int> getMove(const std::string move);
+    std::pair<int, int> covertMove(const std::string move);
 
     /*!
      * @brief A basic bot to play against the player.
@@ -125,10 +133,23 @@ public:
     void printBoard();
 
     /*!
-     * @brief The main game loop.
-     */
-    void play();
+     * @brief Check for vaild inputs
+     * 
+	 * @param input The input from the user
+	 * @return true if the input is valid, false otherwise.
+	 */
+	bool isValidInput(const std::string& input);
 
+    /*!
+     * @brief Constructs a new Hnefatafl game object.
+     */
+    Hnefatafl();
+
+	/*!
+	 * @brief Run the game
+	 * @return Whether should return to the main menu (0) or exit the program (1)
+	 */
+	int run();
 };
 
 #endif // HNEFATAFL_H

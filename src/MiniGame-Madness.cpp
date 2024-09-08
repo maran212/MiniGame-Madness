@@ -2,11 +2,14 @@
 
 int main()
 {	
-	system("cls");
-
 	// Call the menu function
 	Menu mainMenu;
-	mainMenu.displayMenu();
+	int output = Menu::RETURN_TO_MENU;
+
+	do {
+		output = mainMenu.displayMenu();
+	} while (output == Menu::RETURN_TO_MENU);
+	
 
 	return 0;
 }
