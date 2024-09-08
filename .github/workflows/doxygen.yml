@@ -1,0 +1,33 @@
+name: Generate Doxygen Documentation
+
+on:
+  push:
+    branches:
+      - hnefatafl  # Trigger on push to the 'main' branch
+  pull_request:
+    branches:
+      - hnefatafl  # Trigger on pull requests to the 'main' branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout the latest commit
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Doxygen
+      - name: Install Doxygen
+        run: sudo apt-get install doxygen graphviz
+
+      # Generate Doxygen documentation
+      - name: Generate Doxygen
+        run: doxygen Doxyfile
+
+      # Upload generated documentation to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/html  # Path to your generated HTML docs
