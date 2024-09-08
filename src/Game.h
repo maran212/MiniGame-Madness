@@ -7,7 +7,7 @@
  * @author Angus Martin
  */
 
-#include "ScreenBuffer.h"
+#include "screenBuffer.h"
 
  /*!
   * @class Game
@@ -36,7 +36,7 @@ public:
 	 * @brief Run the game
 	 * @return Whether should return to the main menu (0) or exit the program (1)
 	 */
-	virtual int Run();
+	virtual int run();
 };
 
 #endif // GAME_H
