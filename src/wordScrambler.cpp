@@ -1,14 +1,18 @@
 #include "WordScrambler.h"
 
-void WordScrambler::clearScreen() const {
-    std::cout << '\033[2j';
+void WordScrambler::clearScreen() {
+    screenBuffer.clearScreen();  // Use ScreenBuffer to clear the screen
 }
 
-std::string WordScrambler::getRandomWord(const std::string& filename) const {
+std::string WordScrambler::getRandomWord(const std::string& filename) {
     std::vector<std::string> words;
     std::ifstream file(filename);
-    std::string word;
+    if (!file.is_open()) {
+        screenBuffer.writeToScreen(0, 0, L"Error: Could not open file");
+        return "";
+    }
 
+    std::string word;
     while (file >> word) {
         words.push_back(word);
     }
@@ -19,25 +23,28 @@ std::string WordScrambler::getRandomWord(const std::string& filename) const {
     return words[randomIndex];
 }
 
-std::string WordScrambler::scrambleWord(const std::string& word) const {
+std::string WordScrambler::scrambleWord(const std::string& word) {
     std::string scrambled = word;
     std::random_shuffle(scrambled.begin(), scrambled.end());
     return scrambled;
 }
 
-std::string WordScrambler::toLowerCase(const std::string& str) const {
+std::string WordScrambler::toLowerCase(const std::string& str) {
     std::string lowerStr = str;
     std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
     return lowerStr;
 }
 
-void WordScrambler::displayHint(const std::string& word) const {
+void WordScrambler::displayHint(const std::string& word) {
     int length = word.length();
     char firstChar = word[0];
     char middleChar = word[length / 2];
     char lastChar = word[length - 1];
 
-    std::cout << "Hint: The first letter is '" << firstChar << "', the middle letter is '" << middleChar << "', and the last letter is '" << lastChar << "'." << std::endl;
+    std::wstring hint = L"Hint: The first letter is '" + std::wstring(1, firstChar) +
+        L"', the middle letter is '" + std::wstring(1, middleChar) +
+        L"', and the last letter is '" + std::wstring(1, lastChar) + L"'.";
+    screenBuffer.writeToScreen(0, 5, hint);
 }
 
 void WordScrambler::playWordScrambler(const std::string& difficulty) {
@@ -54,7 +61,7 @@ void WordScrambler::playWordScrambler(const std::string& difficulty) {
         filename = "hard.txt";
     }
     else {
-        std::cout << "Invalid difficulty level. Exiting game." << std::endl;
+        screenBuffer.writeToScreen(0, 0, L"Invalid difficulty level. Exiting game.");
         return;
     }
 
@@ -66,28 +73,23 @@ void WordScrambler::playWordScrambler(const std::string& difficulty) {
 
     while (attempts < maxGuesses && !guessedCorrectly) {
         clearScreen();
-        std::cout << "Scrambled word: " << scrambledWord << std::endl;
-        std::cout << "Guess the word (or type 'stop' to exit, or 'hint' for a hint that costs 2 lives): ";
-        std::cin >> guess;
+        screenBuffer.writeToScreen(0, 0, L"Scrambled word: " + std::wstring(scrambledWord.begin(), scrambledWord.end()));
+        screenBuffer.writeToScreen(0, 2, L"Guess the word (or type 'stop' to exit, or 'hint' for a hint that costs 2 lives): ");
+        guess = screenBuffer.getBlockingInput();
 
         if (guess == "stop") {
-            std::cout << "Game stopped. Exiting..." << std::endl;
+            screenBuffer.writeToScreen(0, 3, L"Game stopped. Exiting...");
             return;
         }
         else if (guess == "hint") {
-            std::cout << "Are you sure? You will lose 2 lives (y/n): ";
-            std::string response;
-            std::cin >> response;
+            screenBuffer.writeToScreen(0, 3, L"Are you sure? You will lose 2 lives (y/n): ");
+            std::string response = screenBuffer.getBlockingInput();
             if (response == "y" || response == "Y") {
                 displayHint(word);
                 attempts += 2;
-                if (attempts >= maxGuesses) {
-                    break;
-                }
+                if (attempts >= maxGuesses) break;
             }
-            std::cout << "Press Enter to continue...";
-            std::cin.ignore();
-            std::cin.get();
+            screenBuffer.getBlockingInput();  // Pause for user to continue
             continue;
         }
 
@@ -95,53 +97,47 @@ void WordScrambler::playWordScrambler(const std::string& difficulty) {
             guessedCorrectly = true;
         }
         else {
-            std::cout << "Incorrect! Try again." << std::endl;
+            screenBuffer.writeToScreen(0, 4, L"Incorrect! Try again.");
             attempts++;
-            std::cout << "Attempts left: " << maxGuesses - attempts << std::endl;
-            std::cout << "Press Enter to continue...";
-            std::cin.ignore();
-            std::cin.get();
+            screenBuffer.writeToScreen(0, 5, L"Attempts left: " + std::to_wstring(maxGuesses - attempts));
+            screenBuffer.getBlockingInput();  // Pause for user to continue
         }
     }
 
     clearScreen();
     if (guessedCorrectly) {
-        std::cout << "Congratulations! You guessed the word: " << word << std::endl;
+        screenBuffer.writeToScreen(0, 0, L"Congratulations! You guessed the word: " + std::wstring(word.begin(), word.end()));
     }
     else {
-        std::cout << "Sorry, you've run out of attempts. The word was: " << word << std::endl;
+        screenBuffer.writeToScreen(0, 0, L"Sorry, you've run out of attempts. The word was: " + std::wstring(word.begin(), word.end()));
     }
 }
 
 void WordScrambler::run() {
-    WordScrambler game;
-
+    screenBuffer.setActive();  // Activate the ScreenBuffer
     std::string playAgain;
+
     do {
-        game.clearScreen();
-        std::cout << "Choose difficulty (1: easy, 2: medium, 3: hard) or type 'stop' to exit: ";
-        std::string difficulty;
-        std::cin >> difficulty;
+        clearScreen();
+        screenBuffer.writeToScreen(0, 0, L"Choose difficulty (1: easy, 2: medium, 3: hard) or type 'stop' to exit: ");
+        std::string difficulty = screenBuffer.getBlockingInput();
 
         if (difficulty == "stop") {
-            std::cout << "Game stopped. Exiting..." << std::endl;
+            screenBuffer.writeToScreen(0, 1, L"Game stopped. Exiting...");
             return;
         }
 
-        game.playWordScrambler(difficulty);
+        playWordScrambler(difficulty);
 
-        std::cout << "Do you want to play again? (y/n or type 'stop' to exit): ";
-        std::cin >> playAgain;
+        screenBuffer.writeToScreen(0, 12, L"Do you want to play again? (y/n or type 'stop' to exit): ");
+        playAgain = screenBuffer.getBlockingInput();
 
         if (playAgain == "stop") {
-            std::cout << "Game stopped. Exiting..." << std::endl;
+            screenBuffer.writeToScreen(0, 13, L"Game stopped. Exiting...");
             return;
         }
 
     } while (playAgain == "y" || playAgain == "Y");
 
-    std::cout << "Thanks for playing!" << std::endl;
-
-
-    return;
+    screenBuffer.writeToScreen(0, 14, L"Thanks for playing!");
 }
