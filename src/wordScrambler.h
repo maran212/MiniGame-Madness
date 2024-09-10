@@ -2,24 +2,32 @@
 #define WORDSCRAMBLER_H
 
 #include <iostream>
-#include <fstream>
+#include <string>
 #include <vector>
-#include <cstdlib>
-#include <ctime>
-#include <algorithm>
-#include <limits>
-#include <cctype>
-#include <cassert>
-#include <sstream>
 #include "ScreenBuffer.h"
 
 /// @brief Class representing the Word Scrambler game.
 class WordScrambler {
 private:
-    /// @brief ScreenBuffer object used to manage screen output.
-    ScreenBuffer screenBuffer;
+    /// @brief ScreenBuffer pointer used to manage screen output (to allow external injection or internal creation).
+    ScreenBuffer* screenBuffer;
+
+    /// @brief If we create an internal ScreenBuffer, we need to manage its lifecycle.
+    bool ownsScreenBuffer;
 
 public:
+    /// @brief Default constructor.
+    WordScrambler();
+
+    /// @brief Constructor that accepts an external ScreenBuffer.
+    explicit WordScrambler(ScreenBuffer* buffer);
+
+    /// @brief Destructor to clean up internal ScreenBuffer if we own it.
+    ~WordScrambler();
+
+    /// @brief Sets the ScreenBuffer to be used by the game.
+    void setScreenBuffer(ScreenBuffer* buffer);
+
     /// @brief Clears the screen using the ScreenBuffer class.
     void clearScreen();
 
