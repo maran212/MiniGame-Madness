@@ -1,6 +1,8 @@
 #include "NaughtsxCrossess.h"
 
-NaughtsxCrossess::NaughtsxCrossess() {
+// Default constructor, initializes its own ScreenBuffer
+NaughtsxCrossess::NaughtsxCrossess() : screenBuffer(nullptr), ownsScreenBuffer(true) {
+    screenBuffer = new ScreenBuffer();
     for (int i = 0; i < BOARD_SIZE; ++i) {
         for (int j = 0; j < BOARD_SIZE; ++j) {
             board[i][j] = ' ';
@@ -8,27 +10,57 @@ NaughtsxCrossess::NaughtsxCrossess() {
     }
 }
 
-void NaughtsxCrossess::printBoard() const {
-    std::cout << "-------------\n";
+// Constructor that accepts an external ScreenBuffer
+NaughtsxCrossess::NaughtsxCrossess(ScreenBuffer* buffer) : screenBuffer(buffer), ownsScreenBuffer(false) {
     for (int i = 0; i < BOARD_SIZE; ++i) {
-        std::cout << "| ";
         for (int j = 0; j < BOARD_SIZE; ++j) {
-            std::cout << board[i][j] << " | ";
+            board[i][j] = ' ';
         }
-        std::cout << "\n-------------\n";
+    }
+}
+
+// Destructor to clean up internal ScreenBuffer if we own it
+NaughtsxCrossess::~NaughtsxCrossess() {
+    if (ownsScreenBuffer && screenBuffer) {
+        delete screenBuffer;
+        screenBuffer = nullptr;
+    }
+}
+
+// Method to set external ScreenBuffer
+void NaughtsxCrossess::setScreenBuffer(ScreenBuffer* buffer) {
+    if (ownsScreenBuffer && screenBuffer) {
+        delete screenBuffer;  // Clean up internal buffer if we are replacing it
+    }
+    screenBuffer = buffer;
+    ownsScreenBuffer = false;  // External buffer means we don't own it
+}
+
+void NaughtsxCrossess::printBoard() const {
+    screenBuffer->writeToScreen(0, 0, L"-------------");
+    int rowOffset = 1;
+    for (int i = 0; i < BOARD_SIZE; ++i) {
+        std::wstring row = L"| ";
+        for (int j = 0; j < BOARD_SIZE; ++j) {
+            row += std::wstring(1, board[i][j]) + L" | ";
+        }
+        screenBuffer->writeToScreen(0, rowOffset++, row);
+        screenBuffer->writeToScreen(0, rowOffset++, L"-------------");
     }
 }
 
 void NaughtsxCrossess::printBoardWithNumbers() const {
-    std::cout << "-------------\n";
+    screenBuffer->writeToScreen(0, 0, L"-------------");
+    int rowOffset = 9;
     int cellNumber = 1;
     for (int i = 0; i < BOARD_SIZE; ++i) {
-        std::cout << "| ";
+        std::wstring row = L"| ";
         for (int j = 0; j < BOARD_SIZE; ++j) {
-            std::cout << cellNumber << " | ";
+            row += std::to_wstring(cellNumber) + L" | ";
             cellNumber++;
         }
-        std::cout << "\n-------------\n";
+        screenBuffer->writeToScreen(0, rowOffset++, row);
+        screenBuffer->writeToScreen(0, rowOffset++, L"-------------");
     }
 }
 
@@ -41,6 +73,7 @@ bool NaughtsxCrossess::isMovesLeft() const {
 }
 
 int NaughtsxCrossess::evaluate() const {
+    // Check rows for a win
     for (int row = 0; row < BOARD_SIZE; ++row) {
         if (board[row][0] == board[row][1] && board[row][1] == board[row][2]) {
             if (board[row][0] == 'x')
@@ -50,6 +83,7 @@ int NaughtsxCrossess::evaluate() const {
         }
     }
 
+    // Check columns for a win
     for (int col = 0; col < BOARD_SIZE; ++col) {
         if (board[0][col] == board[1][col] && board[1][col] == board[2][col]) {
             if (board[0][col] == 'x')
@@ -59,6 +93,7 @@ int NaughtsxCrossess::evaluate() const {
         }
     }
 
+    // Check diagonals for a win
     if (board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
         if (board[0][0] == 'x')
             return +10;
@@ -95,7 +130,7 @@ int NaughtsxCrossess::minimax(int depth, bool isMax, int difficulty) {
             for (int j = 0; j < BOARD_SIZE; ++j) {
                 if (board[i][j] == ' ') {
                     board[i][j] = 'x';
-                    best = std::max(best, minimax(depth + 1, !isMax, difficulty));
+                    best = std::max(best, minimax(depth + 1, !isMax, difficulty));  // Use std::max here
                     board[i][j] = ' ';
                 }
             }
@@ -109,7 +144,7 @@ int NaughtsxCrossess::minimax(int depth, bool isMax, int difficulty) {
             for (int j = 0; j < BOARD_SIZE; ++j) {
                 if (board[i][j] == ' ') {
                     board[i][j] = 'o';
-                    best = std::min(best, minimax(depth + 1, !isMax, difficulty));
+                    best = std::min(best, minimax(depth + 1, !isMax, difficulty));  // Use std::min here
                     board[i][j] = ' ';
                 }
             }
@@ -140,10 +175,11 @@ std::pair<int, int> NaughtsxCrossess::findBestMove(int difficulty) {
     return bestMove;
 }
 
-bool NaughtsxCrossess::playerMove(char player) {
-    std::string input;
-    std::cout << "Enter your move (1-9) or type 'stop' to end the game: ";
-    std::cin >> input;
+bool NaughtsxCrossess::playerMove(char player, std::function<std::string()> inputProvider) {
+    screenBuffer->writeToScreen(0, 0, L"Enter your move (1-9) or type 'stop' to end the game: ");
+
+    // Use the input provider if it's passed; otherwise, use the default screenBuffer input
+    std::string input = inputProvider ? inputProvider() : screenBuffer->getBlockingInput();
 
     if (input == "stop") {
         return false;
@@ -159,8 +195,8 @@ bool NaughtsxCrossess::playerMove(char player) {
         board[row][col] = player;
     }
     else {
-        std::cout << "Invalid move. Try again.\n";
-        return playerMove(player);
+        screenBuffer->writeToScreen(0, 1, L"Invalid move. Try again.");
+        return playerMove(player, inputProvider);  // Recursively call playerMove with the same inputProvider
     }
 
     return true;
@@ -183,93 +219,124 @@ void NaughtsxCrossess::aiMove(int difficulty) {
 }
 
 void NaughtsxCrossess::clearScreen() const {
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
+    screenBuffer->clearScreen();
 }
 
-void NaughtsxCrossess::run() {
-    // Run tests if needed
-    // testGame();
+void NaughtsxCrossess::run(std::function<std::string()> inputProvider) {
+    bool playAgain = true;
 
-    // Proceed with the game if all tests pass
-    std::string input;
-    std::cout << "Select mode (1 = Easy, 2 = Medium, 3 = Hard, 4 = Player vs Player): ";
-    std::cin >> input;
-
-    if (input == "stop") {
-        return; // Stop the program if "stop" is entered
-    }
-
-    int difficulty = std::stoi(input);
-
-    if (difficulty < 1 || difficulty > 4) {
-        std::cout << "Invalid mode selected. Exiting.\n";
-        return;
-    }
-
-    std::cout << "Welcome to Noughts and Crosses!\n";
-    std::cout << "Here's the board with numbered cells:\n";
-    printBoardWithNumbers();
-
-    bool isPvP = (difficulty == 4);
-
-    // Main game loop
-    while (isMovesLeft()) {
-        clearScreen();  // Clear console before showing the board
-        printBoardWithNumbers();
-        printBoard();
-
-        if (!playerMove(isPvP ? 'o' : 'o')) { // Player 1 move
-            std::cout << "Game stopped by the player.\n";
-            break;
-        }
-
+    while (playAgain) {
+        // Ask for difficulty or mode selection
+        screenBuffer->setActive();
         clearScreen();
+        screenBuffer->writeToScreen(0, 0, L"Select mode (1 = Easy, 2 = Medium, 3 = Hard, 4 = Player vs Player): ");
+
+        std::string input = inputProvider ? inputProvider() : screenBuffer->getBlockingInput();
+        if (input == "stop") {
+            return;  // Stop the program if "stop" is entered
+        }
+
+        int difficulty = std::stoi(input);
+        if (difficulty < 1 || difficulty > 4) {
+            screenBuffer->writeToScreen(0, 1, L"Invalid mode selected. Exiting.");
+            return;
+        }
+
+        screenBuffer->writeToScreen(0, 2, L"Welcome to Noughts and Crosses!");
+        screenBuffer->writeToScreen(0, 3, L"Here's the board with numbered cells:");
         printBoardWithNumbers();
-        printBoard();
 
-        if (evaluate() == -10) {
-            std::cout << "Player O wins!\n";
-            break;
-        }
+        bool isPvP = (difficulty == 4);
+        bool gameOver = false;
 
-        if (!isMovesLeft()) {
-            std::cout << "It's a draw!\n";
-            break;
-        }
+        // Main game loop
+        while (isMovesLeft() && !gameOver) {
+            clearScreen();
+            printBoardWithNumbers();  // Show numbered board
+            printBoard();  // Show current board with pieces
 
-        if (isPvP) {
-            if (!playerMove('x')) { // Player 2 move
-                std::cout << "Game stopped by the player.\n";
+            if (!playerMove(isPvP ? 'o' : 'o', inputProvider)) {  // Player 1 move
+                clearScreen();
+                screenBuffer->writeToScreen(0, 4, L"Game stopped by the player.");
+                gameOver = true;
+                break;
+            }
+
+            clearScreen();
+            printBoardWithNumbers();  // Show numbered board
+            printBoard();  // Show current board with pieces
+
+            if (evaluate() == -10) {
+                clearScreen();
+                printBoard();
+                screenBuffer->writeToScreen(0, 8, L"Player O wins!");
+                gameOver = true;
+                break;
+            }
+
+            if (!isMovesLeft()) {
+                clearScreen();
+                printBoard();
+                screenBuffer->writeToScreen(0, 8, L"It's a draw!");
+                gameOver = true;
+                break;
+            }
+
+            if (isPvP) {
+                if (!playerMove('x', inputProvider)) {  // Player 2 move
+                    clearScreen();
+                    screenBuffer->writeToScreen(0, 7, L"Game stopped by the player.");
+                    gameOver = true;
+                    break;
+                }
+            }
+            else {
+                clearScreen();
+                screenBuffer->writeToScreen(0, 8, L"AI is making a move...");
+                aiMove(difficulty);
+            }
+
+            clearScreen();
+            printBoardWithNumbers();  // Show numbered board
+            printBoard();  // Show current board with pieces
+
+            if (evaluate() == 10) {
+                clearScreen();
+                printBoard();
+                screenBuffer->writeToScreen(0, 9, isPvP ? L"Player X wins!" : L"AI wins!");
+                gameOver = true;
+                break;
+            }
+
+            if (!isMovesLeft()) {
+                clearScreen();
+                printBoard();
+                screenBuffer->writeToScreen(0, 10, L"It's a draw!");
+                gameOver = true;
                 break;
             }
         }
-        else {
-            std::cout << "AI is making a move...\n";
-            aiMove(difficulty);
-        }
 
-        clearScreen();
-        printBoardWithNumbers();
-        printBoard();
+        // Ask if player wants to play again
+        screenBuffer->writeToScreen(0, 12, L"Do you want to play again? (y/n): ");
+        std::string playAgainInput = inputProvider ? inputProvider() : screenBuffer->getBlockingInput();
 
-        if (evaluate() == 10) {
-            std::cout << (isPvP ? "Player X wins!\n" : "AI wins!\n");
-            break;
-        }
-
-        if (!isMovesLeft()) {
-            std::cout << "It's a draw!\n";
-            break;
+        if (playAgainInput != "y" && playAgainInput != "Y") {
+            playAgain = false;
         }
     }
 
+    screenBuffer->writeToScreen(0, 13, L"Thanks for playing!");
 }
 
-char NaughtsxCrossess::getBoardValue(int row, int col) const {
-    return board[row][col];
+void NaughtsxCrossess::resetBoard() {
+    for (int i = 0; i < BOARD_SIZE; ++i) {
+        for (int j = 0; j < BOARD_SIZE; ++j) {
+            board[i][j] = ' ';
+        }
+    }
 }
 
+char& NaughtsxCrossess::getBoardValue(int row, int col) {
+    return board[row][col];  // Return a reference to the board cell
+}
