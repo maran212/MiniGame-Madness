@@ -2,27 +2,26 @@
 #define HNEFATAFL_H
 
 /*!
- * @file HnefataflGame.h
+ * @file Hnefatafl.h
  * @brief Contains the declaration of the HnefataflGame class and its member functions.
  * @author Angus Martin
  */
 
-#include <iostream>
 #include <string>
-#include <utility>
-#include <vector>
 #include <map>
+#include <vector>
+#include <utility>
 #include <conio.h>
 #include "ScreenBuffer.h"
 
 /*!
- * @class HnefataflGame
+ * @class Hnefatafl
  * @brief A class that represents the game of Hnefatafl.
  *
  * This class provides methods to initialize the game board, handle player moves,
  * check game conditions, and implement a basic bot for playing against the player.
  */
-class Hnefatafl{
+class Hnefatafl {
 private:
     // Constants for the game
     static const int BOARD_SIZE = 11; /*!< The size of the game board. */

@@ -123,7 +123,19 @@ namespace HnefataflTests
 			game.move(std::make_pair(1, 0), std::make_pair(0, 0));
 
             // Check if the game is over
-            //Assert::IsTrue(game.isGameOver());
+            Assert::IsTrue(game.isGameOver());
+        }
+
+		// Test if getPiece returns the correct piece
+        TEST_METHOD(GetPiece)
+        {
+            Hnefatafl game;
+
+            Assert::AreEqual(KING, game.getPiece(5, 5));
+            Assert::AreEqual(KING_SQUARE, game.getPiece(0, 0));
+            Assert::AreEqual(BLACK, game.getPiece(0, 3));
+            Assert::AreEqual(WHITE, game.getPiece(4, 4));
+			Assert::AreEqual(0, game.getPiece(3, 3));
         }
     };
 }

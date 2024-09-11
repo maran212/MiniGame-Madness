@@ -3,7 +3,7 @@
 #define SCREENBUFFER_H
 
 /*!
- * @file screenBuffer.h
+ * @file ScreenBuffer.h
  * @brief Contains the declaration of the screenBuffer class and its member functions.
  * @author Angus Martin
  */
