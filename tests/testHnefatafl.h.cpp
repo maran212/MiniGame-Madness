@@ -131,11 +131,44 @@ namespace HnefataflTests
         {
             Hnefatafl game;
 
+            // Each type
             Assert::AreEqual(KING, game.getPiece(5, 5));
             Assert::AreEqual(KING_SQUARE, game.getPiece(0, 0));
             Assert::AreEqual(BLACK, game.getPiece(0, 3));
             Assert::AreEqual(WHITE, game.getPiece(4, 4));
 			Assert::AreEqual(0, game.getPiece(3, 3));
+
+			// Out of bounds
+			Assert::AreEqual(-1, game.getPiece(-1, 0));
+			Assert::AreEqual(-1, game.getPiece(0, -1));
+			Assert::AreEqual(-1, game.getPiece(11, 0));
+			Assert::AreEqual(-1, game.getPiece(0, 11));
+
+        }
+
+		// Test if covertMove returns the correct pair
+        TEST_METHOD(ConvertMove)
+        {
+            Hnefatafl game;
+			std::pair<int, int> test = game.covertMove("A1");
+            Assert::AreEqual(0, test.first);
+			Assert::AreEqual(0, test.second);
+        }
+
+		// Test if isValidInput returns the correct boolean
+        TEST_METHOD(IsValidInput)
+        {
+            Hnefatafl game;
+
+            // Valid input
+            Assert::IsTrue(game.isValidInput("A1 B1"));
+
+            // Invalid input
+            Assert::IsFalse(game.isValidInput("A12 A9"));
+            Assert::IsFalse(game.isValidInput("A"));
+            Assert::IsFalse(game.isValidInput("11 22"));
+            Assert::IsFalse(game.isValidInput("AA BB"));
+            Assert::IsFalse(game.isValidInput("a1 B1"));
         }
     };
 }

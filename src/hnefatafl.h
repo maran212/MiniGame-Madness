@@ -13,6 +13,8 @@
 #include <utility>
 #include <conio.h>
 #include "ScreenBuffer.h"
+#include <time.h>
+#include <stdlib.h>
 
 /*!
  * @class Hnefatafl

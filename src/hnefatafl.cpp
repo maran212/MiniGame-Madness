@@ -222,6 +222,7 @@ std::pair<int, int> Hnefatafl::covertMove(std::string move) {
 
 // Bot to play against the player (randomly selects a piece and a move)
 std::pair<int, int> Hnefatafl::bot(int player) {
+    srand(time(0));
 	// Find if bot is white or black
 	int botPlayer = (player == WHITE) ? BLACK : WHITE;
 
