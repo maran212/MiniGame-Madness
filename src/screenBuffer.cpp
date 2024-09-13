@@ -1,5 +1,5 @@
 
-#include "ScreenBuffer.h"
+#include "screenBuffer.h"
 
 
 // Throws an error if the result is false

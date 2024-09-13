@@ -2,7 +2,7 @@
 #define MENU_H
 
 /*!
- * @file menu.h
+ * @file Menu.h
  * @brief Contains the declaration of the Menu class and its member functions.
  * @author Angus Martin
  */
@@ -16,7 +16,6 @@
 #include "battleShips.h"
 #include "NaughtsxCrossess.h"
 #include "chckrs.h"
-#include <iostream>
 #include <conio.h>
 #include "NaughtsxCrossess.h"
 #include "WordScrambler.h"

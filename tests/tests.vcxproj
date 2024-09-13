@@ -102,7 +102,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>../MiniGame-Madness/x64/Debug;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>screenBuffer.obj;NaughtsxCrossess.obj;battleShips.obj;hangman.obj;wordScrambler.obj;hnefatafl.obj</AdditionalDependencies>
+      <AdditionalDependencies>ScreenBuffer.obj;NaughtsxCrossess.obj;battleShips.obj;hangman.obj;wordScrambler.obj;hnefatafl.obj</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
