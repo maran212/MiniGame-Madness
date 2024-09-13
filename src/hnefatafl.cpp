@@ -1,5 +1,4 @@
 #include "hnefatafl.h"
-#include <iostream>
 
 
 // Constructor for the Hnefatafl class
@@ -214,8 +213,8 @@ bool Hnefatafl::isGameOver() {
 // Converts a string-based move to board coordinates
 std::pair<int, int> Hnefatafl::covertMove(std::string move) {
     std::string rows = "ABCDEFGHIJK";
-    int row = static_cast<int>(rows.find(move[0]));
-    int col = move[1] - '1';
+    int row = move[1] - '1';
+    int col = static_cast<int>(rows.find(move[0]));
 
     return std::make_pair(row, col);
 };
@@ -223,6 +222,7 @@ std::pair<int, int> Hnefatafl::covertMove(std::string move) {
 
 // Bot to play against the player (randomly selects a piece and a move)
 std::pair<int, int> Hnefatafl::bot(int player) {
+    srand(time(0));
 	// Find if bot is white or black
 	int botPlayer = (player == WHITE) ? BLACK : WHITE;
 
@@ -309,12 +309,12 @@ std::pair<int, int> Hnefatafl::bot(int player) {
 
 // Prints the current state of the game board
 void Hnefatafl::printBoard() {
-    std::string rows = "ABCDEFGHIJK";
+    std::wstring rowLabels[BOARD_SIZE] = {L" 1", L" 2", L" 3", L" 4", L" 5", L" 6", L" 7", L" 8", L" 9", L"10", L"11"};
 
     screenBuffer.clearScreen();
 
     // Print column numbers at the top
-    screenBuffer.writeToScreen(4, 0, L"    1   2   3   4   5   6   7   8   9  10  11");
+    screenBuffer.writeToScreen(4, 0, L"    A   B   C   D   E   F   G   H   I   J   K ");
 
     // Loop through each row and print horizontal lines and pieces
     for (int row = 0; row < BOARD_SIZE; ++row) {
@@ -322,7 +322,7 @@ void Hnefatafl::printBoard() {
         screenBuffer.writeToScreen(4, row * 2 + 1, L"  +---+---+---+---+---+---+---+---+---+---+---+");
 
         // Print row label and the actual pieces
-        std::wstring rowText = std::wstring(1, rows[row]) + L" |";
+        std::wstring rowText = rowLabels[row] + L" |";
         for (int col = 0; col < BOARD_SIZE; ++col) {
             if (board[row][col] == 0)
                 rowText += L"   |";
@@ -337,7 +337,7 @@ void Hnefatafl::printBoard() {
         }
 
         // Print the row content
-        screenBuffer.writeToScreen(4, row * 2 + 2, rowText);
+        screenBuffer.writeToScreen(3, row * 2 + 2, rowText);
     }
 
     // Print the final horizontal line at the bottom
