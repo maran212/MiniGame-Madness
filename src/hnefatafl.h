@@ -20,8 +20,8 @@
  * @class Hnefatafl
  * @brief A class that represents the game of Hnefatafl.
  *
- * This class provides methods to initialize the game board, handle player moves,
- * check game conditions, and implement a basic bot for playing against the player.
+ * @details This class provides methods to initialize the game board, handle player moves,
+ * @details check game conditions, and implement a basic bot for playing against the player.
  */
 class Hnefatafl {
 private:

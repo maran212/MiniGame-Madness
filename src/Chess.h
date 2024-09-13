@@ -2,7 +2,7 @@
 #define CHESS_H
 
 /*!
-* @file Chess.h
+* @file chess.h
 * @brief Contains the declaration of the Chess class and its member functions for chess game.
 */
 
@@ -51,9 +51,9 @@ enum SquareColour {
 
 /*!
  * @enum Direction
- * @brief An enumeration of possible directions for neighboring squares.
+ * @brief An enumeration of possible directions of neighboring squares.
  */
-enum class Direction {
+enum Direction {
 	NORTH, /*!< Direction going to the top of the board. */
 	SOUTH, /*!< Direction going to the bottom of the board */
 	EAST, /*!< Direction going to the right of the board. */
@@ -66,7 +66,7 @@ enum class Direction {
 
 /*!
 * @struct ChessSquare
-* @brief A struct that represents a chess piece.
+* @brief A struct that represents a chess square.
 * @details This struct contains the type of the piece and the color of the player that owns the piece as well as colour of the square.
 * @details The default type is EMPTY and the default player color is BLANK reprasenting an emptry square.
 */
@@ -192,14 +192,14 @@ class Chess{
 	std::map<std::string, std::unique_ptr<ChessSquare>> boardMap; /*!< A map of string positions to ChessSquare pointers. */
 
 	/*!
-	* @brief Initializes 2 player board.
+	* @brief Generate 2 player board.
 	* @details The board is represented as a 2D graph of ChessSquare structs in a 8x8 square shape.
 	*/
 	 void generateBoard2Player();
 
  public:
 	 /*!
-	  * @brief Initializes the game board.
+	  * @brief Generate the game board.
 	  * @details The board is represented as a 2D graph of ChessSquare structs.
 	  * @details Each square contains the type of the piece, the color of the player that owns the piece, and the color of the square.
 	  * @details The boards shape and size will change based on the number of players.

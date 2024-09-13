@@ -17,7 +17,7 @@
 #include <conio.h>
 
 /*!
- * @class screenBuffer
+ * @class ScreenBuffer
  * @brief A class that represents the screen buffer.
  *
  * This class provides methods to interact with the screen buffer, such as writing text to the screen,

@@ -45,7 +45,7 @@
     <ClInclude Include="src\chckrs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Chess.h">
+    <ClInclude Include="src\chess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,7 +83,7 @@
     <ClCompile Include="src\chckrs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Chess.cpp">
+    <ClCompile Include="src\chess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

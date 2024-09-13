@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Chess.h" />
+    <ClInclude Include="src\chess.h" />
     <ClInclude Include="src\battleShips.h" />
     <ClInclude Include="src\chckrs.h" />
     <ClInclude Include="src\con4.h" />
@@ -140,7 +140,7 @@
     <ClInclude Include="src\wordScrambler.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Chess.cpp" />
+    <ClCompile Include="src\chess.cpp" />
     <ClCompile Include="src\battleShips.cpp" />
     <ClCompile Include="src\chckrs.cpp" />
     <ClCompile Include="src\con4.cpp" />

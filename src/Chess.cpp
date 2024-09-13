@@ -1,4 +1,4 @@
-#include "Chess.h"
+#include "chess.h"
 
 
 void Chess::generateBoard2Player() {
