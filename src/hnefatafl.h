@@ -3,7 +3,7 @@
 
 /*!
  * @file Hnefatafl.h
- * @brief Contains the declaration of the HnefataflGame class and its member functions.
+ * @brief Contains the declaration of the Hnefatafl class and its member methods.
  * @author Angus Martin
  */
 

@@ -53,7 +53,7 @@ void printMaze(int playerX, int playerY)
         {
             if (x == playerX && y == playerY)
             {
-                std::cout << "*"; // Player representation
+              
             }
             else if (maze[x][y] == 1)
             {
@@ -73,70 +73,13 @@ void printMaze(int playerX, int playerY)
 // Move through the maze
 bool move(int input, int& playerX, int& playerY)
 {
-    int height = maze.size();
-    int width = maze[0].size();
-
-    if (playerY == height - 1)
-    {
-        std::cout << "You have reached the exit!" << std::endl;
-        return true;
-    }
-
-    switch (input)
-    {
-    case 'w': // Up
-        if (isValid(playerX, playerY - 1, width, height))
-        {
-            playerY--;
-        }
-        break;
-    case 's': // Down
-        if (isValid(playerX, playerY + 1, width, height))
-        {
-            playerY++;
-        }
-        break;
-    case 'a': // Left
-        if (isValid(playerX - 1, playerY, width, height))
-        {
-            playerX--;
-        }
-        break;
-    case 'd': // Right
-        if (isValid(playerX + 1, playerY, width, height))
-        {
-            playerX++;
-        }
-        break;
-    default:
-        break;
-    }
-
+    
     return false;
 }
 
+
 void mazeGame()
 {
-    // Clear the console screen
-    std::cout << "\033[2J" << std::endl;
-
-    // Generate and print the maze
-    generateMaze(21, 21);
-
-    // Set the player's starting position
-    int playerX = 2 * (rand() % (maze[0].size() / 2));
-    int playerY = 0;
-
-    bool finished = false;
-    while (!finished)
-    {
-        if (_kbhit())
-        {
-            char input = _getch();
-            finished = move(input, playerX, playerY);
-            std::cout << "\033[2J" << std::endl;
-            printMaze(playerX, playerY); // Print the maze with the updated player position
-        }
-    }
+    
 }
 
