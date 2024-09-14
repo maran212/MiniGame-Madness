@@ -66,9 +66,6 @@ int Menu::startGame(int input)
         // Exit the program
 		output = EXIT_GAME;
         break;
-    default:
-        std::cerr << "Invalid input! Please select a valid option." << std::endl;
-        break;
     }
 
 	return output;

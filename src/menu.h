@@ -11,7 +11,7 @@
 #include "hangman.h"
 #include "con4.h"
 #include "maze.h"
-#include "hnefatafl.h"
+#include "hnefatafl.h"  
 #include "wordScrambler.h"
 #include "battleShips.h"
 #include "NaughtsxCrossess.h"
@@ -20,8 +20,6 @@
 #include "NaughtsxCrossess.h"
 #include "WordScrambler.h"
 #include "battleShips.h"
-
-
 
 /*!
 * @class Menu

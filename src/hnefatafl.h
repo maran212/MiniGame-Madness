@@ -16,6 +16,8 @@
 #include <time.h>
 #include <stdlib.h>
 
+
+
 /*!
  * @class Hnefatafl
  * @brief A class that represents the game of Hnefatafl.
@@ -25,14 +27,13 @@
  */
 class Hnefatafl {
 private:
-    // Constants for the game
     static const int BOARD_SIZE = 11; /*!< The size of the game board. */
-    static const int WHITE = 1;       /*!< The integer representation of a white piece. */
-    static const int BLACK = 2;       /*!< The integer representation of a black piece. */
-    static const int KING = 3;        /*!< The integer representation of the king piece. */
+    static const int WHITE = 1; /*!< The integer representation of a white piece. */
+    static const int BLACK = 2; /*!< The integer representation of a black piece. */
+    static const int KING = 3; /*!< The integer representation of the king piece. */
     static const int KING_SQUARE = 4; /*!< The integer representation of the king's square. */
-	static const int EMPTY = 0;       /*!< The integer representation of an empty square. */
-	static const int OUT_OF_BOUNDS = -1; /*!< The integer representation of an out-of-bounds square. */
+    static const int EMPTY = 0; /*!< The integer representation of an empty square. */
+    static const int OUT_OF_BOUNDS = -1; /*!< Constant to represent out of bounds. */
 
     int board[BOARD_SIZE][BOARD_SIZE]; /*!< The 2D array representing the game board. */
     int currentPlayer;                 /*!< The current player (WHITE or BLACK). */

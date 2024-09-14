@@ -9,12 +9,14 @@ namespace HnefataflTests
     TEST_CLASS(HnefataflGameTest)
     {
     public:
+        static const int BOARD_SIZE = 11; 
+        static const int WHITE = 1; 
+        static const int BLACK = 2; 
+        static const int KING = 3; 
+        static const int KING_SQUARE = 4; 
+        static const int EMPTY = 0; 
+        static const int OUT_OF_BOUNDS = -1; 
         
-		const int KING = 3;
-		const int KING_SQUARE = 4;
-		const int WHITE = 1;
-		const int BLACK = 2;
-
         // Test board initialization
         TEST_METHOD(BoardInitialization)
         {
