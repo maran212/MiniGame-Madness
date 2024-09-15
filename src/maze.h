@@ -15,6 +15,11 @@
 #include <cstdlib>  
 #include <ctime>
 
+ // Forward declaration of the test class
+namespace MazeTests {
+	class MazeTests;
+}
+
 /*!
  * @enum Direction
  * @brief An enumeration of possible directions of neighboring nodes.
@@ -49,6 +54,7 @@ struct MazeNode {
     * @brief Add a neighboring node with a direction.
     * @param node - The node to add as a neighbor.
     * @param direction - The direction of the neighboring node.
+	* @throws runtime_error if the neighbor already exists in the given direction.
     */
     void addNeighbor(MazeNode* node, Direction direction) {
         if (neighbors[direction] != nullptr) {
@@ -61,6 +67,7 @@ struct MazeNode {
     /*!
     * @brief Remove a neighboring node based on a direction.
     * @param direction - The direction of the neighboring node.
+	* @throws runtime_error if the neighbor is not found in the given direction.
     */
     void removeNeighbor(Direction direction) {
         if (neighbors[direction] != nullptr) {
@@ -98,6 +105,9 @@ struct MazeNode {
 */
 class Maze {
  private:
+	 // Declare the test class as a friend
+	 friend class MazeTests::MazeTests;
+
 	 static const int OUT_OF_BOUNDS = -1; /*!< Constant to represent out of bounds. */
 
 	 int WIDTH; /*!< Width of maze.*/

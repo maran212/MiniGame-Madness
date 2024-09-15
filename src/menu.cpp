@@ -66,6 +66,7 @@ int Menu::startGame(int input)
         // Exit the program
 		output = EXIT_GAME;
         break;
+    default: break;
     }
 
 	return output;

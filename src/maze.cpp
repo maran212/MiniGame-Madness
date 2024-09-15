@@ -2,7 +2,7 @@
 
 // Checks if position is vaild  
 bool Maze::isValidPosition(std::pair<int, int> position) const {  
-   return position.first >= 0 && position.first < WIDTH && position.second >= 0 && position.second < HEIGHT;  
+   return (position.first >= 0 && position.first < WIDTH) && (position.second >= 0 && position.second < HEIGHT);  
 }  
 
 // Picks a random direction to walk in  
@@ -15,13 +15,19 @@ Direction Maze::pickRandomDirection() {
    // Get the direction  
    switch (random) {  
    case 0:  
-       direction = Direction::NORTH;  
+       direction = Direction::NORTH;
+       break;
    case 1:  
        direction = Direction::SOUTH;
+       break;
    case 2:  
        direction = Direction::EAST;
+       break;
    case 3:  
        direction = Direction::WEST;
+       break;
+   default: 
+       break;
    }  
 
    return direction;
@@ -34,12 +40,18 @@ Direction Maze::getOppositeDirection(Direction direction) const {
     switch (direction) {
     case Direction::NORTH:
         opposite = Direction::SOUTH;
+		break;
     case Direction::SOUTH:
         opposite = Direction::NORTH;
+        break;
     case Direction::EAST:
         opposite = Direction::WEST;
+        break;
     case Direction::WEST:
         opposite = Direction::EAST;
+        break;
+    default: 
+        break;
     }
 
 	return opposite;
@@ -167,10 +179,13 @@ void Maze::generateMaze(int width, int height) {
 		   inMaze.insert(position);
 	   }
 
-	   // Link the nodes in the path
-	   for (int i = 0; i < path.size() - 1; i++) {
-		   linkNodes(path[i], path[i + 1]);
-	   }
+       // Link the nodes in the path
+       if (path.size() > 1) {
+           for (int i = 0; i < path.size() - 1; i++) {
+               linkNodes(path[i], path[i + 1]);
+           }
+       }
+
 
    }
 }
