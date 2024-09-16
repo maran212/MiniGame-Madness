@@ -1,29 +1,92 @@
-#include "battleShips.h"
+#include "BattleshipGame.h"
 
-void Player::displayGrid(bool revealShips) {
-    std::cout << "  ";
-    for (int i = 0; i < gridSize; ++i) {
-        std::cout << i << " ";
+BattleshipGame::BattleshipGame() : screenBuffer(nullptr), ownsScreenBuffer(true), player(), ai() {
+    screenBuffer = new ScreenBuffer();
+}
+
+BattleshipGame::BattleshipGame(ScreenBuffer* buffer) : screenBuffer(buffer), ownsScreenBuffer(false), player(), ai() {
+    // Use the provided screenBuffer
+}
+
+BattleshipGame::~BattleshipGame() {
+    if (ownsScreenBuffer && screenBuffer) {
+        delete screenBuffer;
+        screenBuffer = nullptr;
     }
-    std::cout << std::endl;
+}
+// Copy Constructor
+BattleshipGame::BattleshipGame(const BattleshipGame& other) : player(other.player), ai(other.ai) {
+    if (other.screenBuffer && other.ownsScreenBuffer) {
+        // Deep copy the ScreenBuffer
+        screenBuffer = new ScreenBuffer(*other.screenBuffer);
+        ownsScreenBuffer = true;
+    }
+    else {
+        // If the original doesn't own the screenBuffer or it's nullptr, we share it
+        screenBuffer = other.screenBuffer;
+        ownsScreenBuffer = false;
+    }
+}
+
+// Copy Assignment Operator
+BattleshipGame& BattleshipGame::operator=(const BattleshipGame& other) {
+    if (this != &other) {  // Protect against self-assignment
+        // Clean up existing resources
+        if (ownsScreenBuffer && screenBuffer) {
+            delete screenBuffer;
+            screenBuffer = nullptr;
+        }
+
+        // Copy players
+        player = other.player;
+        ai = other.ai;
+
+        if (other.screenBuffer && other.ownsScreenBuffer) {
+            // Deep copy the ScreenBuffer
+            screenBuffer = new ScreenBuffer(*other.screenBuffer);
+            ownsScreenBuffer = true;
+        }
+        else {
+            // Share the screenBuffer
+            screenBuffer = other.screenBuffer;
+            ownsScreenBuffer = false;
+        }
+    }
+    return *this;
+}
+
+
+
+void Player::displayGrid(bool revealShips, ScreenBuffer* screenBuffer, int startX, int startY) {
+    int y = startY;
+    std::wstring header = L"   ";
+    for (int i = 0; i < gridSize; ++i) {
+        header += std::to_wstring(i) + L" ";
+    }
+    screenBuffer->writeToScreen(startX, y++, header);
 
     for (int row = 0; row < gridSize; ++row) {
-        std::cout << row << " ";
+        std::wstring rowStr = L"";
+        if (row < 10) rowStr += L" ";
+        rowStr += std::to_wstring(row) + L" ";
         for (int col = 0; col < gridSize; ++col) {
+            wchar_t cellChar;
             if (grid[row][col] == SHIP && revealShips) {
-                std::cout << "S ";
+                cellChar = L'S';
             }
             else if (grid[row][col] == MISS) {
-                std::cout << "M ";
+                cellChar = L'M';
             }
             else if (grid[row][col] == HIT) {
-                std::cout << "H ";
+                cellChar = L'H';
             }
             else {
-                std::cout << ". ";
+                cellChar = L'.';
             }
+            rowStr += cellChar;
+            rowStr += L" ";
         }
-        std::cout << std::endl;
+        screenBuffer->writeToScreen(startX, y++, rowStr);
     }
 }
 
@@ -49,13 +112,11 @@ bool Player::placeShip(Ship& ship, int row, int col, bool horizontal) {
         }
     }
     ships.push_back(ship);
-    shipsRemaining++;
     return true;
 }
 
-
-void Player::autoPlaceShips(std::vector<Ship>& ships) {
-    for (auto& ship : ships) {
+void Player::autoPlaceShips(std::vector<Ship>& shipsList) {
+    for (auto& ship : shipsList) {
         bool placed = false;
         while (!placed) {
             int row = rand() % gridSize;
@@ -65,7 +126,6 @@ void Player::autoPlaceShips(std::vector<Ship>& ships) {
         }
     }
 }
-
 
 bool Player::isGameOver() const {
     for (const auto& ship : ships) {
@@ -82,76 +142,95 @@ std::pair<int, int> Player::getAIShot() {
         row = rand() % gridSize;
         col = rand() % gridSize;
     } while (grid[row][col] == MISS || grid[row][col] == HIT);
-
     return { row, col };
 }
 
+void Player::playerTurn(Player& opponent, ScreenBuffer* screenBuffer, std::function<std::string()> inputProvider) {
+    while (true) {
+        screenBuffer->clearScreen();
+        showBoards(opponent, screenBuffer); // Show both boards
 
-void Player::playerTurn(Player& opponent) {
-    std::string input;
-    int row, col;
+        screenBuffer->writeToScreen(0, gridSize * 2 + 3, L"Enter row and column to fire (e.g., '27' or '2 7'): ");
 
-    displayGrid(false);
-    std::cout << "Enter row and column to fire (e.g., '27' or '2 7') or type 'show' to see both boards: ";
-    std::getline(std::cin >> std::ws, input);  // Read the entire line of input, including any spaces
+        std::string input;
+        if (inputProvider) {
+            input = inputProvider();
+        }
+        else {
+            input = screenBuffer->getBlockingInput();
+        }
 
-    if (input == "show") {
-        showBoards(opponent);
-        playerTurn(opponent);  // Recur to let the player make a move after showing the boards
-        showBoards(opponent);
-        playerTurn(opponent);  // Recur to let the player make a move after showing the boards
-        return;
-    }
+        int row = -1, col = -1;
+        // Handling input in the form "rowcol" or "row col"
+        if (input.length() == 2 && isdigit(input[0]) && isdigit(input[1])) {
+            row = input[0] - '0';
+            col = input[1] - '0';
+        }
+        else if (input.length() >= 3 && isdigit(input[0]) && input[1] == ' ' && isdigit(input[2])) {
+            row = input[0] - '0';
+            col = input[2] - '0';
+        }
+        else {
+            screenBuffer->writeToScreen(0, gridSize * 2 + 4, L"Invalid input. Please enter two digits, such as '27' or '2 7'.");
+            if (!inputProvider) {
+                screenBuffer->getBlockingInput();
+            }
+            continue;  // Prompt for input again
+        }
 
-    // Handling input in the form "row col" or "rowcol"
-    if (input.length() == 2) {
-        row = input[0] - '0';
-        col = input[1] - '0';
-    }
-    else if (input.length() == 3 && input[1] == ' ') {
-        row = input[0] - '0';
-        col = input[2] - '0';
-    }
-    else {
-        std::cout << "Invalid input. Please enter two digits, such as '27' or '2 7'." << std::endl;
-        playerTurn(opponent);  // Let the player retry the turn
-        return;
-    }
+        // Validate row and col
+        if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
+            screenBuffer->writeToScreen(0, gridSize * 2 + 4, L"Invalid coordinates. Please enter values within the grid.");
+            if (!inputProvider) {
+                screenBuffer->getBlockingInput();
+            }
+            continue;  // Prompt for input again
+        }
 
-    // Validate row and col
-    if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
-        std::cout << "Invalid coordinates. Please enter values within the grid." << std::endl;
-        playerTurn(opponent);  // Let the player retry the turn
-        return;
-    }
-
-    // Fire at the opponent's grid
-    if (opponent.grid[row][col] == SHIP) {
-        std::cout << "Hit!" << std::endl;
-        opponent.grid[row][col] = HIT;
-        for (auto& ship : opponent.ships) {
-            for (auto& pos : ship.positions) {
-                if (pos.first == row && pos.second == col) {
-                    ship.hits++;
-                    break;
+        // Fire at the opponent's grid
+        if (opponent.grid[row][col] == SHIP) {
+            screenBuffer->writeToScreen(0, gridSize * 2 + 4, L"Hit!");
+            opponent.grid[row][col] = HIT;
+            for (auto& ship : opponent.ships) {
+                for (auto& pos : ship.positions) {
+                    if (pos.first == row && pos.second == col) {
+                        ship.hits++;
+                        break;
+                    }
                 }
             }
         }
-    }
-    else {
-        std::cout << "Miss!" << std::endl;
-        opponent.grid[row][col] = MISS;
+        else if (opponent.grid[row][col] == EMPTY) {
+            screenBuffer->writeToScreen(0, gridSize * 2 + 4, L"Miss!");
+            opponent.grid[row][col] = MISS;
+        }
+        else {
+            screenBuffer->writeToScreen(0, gridSize * 2 + 4, L"You have already fired at this location.");
+            if (!inputProvider) {
+                screenBuffer->getBlockingInput();
+            }
+            continue;  // Prompt for input again
+        }
+
+        Sleep(1500);
+        break;  // Exit the loop after a valid turn
     }
 }
 
-
-void Player::aiTurn(Player& opponent) {
+void Player::aiTurn(Player& opponent, ScreenBuffer* screenBuffer, std::function<std::string()> inputProvider) {
     auto shot = getAIShot();
     int row = shot.first;
     int col = shot.second;
-    std::cout << "AI fires at " << row << ", " << col << std::endl;
+
+    screenBuffer->clearScreen();
+
+    // Show only the player's board
+    screenBuffer->writeToScreen(0, 0, L"Your Board:");
+    opponent.displayGrid(true, screenBuffer, 0, 1); // Show player's board with ships and hits/misses
+
+    screenBuffer->writeToScreen(0, gridSize + 2, L"AI fires at " + std::to_wstring(row) + L", " + std::to_wstring(col));
     if (opponent.grid[row][col] == SHIP) {
-        std::cout << "AI hit your ship!" << std::endl;
+        screenBuffer->writeToScreen(0, gridSize + 3, L"AI hit your ship!");
         opponent.grid[row][col] = HIT;
         for (auto& ship : opponent.ships) {
             for (auto& pos : ship.positions) {
@@ -163,14 +242,15 @@ void Player::aiTurn(Player& opponent) {
         }
     }
     else {
-        std::cout << "AI missed!" << std::endl;
+        screenBuffer->writeToScreen(0, gridSize + 3, L"AI missed!");
         opponent.grid[row][col] = MISS;
     }
+
+    Sleep(1500);
 }
 
-
-void Player::setupGame(bool isAI) {
-    std::vector<Ship> ships = {
+void Player::setupGame(bool isAI, ScreenBuffer* screenBuffer, std::function<std::string()> inputProvider) {
+    std::vector<Ship> shipsList = {
         {"Carrier", 5},
         {"Battleship", 4},
         {"Cruiser", 3},
@@ -179,64 +259,116 @@ void Player::setupGame(bool isAI) {
     };
 
     if (!isAI) {
-        char choice;
-        std::cout << "Do you want to manually place your ships or auto-place them? (m/a): ";
-        std::cin >> choice;
-
-        if (choice == 'a' || choice == 'A') {
-            autoPlaceShips(ships);
-            std::cout << "Ships have been auto-placed. Here's your board:" << std::endl;
-            displayGrid(true);
+        std::string choice;
+        if (inputProvider) {
+            choice = inputProvider();
         }
         else {
-            for (auto& ship : ships) {
+            screenBuffer->writeToScreen(0, 0, L"Do you want to manually place your ships or auto-place them? (m/a): ");
+            choice = screenBuffer->getBlockingInput();
+        }
+
+        if (choice == "a" || choice == "A") {
+            autoPlaceShips(shipsList);
+            screenBuffer->writeToScreen(0, 1, L"Ships have been auto-placed. Here's your board:");
+            displayGrid(true, screenBuffer, 0, 2);
+            screenBuffer->writeToScreen(0, gridSize + 3, L"Press Enter to continue...");
+            if (!inputProvider) {
+                screenBuffer->getBlockingInput();
+            }
+        }
+        else {
+            for (auto& ship : shipsList) {
                 bool placed = false;
                 while (!placed) {
-                    displayGrid(true);
-                    std::cout << "Place your " << ship.name << " (size " << ship.size << ") at row, col and orientation (h/v): ";
-                    int row, col;
-                    char orientation;
-                    std::cin >> row >> col >> orientation;
+                    screenBuffer->clearScreen();
+                    displayGrid(true, screenBuffer);
+                    screenBuffer->writeToScreen(0, gridSize + 2, L"Place your " + std::wstring(ship.name.begin(), ship.name.end()) +
+                        L" (size " + std::to_wstring(ship.size) + L") at row, col and orientation (h/v): ");
+
+                    std::string input;
+                    if (inputProvider) {
+                        input = inputProvider();
+                    }
+                    else {
+                        input = screenBuffer->getBlockingInput();
+                    }
+
+                    int row = -1, col = -1;
+                    char orientation = 'h';
+
+                    // Parse the input
+                    if (input.length() >= 5) {
+                        row = input[0] - '0';
+                        col = input[2] - '0';
+                        orientation = input[4];
+                    }
+                    else {
+                        screenBuffer->writeToScreen(0, gridSize + 3, L"Invalid input. Please enter row, col, and orientation.");
+                        if (!inputProvider) {
+                            screenBuffer->getBlockingInput();
+                        }
+                        continue;
+                    }
+
+                    if (row < 0 || row >= gridSize || col < 0 || col >= gridSize ||
+                        (orientation != 'h' && orientation != 'v')) {
+                        screenBuffer->writeToScreen(0, gridSize + 3, L"Invalid input. Try again.");
+                        if (!inputProvider) {
+                            screenBuffer->getBlockingInput();
+                        }
+                        continue;
+                    }
+
                     bool horizontal = (orientation == 'h');
                     placed = placeShip(ship, row, col, horizontal);
                     if (!placed) {
-                        std::cout << "Invalid placement, try again." << std::endl;
+                        screenBuffer->writeToScreen(0, gridSize + 3, L"Invalid placement, try again.");
+                        if (!inputProvider) {
+                            screenBuffer->getBlockingInput();
+                        }
                     }
                 }
             }
         }
     }
     else {
-        autoPlaceShips(ships);  // Auto-place for AI
+        autoPlaceShips(shipsList);  // Auto-place for AI
     }
 }
 
-void Player::showBoards(Player& ai) {
-    std::cout << "\nYour Board:" << std::endl;
-    displayGrid(true);
+void Player::showBoards(Player& opponent, ScreenBuffer* screenBuffer) {
+    screenBuffer->writeToScreen(0, 0, L"Your Board:");
+    displayGrid(true, screenBuffer, 0, 1); // Show your board with ships and hits/misses
+
+    screenBuffer->writeToScreen(gridSize * 2 + 5, 0, L"Opponent's Board:");
+    opponent.displayGrid(false, screenBuffer, gridSize * 2 + 1 + 5, 1); // Show opponent's board without ships
 }
 
-int Battleship() {
+void BattleshipGame::run(std::function<std::string()> inputProvider) {
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator with the current time
 
-    Player player, ai;
-    player.setupGame(false); // Player setup
-    ai.setupGame(true); // AI setup
+    screenBuffer->setActive();
+    player.setupGame(false, screenBuffer, inputProvider); // Player setup
+    ai.setupGame(true, screenBuffer);      // AI setup
 
     // Main game loop
     while (!player.isGameOver() && !ai.isGameOver()) {
-        player.playerTurn(ai);
+        player.playerTurn(ai, screenBuffer, inputProvider);
         if (!ai.isGameOver()) {
-            ai.aiTurn(player);
+            ai.aiTurn(player, screenBuffer, inputProvider);
         }
     }
 
+    screenBuffer->clearScreen();
     if (player.isGameOver()) {
-        std::cout << "You lost!" << std::endl;
+        screenBuffer->writeToScreen(0, 0, L"You lost!");
     }
     else {
-        std::cout << "You won!" << std::endl;
+        screenBuffer->writeToScreen(0, 0, L"You won!");
     }
-
-    return 0;
+    screenBuffer->writeToScreen(0, 1, L"Press Enter to exit...");
+    if (!inputProvider) {
+        screenBuffer->getBlockingInput();
+    }
 }

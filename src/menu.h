@@ -13,13 +13,10 @@
 #include "maze.h"
 #include "hnefatafl.h"
 #include "wordScrambler.h"
-#include "battleShips.h"
+#include "BattleshipGame.h"
 #include "NaughtsxCrossess.h"
 #include "chckrs.h"
 #include <conio.h>
-#include "NaughtsxCrossess.h"
-#include "WordScrambler.h"
-#include "battleShips.h"
 
 
 
