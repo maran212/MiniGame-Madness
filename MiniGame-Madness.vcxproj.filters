@@ -48,6 +48,15 @@
     <ClInclude Include="src\chess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\IScreenBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RealScreenBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MockScreenBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\con4.cpp">

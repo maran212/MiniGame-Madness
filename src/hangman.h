@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <cstring>
 #include "ScreenBuffer.h"
+#include "IScreenBuffer.h"
+#include "RealScreenBuffer.h"
 
 using namespace std;
 
@@ -16,9 +18,20 @@ using namespace std;
 class Hangman {
 private:
     /// @brief ScreenBuffer object used to manage screen output.
-    ScreenBuffer screenBuffer;
+    IScreenBuffer* screenBuffer;
+    bool ownsScreenBuffer;
 
 public:
+
+    Hangman() {
+        screenBuffer = new RealScreenBuffer();
+        ownsScreenBuffer = true;
+    }
+
+
+    Hangman(IScreenBuffer* sb) : screenBuffer(sb) {}
+
+
     /// @brief Clears the screen using the ScreenBuffer class.
     void clearScreen();
 
