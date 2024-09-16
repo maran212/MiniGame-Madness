@@ -14,6 +14,48 @@ BattleshipGame::~BattleshipGame() {
         screenBuffer = nullptr;
     }
 }
+// Copy Constructor
+BattleshipGame::BattleshipGame(const BattleshipGame& other) : player(other.player), ai(other.ai) {
+    if (other.screenBuffer && other.ownsScreenBuffer) {
+        // Deep copy the ScreenBuffer
+        screenBuffer = new ScreenBuffer(*other.screenBuffer);
+        ownsScreenBuffer = true;
+    }
+    else {
+        // If the original doesn't own the screenBuffer or it's nullptr, we share it
+        screenBuffer = other.screenBuffer;
+        ownsScreenBuffer = false;
+    }
+}
+
+// Copy Assignment Operator
+BattleshipGame& BattleshipGame::operator=(const BattleshipGame& other) {
+    if (this != &other) {  // Protect against self-assignment
+        // Clean up existing resources
+        if (ownsScreenBuffer && screenBuffer) {
+            delete screenBuffer;
+            screenBuffer = nullptr;
+        }
+
+        // Copy players
+        player = other.player;
+        ai = other.ai;
+
+        if (other.screenBuffer && other.ownsScreenBuffer) {
+            // Deep copy the ScreenBuffer
+            screenBuffer = new ScreenBuffer(*other.screenBuffer);
+            ownsScreenBuffer = true;
+        }
+        else {
+            // Share the screenBuffer
+            screenBuffer = other.screenBuffer;
+            ownsScreenBuffer = false;
+        }
+    }
+    return *this;
+}
+
+
 
 void Player::displayGrid(bool revealShips, ScreenBuffer* screenBuffer, int startX, int startY) {
     int y = startY;

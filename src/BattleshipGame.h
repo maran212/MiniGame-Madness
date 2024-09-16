@@ -99,6 +99,12 @@ public:
     /// @param buffer Pointer to an externally provided ScreenBuffer.
     BattleshipGame(ScreenBuffer* buffer);
 
+    /// @brief Copy Constructor
+    BattleshipGame(const BattleshipGame& other);
+
+    /// @brief Copy Assignment Operator
+    BattleshipGame& operator=(const BattleshipGame& other);
+
     /// @brief Destructor to clean up resources.
     ~BattleshipGame();
 
