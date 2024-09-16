@@ -133,9 +133,12 @@
     <ClInclude Include="src\con4.h" />
     <ClInclude Include="src\hangman.h" />
     <ClInclude Include="src\hnefatafl.h" />
+    <ClInclude Include="src\IScreenBuffer.h" />
     <ClInclude Include="src\maze.h" />
     <ClInclude Include="src\Menu.h" />
+    <ClInclude Include="src\MockScreenBuffer.h" />
     <ClInclude Include="src\NaughtsxCrossess.h" />
+    <ClInclude Include="src\RealScreenBuffer.h" />
     <ClInclude Include="src\ScreenBuffer.h" />
     <ClInclude Include="src\wordScrambler.h" />
   </ItemGroup>
