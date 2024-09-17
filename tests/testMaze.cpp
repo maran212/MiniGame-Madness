@@ -25,14 +25,17 @@ namespace MazeTests
         TEST_METHOD(TestPickRandomDirection)
         {
             Maze maze(10, 10);
-            std::set<Direction> directions;
+            std::vector<Direction> directions = { Direction::NORTH, Direction::SOUTH, Direction::EAST, Direction::WEST };
+            std::set<Direction> pickedDirections;
+
             for (int i = 0; i < 100; ++i)
             {
-                directions.insert(maze.pickRandomDirection({ Direction::NORTH, Direction::SOUTH, Direction::EAST, Direction::WEST }));
+                pickedDirections.insert(maze.pickRandomDirection(directions));
             }
-            Assert::IsTrue(directions.size() == 4);
-        }
 
+            // Verify that all 4 directions are picked
+            Assert::IsTrue(pickedDirections.size() == 4);
+        } 
         TEST_METHOD(TestGetOppositeDirection)
         {
             Maze maze(10, 10);;

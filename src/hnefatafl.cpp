@@ -211,7 +211,7 @@ bool Hnefatafl::isGameOver() {
 
 
 // Converts a string-based move to board coordinates
-std::pair<int, int> Hnefatafl::convertMove(std::string move) {
+std::pair<int, int> Hnefatafl::convertMove(const std::string& move) {
     char column = move[0];
     int row = std::stoi(move.substr(1));
 

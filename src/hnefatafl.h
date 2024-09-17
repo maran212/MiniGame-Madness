@@ -110,7 +110,7 @@ public:
     * @param move The move as a string.
     * @return A pair representing the move as (row, col).
     */
-    std::pair<int, int> convertMove(const std::string move);
+    std::pair<int, int> convertMove(const std::string& move);
 
     /*!
     * @brief A basic bot to play against the player.

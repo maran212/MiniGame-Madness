@@ -128,7 +128,7 @@ class Maze {
 	 * @param directions - The directions to choose from.
 	 * @return The direction to walk in.
 	 */
-	 Direction pickRandomDirection(std::vector<Direction> directions);
+	 Direction pickRandomDirection(std::vector<Direction>& directions);
 
 	 /*!
 	 * @brief Get the opposite direction.

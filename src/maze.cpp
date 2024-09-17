@@ -14,7 +14,7 @@ bool Maze::isValidPosition(std::pair<int, int> position) const {
 
 
 // Picks a random direction to walk in  
-Direction Maze::pickRandomDirection(std::vector<Direction> directions) {
+Direction Maze::pickRandomDirection(std::vector<Direction>& directions) {
     return directions[rand() % directions.size()];
 }
 
