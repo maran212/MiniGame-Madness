@@ -28,7 +28,7 @@ namespace MazeTests
             std::set<Direction> directions;
             for (int i = 0; i < 100; ++i)
             {
-                directions.insert(maze.pickRandomDirection());
+                directions.insert(maze.pickRandomDirection({ Direction::NORTH, Direction::SOUTH, Direction::EAST, Direction::WEST }));
             }
             Assert::IsTrue(directions.size() == 4);
         }
@@ -49,28 +49,31 @@ namespace MazeTests
 
         TEST_METHOD(TestLinkNodes)
         {
-			// Try catch used because exceptions are thrown if a neighbor already exists in the given direction when generating the maze and trying to link the nodes start and end.
-			try {
-				Maze maze(10, 10);
-				maze.generateMaze(10, 10);
-				std::pair<int, int> start = { 0, 0 };
-				std::pair<int, int> end = { 0, 1 };
-				maze.linkNodes(start, end);
-                MazeNode* startNode = maze.mazeMap[start].get();
-                MazeNode* endNode = maze.mazeMap[end].get();
-                Assert::IsTrue(startNode->getNeighbor(Direction::SOUTH) == endNode);
-                Assert::IsTrue(endNode->getNeighbor(Direction::NORTH) == startNode);
+            Maze maze(10, 10);
+            maze.generateMaze(10, 10);
+
+            std::pair<int, int> start = { 0, 0 };
+            std::pair<int, int> end = { 0, 1 };
+            if (maze.mazeMap.at(start)->getNeighbor(Direction::EAST) != nullptr) {
+                maze.mazeMap.at(start)->removeNeighbor(Direction::EAST);
+            }
+
+			if (maze.mazeMap.at(end)->getNeighbor(Direction::WEST) != nullptr) {
+				maze.mazeMap.at(end)->removeNeighbor(Direction::WEST);
 			}
-			catch (const std::exception& e) {
-				Logger::WriteMessage(e.what());
-			}
+			
+			maze.linkNodes(start, end);
+            MazeNode* startNode = maze.mazeMap[start].get();
+            MazeNode* endNode = maze.mazeMap[end].get();
+            Assert::IsTrue(startNode->getNeighbor(Direction::EAST) == endNode);
+            Assert::IsTrue(endNode->getNeighbor(Direction::WEST) == startNode);
         }
 
         TEST_METHOD(TestEraseLoop)
         {
             Maze maze(10, 10);
             std::vector<std::pair<int, int>> path = { {0, 0}, {0, 1}, {0, 2}, {1, 2}, {1, 1}, {0, 1} };
-            std::vector<std::pair<int, int>> expectedPath = { {0, 0} };
+            std::vector<std::pair<int, int>> expectedPath = { {0, 0}, {0, 1} };
             std::vector<std::pair<int, int>> resultPath = maze.eraseLoop(path, { 0, 1 });
             // Log the resultPath
             for (const auto& position : resultPath) {

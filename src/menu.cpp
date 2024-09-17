@@ -2,6 +2,7 @@
 
 // Initialize games
 Hnefatafl hnefataflGame;
+Maze mazeGame(10,10);
 
 NaughtsxCrossess naughtsxCrossessGame;
 Hangman hangmanGame;
@@ -27,8 +28,7 @@ int Menu::startGame(int input)
         break;
     case 3:
         // Call function to start Maze
-        //mazeGame();
-        std::cout << "Comming Soon" << std::endl;
+        output = mazeGame.run();
         break;
     case 4:
         // Call function to start Naughts and Crosses
@@ -154,4 +154,6 @@ int Menu::displayMenu()
     {
         std::cerr << "Exception: " << e.what() << std::endl;
     }
+
+    return EXIT_GAME;
 }

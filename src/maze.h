@@ -2,10 +2,10 @@
 #define MAZE_H
 
 /*!
- * @file maze.h
- * @brief Contains the declaration of the Maze class and its member methods.
- * @author Angus Martin
- */
+* @file maze.h
+* @brief Contains the declaration of the Maze class and its member methods.
+* @author Angus Martin
+*/
 
 #include "screenBuffer.h"
 #include <map>
@@ -21,9 +21,9 @@ namespace MazeTests {
 }
 
 /*!
- * @enum Direction
- * @brief An enumeration of possible directions of neighboring nodes.
- */
+* @enum Direction
+* @brief An enumeration of possible directions of neighboring nodes.
+*/
 enum Direction {
 	NORTH, /*!< Direction going to the top of the board. */
 	SOUTH, /*!< Direction going to the bottom of the board */
@@ -57,10 +57,6 @@ struct MazeNode {
 	* @throws runtime_error if the neighbor already exists in the given direction.
     */
     void addNeighbor(MazeNode* node, Direction direction) {
-        if (neighbors[direction] != nullptr) {
-            throw std::runtime_error("Neighbor already exists in the given direction.");
-        }
-
         neighbors[direction] = node;
     }
 
@@ -70,7 +66,7 @@ struct MazeNode {
 	* @throws runtime_error if the neighbor is not found in the given direction.
     */
     void removeNeighbor(Direction direction) {
-        if (neighbors[direction] != nullptr) {
+        if (neighbors[direction] == nullptr) {
             throw std::runtime_error("Neighbor not found in the given direction.");
         }
 
@@ -100,7 +96,6 @@ struct MazeNode {
 /*!
 * @class Maze
 * @brief A class that represents the maze game.
-* 
 * @details This class provides methods to generate the maze, handle player moves, and check game conditions.
 */
 class Maze {
@@ -109,37 +104,48 @@ class Maze {
 	 friend class MazeTests::MazeTests;
 
 	 static const int OUT_OF_BOUNDS = -1; /*!< Constant to represent out of bounds. */
+	 ScreenBuffer screenBuffer; /*!< The screen buffer for displaying the game. */
 
 	 int WIDTH; /*!< Width of maze.*/
 	 int HEIGHT; /*!< Height of maze.*/
+
+	 std::pair<int, int> start; /*!< The start position of the maze.*/
+	 std::pair<int, int> end; /*!< The end position of the maze.*/
+	 std::pair<int, int> playerPosition; /*!< The position of the player in the maze.*/
+
 	 std::map<std::pair<int, int>, std::unique_ptr<MazeNode>> mazeMap; /*!< A map of positions to nodes in the maze.*/
 	 std::set<std::pair<int, int>> inMaze; /*!< Set to track which nodes are already in the maze. */
 
-	/*!
-	* @brief Generate maze
-	* @details The maze is a 2D graph of nodes that are either PATH or WALL.
-	* @param width - The width of the maze.
-	* @param height - The height of the maze.
-	*/
-	 void generateMaze(int width, int height);
-
 	 /*!
-	 * @brief This method will perform a random walk from a starting node until it links back up with the maze.
-	 * @details The random walk will be performed until the path links back up with the maze or try's to go out of bounds.
-	 * @param start - The starting position of the node to start the walk from.
-	 * @return The path of the random walk.
-     */
-	 std::vector<std::pair<int, int>> randomWalk(std::pair<int, int> start);
-
-	 /*!
-	 * @brief This method takes next step in the walk.
-	 * @param current - The current position of the walk.
-	 * @return The next position in the walk. 
+	 * @brief Checks if postion is valid.
+	 * @param position - The position to check.
+	 * @return True if the position is valid, false otherwise.
 	 */
-	 std::pair<int, int> nextStep(std::pair<int, int> current);
+	 bool isValidPosition(std::pair<int, int> position) const;
 
 	 /*!
-	 * @brief This method erases any loop that occurs in the walk.
+	 * @brief Pick a random direction to walk in.
+	 * @param directions - The directions to choose from.
+	 * @return The direction to walk in.
+	 */
+	 Direction pickRandomDirection(std::vector<Direction> directions);
+
+	 /*!
+	 * @brief Get the opposite direction.
+	 * @param direction - The direction to get the opposite of.
+	 * @return The opposite direction.
+	 */
+	 Direction getOppositeDirection(Direction direction) const;
+
+	 /*!
+	 * @brief Link nodes in the maze.
+	 * @param start - The starting position of the node to link.
+	 * @param end - The ending position of the node to link.
+	 */
+	 void linkNodes(std::pair<int, int> start, std::pair<int, int> end);
+
+	 /*!
+	 * @brief Erases any loop that occurs in the walk.
 	 * @param path - The path of the random walk.
 	 * @param current - The current position of the walk.
 	 * @return The path with any loop erased.
@@ -147,40 +153,65 @@ class Maze {
 	 std::vector<std::pair<int, int>> eraseLoop(std::vector<std::pair<int, int>> path, std::pair<int, int> current);
 
 	 /*!
-	 * @brief This method will link nodes in the maze.
-	 * @param start - The starting position of the node to link.
-	 * @param end - The ending position of the node to link.
+	 * @brief Take next step in the walk.
+	 * @param current - The current position of the walk.
+	 * @return The next position in the walk.
 	 */
-	 void linkNodes(std::pair<int, int> start, std::pair<int, int> end);
+	 std::pair<int, int> nextStep(std::pair<int, int> current);
 
 	 /*!
-	 * @brief This method will get the opposite direction.
-	 * @param direction - The direction to get the opposite of.
-	 * @return The opposite direction.
+	 * @brief A random walk from a starting node until it links back up with the maze.
+	 * @details The random walk will be performed until the path links back up with the maze or try's to go out of bounds.
+	 * @param start - The starting position of the node to start the walk from.
+	 * @return The path of the random walk.
 	 */
-	 Direction getOppositeDirection(Direction direction) const;
+	 std::vector<std::pair<int, int>> randomWalk(std::pair<int, int> start);
 
 	 /*!
-	 * @brief This method will pick a random direction to walk in.
-	 * @return The direction to walk in.
-	 */
-	 Direction pickRandomDirection();
+	 * @brief Generate maze
+	 * @details The maze is a 2D graph of nodes that are either PATH or WALL.
+	 * @param width - The width of the maze.
+     * @param height - The height of the maze.
+     */
+	 void generateMaze(int width, int height);
 
 	 /*!
-	 * @brief This method checks if postion is valid.
-	 * @param position - The position to check.
-	 * @return True if the position is valid, false otherwise.
+	 * @brief Prints the maze to the console.
 	 */
-	 bool isValidPosition(std::pair<int, int> position) const;
+	 void printMaze();
+
+	 /*!
+	 * @brief Update the maze printed to the console.
+	 * @param playerPosition - The position of the player.
+	 */
+	 void updateMaze(std::pair<int, int> playerPosition);
+
+	 /*!
+	 * @brief Choose a random start and end point of the maze.
+	 * @return A pair of start and end points.
+	 */
+	 std::pair<std::pair<int, int>, std::pair<int, int>> chooseStartAndEnd();
+
+	 /*!
+	 * @brief Check if the player has reached the end of the maze.
+	 * @return True if the player has reached the end, false otherwise.
+	 */
+	 bool checkWin() const;
+
+	 /*!
+	 * @brief Moving the player.
+	 * @param direction - The direction the player wants to move in.
+	 * @return True if the player can move in the given direction, false otherwise.
+	 */
+	 bool movePlayer(Direction direction);
+
+	 /*!
+	 * @brief Get player input.
+	 * @return The direction the player wants to move in.
+	 */
+	 Direction getPlayerInput();
 
 public :
-	
-	/*!
-	* @brief Default constructor for maze class.
-	* @details Generates a 21 by 21 node maze.
-	*/
-	Maze();
-
 	/*!
 	* @brief Constructor for Maze class.
 	* @param width - The width of the maze.
@@ -194,16 +225,11 @@ public :
 	~Maze() = default; 
 
 	/*!
-	* @brief This method will get the width of the maze.
-	* @return The width of the maze.
+	* @brief Runs the game logic/loop.
+	* @details The game logic will handle player moves, check game conditions, and print the maze to the console.
+	* @return either RETURN_TO_MENU or EXIT_GAME based on the user input.
 	*/
-	int getWidth() const;
-
-	/*!
-	* @brief This method will get the height of the maze.
-	* @return The height of the maze.
-	*/
-	int getHeight() const;
+	int run();
 };
  
 #endif // MAZE_H

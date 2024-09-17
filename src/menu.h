@@ -2,10 +2,10 @@
 #define MENU_H
 
 /*!
- * @file Menu.h
- * @brief Contains the declaration of the Menu class and its member functions.
- * @author Angus Martin
- */
+* @file Menu.h
+* @brief Contains the declaration of the Menu class and its member functions.
+* @author Angus Martin
+*/
 
 #include "ScreenBuffer.h" 
 #include "hangman.h"
