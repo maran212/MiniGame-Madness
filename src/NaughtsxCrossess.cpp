@@ -278,6 +278,7 @@ void NaughtsxCrossess::run(std::function<std::string()> inputProvider) {
     bool playAgain = true;
 
     while (playAgain) {
+        resetBoard();
         // Ask for difficulty or mode selection
         screenBuffer->setActive();
         clearScreen();
