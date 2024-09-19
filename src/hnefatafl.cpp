@@ -211,18 +211,20 @@ bool Hnefatafl::isGameOver() {
 
 
 // Converts a string-based move to board coordinates
-std::pair<int, int> Hnefatafl::covertMove(std::string move) {
-    std::string rows = "ABCDEFGHIJK";
-    int row = move[1] - '1';
-    int col = static_cast<int>(rows.find(move[0]));
+std::pair<int, int> Hnefatafl::convertMove(const std::string& move) {
+    char column = move[0];
+    int row = std::stoi(move.substr(1));
 
-    return std::make_pair(row, col);
+    int colIndex = column - 'A'; // Convert column 'A'-'K' to index 0-10
+    int rowIndex = row - 1;      // Convert row 1-11 to index 0-10
+
+    return { rowIndex, colIndex };
 };
 
 
 // Bot to play against the player (randomly selects a piece and a move)
 std::pair<int, int> Hnefatafl::bot(int player) {
-    srand(time(0));
+    srand(static_cast<unsigned int>(time(0)));
 	// Find if bot is white or black
 	int botPlayer = (player == WHITE) ? BLACK : WHITE;
 
@@ -346,16 +348,10 @@ void Hnefatafl::printBoard() {
 
 // Checks for vaild input from the user
 bool Hnefatafl::isValidInput(const std::string& input) {
-	if (input.length() == 5 && input[2] == ' ' &&
-		input[0] >= 'A' && input[0] <= 'K' &&
-		input[3] >= 'A' && input[3] <= 'K' &&
-		input[1] >= '1' && input[1] <= '9' &&
-		input[4] >= '1' && input[4] <= '9') {
-		return true;
-	}
-	else {
-		return false;
-	}
+    // Regular expression to match "A1 A2", "A10 A11", "A9 A10", "A10 A9" formats
+    std::regex pattern(R"(^[A-K](1[0-1]|[1-9]) [A-K](1[0-1]|[1-9])$)");
+
+    return std::regex_match(input, pattern);
 }
 
 
@@ -396,13 +392,19 @@ int  Hnefatafl::run() {
         { 
             screenBuffer.writeToScreen(4, 24, L"Enter your move (e.g., A1 B2): ");
             while (!validInput) {
-				input = screenBuffer.getBlockingInput();
+                input = screenBuffer.getBlockingInput();
 
                 if (isValidInput(input)) {
-                    source = covertMove(input.substr(0, 2));
-                    target = covertMove(input.substr(3, 2));
+                    size_t spacePos = input.find(' ');
 
-                    validInput = true;
+                    std::string sourceStr = input.substr(0, spacePos);
+                    std::string targetStr = input.substr(spacePos + 1);
+
+                    if ((sourceStr.length() == 2 && targetStr.length() == 2) || (sourceStr.length() == 3 && targetStr.length() == 2) || (sourceStr.length() == 2 && targetStr.length() == 3) || (sourceStr.length() == 3 && targetStr.length() == 3)) {
+                        source = convertMove(sourceStr);
+                        target = convertMove(targetStr);
+                        validInput = true;
+                    }
                 }
                 else {
                     screenBuffer.writeToScreen(4, 24, L"Invalid input. Please enter your move in the format 'A1 B2':");
@@ -428,29 +430,39 @@ int  Hnefatafl::run() {
         printBoard();
     }
 
-	// Print the game result
-	if (isKingCaptured()) {
+    // Print the game result
+    if (isKingCaptured()) {
         screenBuffer.writeToScreen(4, 30, L"The king has been captured. Black wins!");
-	}
-	else {
+    }
+    else {
         screenBuffer.writeToScreen(4, 30, L"The king has escaped. White wins!");
-	}
+    }
 
-	// Return to the main menu or exit the game
-	screenBuffer.writeToScreen(4, 31, L"Press 'r' to return to the main menu or 'q' to exit the game.");
+    // Display options for the player
+    screenBuffer.writeToScreen(4, 31, L"Type 'return' to return to the main menu, or 'exit' to exit MiniGame-Madness.");
 
-	while (true) {
-		char key = _getch();
-		if (key == 'r') {
-			return 0;
-		}
-		else if (key == 'q') {
-			return 1;
-		}
-		else {
-			screenBuffer.writeToScreen(4, 31, L"Invalid input. Press 'r' to return to the main menu or 'q' to exit the game.");
-		}
-	}
+    // Handle user input for post-game options
+    bool validChoice = false;
+
+    while (!validChoice) {
+        input = screenBuffer.getBlockingInput();
+
+        if (input == "return") {
+            validChoice = true;
+            // Return to the main menu (return to main menu)
+            return 0;
+        }
+        else if (input == "exit") {
+            validChoice = true;
+            // Exit the game (terminate the application)
+            return 1;
+        }
+        else {
+            screenBuffer.writeToScreen(4, 31, L"Invalid input. Please type 'return' or 'exit':");
+        }
+    }
+
+    return 0;
 };
 
 
