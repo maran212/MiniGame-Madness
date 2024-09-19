@@ -394,33 +394,35 @@ void ScreenBuffer::writeToScreen(int x, int y, const std::wstring& text, WORD te
 
 
 // Get blocking input from the user
-std::string ScreenBuffer::getBlockingInput()
-{
+std::string ScreenBuffer::getBlockingInput() {
     char ch;
-	std::string input;
-    std::pair<int, int> cursorPosition;
-	int offset = 1;
+    std::string input;
 
-	while (true)
-	{
-		ch = _getch();
+    while (true) {
+        ch = _getch();  
 
-        if (ch == '\r') {
-			break;
-        } else if (ch == '\b' && !input.empty()) {
-			input.pop_back();
-            writeToScreenBuffer(L"\033[1D");
-            writeToScreenBuffer(L" ");
-            writeToScreenBuffer(L"\033[1D");
+        if (ch == '\r') {  // Carriage return (Enter) to end input
+            break;
         }
-        else {
-			input += ch;
-
-			writeToScreenBuffer(std::wstring(1, ch));
+        else if (ch == '\b') {  // Backspace to remove the last character
+            if (!input.empty()) {
+                input.pop_back();
+                writeToScreenBuffer(L"\033[1D");  // Move cursor left
+                writeToScreenBuffer(L" ");       // Overwrite character
+                writeToScreenBuffer(L"\033[1D");  // Move cursor left again
+            }
         }
-	}
+        else if (ch == 0xE0 || ch == 0) {  // Special keys
+            char specialKey = _getch();  // Discard the next character as it's part of the escape sequence
+			continue;
+        }
+        else if (isprint(static_cast<unsigned char>(ch))) {  
+            input += ch;  
+            writeToScreenBuffer(std::wstring(1, ch));  
+        }
+    }
 
-	return input;
+    return input;  
 }
 
 

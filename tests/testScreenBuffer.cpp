@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "CppUnitTest.h"
+#include <iostream>
+#include <cstdio>
 #include "../src/ScreenBuffer.h" 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -139,6 +141,5 @@ namespace testScreenBuffer
             std::wstring clearedText = buffer.readScreenText(0, 0, static_cast<int>(text.length()));
             Assert::AreEqual(std::wstring(text.length(), L' '), clearedText);
         }
-
     };
 }
