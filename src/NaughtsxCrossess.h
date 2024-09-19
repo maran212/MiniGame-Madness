@@ -25,6 +25,12 @@ public:
     /// @brief Constructor to initialize the game board.
     NaughtsxCrossess();
 
+    /// @brief Copy Constructor
+    NaughtsxCrossess(const NaughtsxCrossess& other);
+
+    /// @brief Copy Assignment Operator
+    NaughtsxCrossess& operator=(const NaughtsxCrossess& other);
+
     /// @brief Constructor that accepts an external ScreenBuffer.
     explicit NaughtsxCrossess(ScreenBuffer* buffer);
 

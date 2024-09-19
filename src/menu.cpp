@@ -7,6 +7,7 @@ Maze mazeGame(10,10);
 NaughtsxCrossess naughtsxCrossessGame;
 Hangman hangmanGame;
 WordScrambler wordScramblerGame;
+BattleshipGame battleshipGame;
 
 //Con4 con4Game;
 
@@ -55,7 +56,7 @@ int Menu::startGame(int input)
         break;
     case 9:
         // Call function to start Battleship
-		Battleship();
+        battleshipGame.run();
         break;
     case 10:
         // Call function to start Minesweeper

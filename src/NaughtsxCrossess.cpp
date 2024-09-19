@@ -1,5 +1,57 @@
 #include "NaughtsxCrossess.h"
 
+
+// Copy Constructor
+NaughtsxCrossess::NaughtsxCrossess(const NaughtsxCrossess& other) {
+    if (other.screenBuffer) {
+        // Deep copy the ScreenBuffer
+        screenBuffer = new ScreenBuffer(*other.screenBuffer);
+        ownsScreenBuffer = true;  // Since we allocated a new ScreenBuffer
+    }
+    else {
+        screenBuffer = nullptr;
+        ownsScreenBuffer = false;
+    }
+
+    // Copy the board
+    for (int i = 0; i < BOARD_SIZE; ++i) {
+        for (int j = 0; j < BOARD_SIZE; ++j) {
+            board[i][j] = other.board[i][j];
+        }
+    }
+}
+
+
+// Copy Assignment Operator
+NaughtsxCrossess& NaughtsxCrossess::operator=(const NaughtsxCrossess& other) {
+    if (this != &other) {  // Protect against self-assignment
+        // Clean up existing resources
+        if (ownsScreenBuffer && screenBuffer) {
+            delete screenBuffer;
+            screenBuffer = nullptr;
+        }
+
+        if (other.screenBuffer) {
+            // Deep copy the ScreenBuffer
+            screenBuffer = new ScreenBuffer(*other.screenBuffer);
+            ownsScreenBuffer = true;
+        }
+        else {
+            screenBuffer = nullptr;
+            ownsScreenBuffer = false;
+        }
+
+        // Copy the board
+        for (int i = 0; i < BOARD_SIZE; ++i) {
+            for (int j = 0; j < BOARD_SIZE; ++j) {
+                board[i][j] = other.board[i][j];
+            }
+        }
+    }
+    return *this;
+}
+
+
 // Default constructor, initializes its own ScreenBuffer
 NaughtsxCrossess::NaughtsxCrossess() : screenBuffer(nullptr), ownsScreenBuffer(true) {
     screenBuffer = new ScreenBuffer();
@@ -226,6 +278,7 @@ void NaughtsxCrossess::run(std::function<std::string()> inputProvider) {
     bool playAgain = true;
 
     while (playAgain) {
+        resetBoard();
         // Ask for difficulty or mode selection
         screenBuffer->setActive();
         clearScreen();
