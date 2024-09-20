@@ -100,10 +100,8 @@ namespace testScreenBuffer
 
 			buffer.writeToScreen(0, 0, text);
 
-			Logger::WriteMessage(std::to_string(text.length()).c_str());
-
             // Verify the written text
-            Assert::AreEqual(text, buffer.readScreenText(0,0,text.length()));
+            Assert::AreEqual(text, buffer.readScreenText(0,0, static_cast<int>(text.length())));
         }
 
 		TEST_METHOD(ReadScreenText)
@@ -114,7 +112,7 @@ namespace testScreenBuffer
 			buffer.writeToScreen(0, 0, text);
 
 			// Verify the written text
-			Assert::AreEqual(text, buffer.readScreenText(0, 0, text.length()));
+			Assert::AreEqual(text, buffer.readScreenText(0, 0, static_cast<int>(text.length())));
 		}
 
 		TEST_METHOD(GetScreenColours)
@@ -124,7 +122,7 @@ namespace testScreenBuffer
 
 			buffer.writeToScreen(0, 0, text, ScreenBuffer::BLUE, ScreenBuffer::RED);
 
-			std::pair<WORD, WORD> colours = buffer.getScreenColours(0, 0, text.length());
+			std::pair<WORD, WORD> colours = buffer.getScreenColours(0, 0, static_cast<int>(text.length()));
 			Assert::AreEqual(ScreenBuffer::BLUE, colours.first);
 		}
 
@@ -138,7 +136,7 @@ namespace testScreenBuffer
             buffer.clearScreen();
 
             // Verify that the screen is cleared
-            std::wstring clearedText = buffer.readScreenText(0, 0, text.length());
+            std::wstring clearedText = buffer.readScreenText(0, 0, static_cast<int>(text.length()));
             Assert::AreEqual(std::wstring(text.length(), L' '), clearedText);
         }
 

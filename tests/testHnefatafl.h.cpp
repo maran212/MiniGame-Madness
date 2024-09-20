@@ -9,12 +9,14 @@ namespace HnefataflTests
     TEST_CLASS(HnefataflGameTest)
     {
     public:
+        static const int BOARD_SIZE = 11; 
+        static const int WHITE = 1; 
+        static const int BLACK = 2; 
+        static const int KING = 3; 
+        static const int KING_SQUARE = 4; 
+        static const int EMPTY = 0; 
+        static const int OUT_OF_BOUNDS = -1; 
         
-		const int KING = 3;
-		const int KING_SQUARE = 4;
-		const int WHITE = 1;
-		const int BLACK = 2;
-
         // Test board initialization
         TEST_METHOD(BoardInitialization)
         {
@@ -150,9 +152,13 @@ namespace HnefataflTests
         TEST_METHOD(ConvertMove)
         {
             Hnefatafl game;
-			std::pair<int, int> test = game.covertMove("A1");
-            Assert::AreEqual(0, test.first);
+			std::pair<int, int> test = game.convertMove("A2");
+            Assert::AreEqual(1, test.first);
 			Assert::AreEqual(0, test.second);
+
+			test = game.convertMove("K10");
+			Assert::AreEqual(9, test.first);
+			Assert::AreEqual(10, test.second);
         }
 
 		// Test if isValidInput returns the correct boolean
