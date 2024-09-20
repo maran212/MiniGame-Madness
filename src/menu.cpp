@@ -2,14 +2,14 @@
 
 // Initialize games
 Hnefatafl hnefataflGame;
-Maze mazeGame(10,10);
+//Maze mazeGame(10,10);
 
 NaughtsxCrossess naughtsxCrossessGame;
 Hangman hangmanGame;
 WordScrambler wordScramblerGame;
 BattleshipGame battleshipGame;
 
-//Con4 con4Game;
+Con4 con4Game;
 
 
 // Input function to start each game
@@ -25,8 +25,7 @@ int Menu::startGame(int input)
         break;
     case 2:
         // Call function to start Connect 4
-        //con4Game.connect4();
-        screenBuffer.writeToScreen(75, startY + row, L"Coming Soon", ScreenBuffer::RED, ScreenBuffer::BACKGROUND_NORMAL);
+        output = con4Game.connect4();
         break;
     case 3:
         // Call function to start Maze

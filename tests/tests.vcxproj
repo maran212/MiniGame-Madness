@@ -101,7 +101,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>../MiniGame-Madness/x64/Debug;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../x64/Debug;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ScreenBuffer.obj;NaughtsxCrossess.obj;battleShips.obj;hangman.obj;wordScrambler.obj;hnefatafl.obj;maze.obj</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
