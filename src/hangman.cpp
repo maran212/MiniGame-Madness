@@ -51,13 +51,13 @@ std::string Hangman::getRandomWord(const std::string& filename) {
 void Hangman::playHangman(const std::string& difficulty) {
     std::string filename;
     if (difficulty == "1" || difficulty == "easy") {
-        filename = "easy.txt";
+        filename = "../MiniGame-Madness/src/easy.txt";
     }
     else if (difficulty == "2" || difficulty == "medium") {
-        filename = "medium.txt";
+        filename = "../MiniGame-Madness/src/medium.txt";
     }
     else if (difficulty == "3" || difficulty == "hard") {
-        filename = "hard.txt";
+        filename = "../MiniGame-Madness/src/hard.txt";
     }
     else {
         screenBuffer->writeToScreen(0, 0, L"Invalid difficulty level. Exiting game.");

@@ -96,14 +96,13 @@ void WordScrambler::playWordScrambler(const std::string& difficulty) {
     std::string filename;
 
     if (difficulty == "1" || difficulty == "easy") {
-        filename = "easy.txt";
+        filename = "../MiniGame-Madness/src/easy.txt";
     }
     else if (difficulty == "2" || difficulty == "medium") {
-        filename = "medium.txt";
+        filename = "../MiniGame-Madness/src/medium.txt";
     }
     else if (difficulty == "3" || difficulty == "hard") {
-        screenBuffer->writeToScreen(0, 0, L"Invalid difficulty level. Exiting game.");
-        return;
+        filename = "../MiniGame-Madness/src/hard.txt";
     }
 
     std::string word = getRandomWord(filename);
