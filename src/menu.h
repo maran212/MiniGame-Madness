@@ -24,6 +24,12 @@
 */
 class Menu {
 private:
+	int row; /*!< The row of the menu */
+	int padding; /*!< The padding to add to x cordinate of the menu */
+	int width; /*!< The width of the menu */
+	int startY; /*!< The starting y cordinate of the menu */
+
+	ScreenBuffer screenBuffer;
     /*!
     * @brief function to start a game based on the user input
     * @param input - The input from the user
