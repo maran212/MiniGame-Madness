@@ -7,6 +7,10 @@ int player1 = 1, player2 = 2; //1 for player 1, 2 for 2, 0 for empty space.*/
 int currentplayer;
 bool winquestionmark = false;
 
+const wstring win = L"w";
+const wstring surrender = L"s";
+const wstring draw = L"d";
+
 Con4::Con4()
 {
 	populategrid();
@@ -14,19 +18,19 @@ Con4::Con4()
 
 void Con4::endgame(wstring letter) // end game
 {
-    if (letter == L"w")
+    if (letter == win)
     {
         screenBuffer.writeToScreen(0, 16, L"player " + to_wstring(currentplayer) + L" wins.");
 
         screenBuffer.getBlockingInput();
     }
-    else if (letter == L"s")
+    else if (letter == surrender)
     {
         screenBuffer.writeToScreen(0, 16, L"player " + to_wstring(currentplayer) + L" surrenders.");
 
         screenBuffer.getBlockingInput();
     }
-    else if (letter == L"d")
+    else if (letter == draw)
     {
         screenBuffer.writeToScreen(0, 16, L"Draw.");
 
@@ -60,7 +64,7 @@ void Con4::playerturn(int player)
         {
             repeat = false;
 
-            endgame(L"s");
+            endgame(surrender);
         }
         else if (stoi(diff) >= 1 && stoi(diff) <= 7)
         {
@@ -105,7 +109,7 @@ void Con4::checkdraw()
 {
     if(grid[0][0] != 0 && grid[0][1] != 0 &&grid[0][2] != 0 && grid[0][3] != 0 && grid[0][4] != 0 && grid[0][5] != 0 && grid[0][6] != 0)
     {
-        endgame(L"d");
+        endgame(draw);
     }
 }
 
@@ -122,22 +126,22 @@ void Con4::checkwin()
         {
             if (j < 4 && grid[i][j] == grid[i][j + 1] && grid[i][j] == grid[i][j + 2] && grid[i][j] == grid[i][j + 3] && grid[i][j] != 0) // horizontal
             {
-                endgame(L"w");
+                endgame(win);
             }
             
             if (i < 3 && grid[i][j] == grid[i + 1][j] && grid[i][j] == grid[i + 2][j] && grid[i][j] == grid[i + 3][j] && grid[i][j] != 0) // vertical
             {
-                endgame(L"w");
+                endgame(win);
             }
 
             if (i < 3 && j < 4 && grid[i][j] == grid[i + 1][j + 1] && grid[i][j] == grid[i + 2][j + 2] && grid[i][j] == grid[i + 3][j + 3] && grid[i][j] != 0) // diagonal down right
             {
-                endgame(L"w");
+                endgame(win);
             }
 
             if (i > 3 && j < 4 && grid[i][j] == grid[i - 1][j + 1] && grid[i][j] == grid[i - 2][j + 2] && grid[i][j] == grid[i - 3][j + 3] && grid[i][j] != 0) // diagonal down left
             {
-                endgame(L"w");
+                endgame(win);
             }
         }
     }
