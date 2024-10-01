@@ -4,13 +4,15 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "IScreenBuffer.h"
 #include "ScreenBuffer.h"
+#include "RealScreenBuffer.h"
 
 /// @brief Class representing the Word Scrambler game.
 class WordScrambler {
 private:
-    /// @brief ScreenBuffer pointer used to manage screen output (to allow external injection or internal creation).
-    ScreenBuffer* screenBuffer;
+    /// @brief IScreenBuffer pointer used to manage screen output (to allow external injection or internal creation).
+    IScreenBuffer* screenBuffer;
 
     /// @brief If we create an internal ScreenBuffer, we need to manage its lifecycle.
     bool ownsScreenBuffer;
@@ -19,14 +21,14 @@ public:
     /// @brief Default constructor.
     WordScrambler();
 
-    /// @brief Constructor that accepts an external ScreenBuffer.
-    explicit WordScrambler(ScreenBuffer* buffer);
+    /// @brief Constructor that accepts an external IScreenBuffer.
+    explicit WordScrambler(IScreenBuffer* buffer);
 
     /// @brief Destructor to clean up internal ScreenBuffer if we own it.
     ~WordScrambler();
 
-    /// @brief Sets the ScreenBuffer to be used by the game.
-    void setScreenBuffer(ScreenBuffer* buffer);
+    /// @brief Sets the IScreenBuffer to be used by the game.
+    void setScreenBuffer(IScreenBuffer* buffer);
 
     /// @brief Clears the screen using the ScreenBuffer class.
     void clearScreen();

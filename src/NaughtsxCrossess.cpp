@@ -256,7 +256,7 @@ bool NaughtsxCrossess::playerMove(char player, std::function<std::string()> inpu
 
 void NaughtsxCrossess::aiMove(int difficulty) {
     if (difficulty == 1) {
-        srand(time(0));
+        srand(static_cast<unsigned int>(time(0)));
         int row, col;
         do {
             row = rand() % BOARD_SIZE;

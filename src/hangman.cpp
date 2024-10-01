@@ -59,6 +59,9 @@ void Hangman::playHangman(const std::string& difficulty) {
     else if (difficulty == "3" || difficulty == "hard") {
         filename = "../MiniGame-Madness/src/hard.txt";
     }
+    else if (difficulty == "testcode") {
+        filename = "easy.txt";
+    }
     else {
         screenBuffer->writeToScreen(0, 0, L"Invalid difficulty level. Exiting game.");
         return;

@@ -5,11 +5,11 @@
 
 // Default constructor, initializes its own ScreenBuffer
 WordScrambler::WordScrambler() : screenBuffer(nullptr), ownsScreenBuffer(true) {
-    screenBuffer = new ScreenBuffer();  // Create a new ScreenBuffer
+    screenBuffer = new RealScreenBuffer();  // Create a new RealScreenBuffer
 }
 
-// Constructor that accepts an external ScreenBuffer
-WordScrambler::WordScrambler(ScreenBuffer* buffer) : screenBuffer(buffer), ownsScreenBuffer(false) {}
+// Constructor that accepts an external IScreenBuffer
+WordScrambler::WordScrambler(IScreenBuffer* buffer) : screenBuffer(buffer), ownsScreenBuffer(false) {}
 
 // Destructor to clean up internal ScreenBuffer if owned
 WordScrambler::~WordScrambler() {
@@ -19,8 +19,8 @@ WordScrambler::~WordScrambler() {
     }
 }
 
-// Method to set external ScreenBuffer
-void WordScrambler::setScreenBuffer(ScreenBuffer* buffer) {
+// Method to set external IScreenBuffer
+void WordScrambler::setScreenBuffer(IScreenBuffer* buffer) {
     if (ownsScreenBuffer && screenBuffer) {
         delete screenBuffer;  // Clean up internal buffer if we are replacing it
     }
@@ -50,15 +50,24 @@ std::string WordScrambler::getRandomWord(const std::string& filename) {
     }
     file.close();
 
-    srand(static_cast<unsigned int>(time(0)));
-    int randomIndex = rand() % words.size();
+    if (words.empty()) {
+        if (screenBuffer) {
+            screenBuffer->writeToScreen(0, 0, L"Error: No words found in file");
+        }
+        return "";
+    }
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<std::size_t> dist(0, words.size() - 1);
+    std::size_t randomIndex = dist(gen);
     return words[randomIndex];
 }
 
 std::string WordScrambler::scrambleWord(const std::string& word) {
     std::string scrambled = word;
 
-    // Use std::shuffle instead of deprecated std::random_shuffle
+    // Use std::shuffle
     std::random_device rd;
     std::mt19937 g(rd()); // Random number generator
     std::shuffle(scrambled.begin(), scrambled.end(), g);
@@ -78,7 +87,7 @@ std::string WordScrambler::toLowerCase(const std::string& str) {
 void WordScrambler::displayHint(const std::string& word) {
     if (!screenBuffer) return;
 
-    int length = word.length();
+    size_t length = word.length();
     char firstChar = word[0];
     char middleChar = word[length / 2];
     char lastChar = word[length - 1];
@@ -104,8 +113,19 @@ void WordScrambler::playWordScrambler(const std::string& difficulty) {
     else if (difficulty == "3" || difficulty == "hard") {
         filename = "../MiniGame-Madness/src/hard.txt";
     }
+    else if (difficulty == "testcode") {
+        filename = "easy.txt";
+    }
+    else {
+        screenBuffer->writeToScreen(0, 0, L"Invalid difficulty level. Exiting game.");
+        return;
+    }
 
     std::string word = getRandomWord(filename);
+    if (word.empty()) {
+        // Error already handled in getRandomWord
+        return;
+    }
     std::string scrambledWord = scrambleWord(word);
     std::string guess;
     bool guessedCorrectly = false;

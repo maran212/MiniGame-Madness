@@ -97,16 +97,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\easy.txt">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="src\hard.txt">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="src\medium.txt">
       <Filter>Resource Files</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\easy.txt">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

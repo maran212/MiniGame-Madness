@@ -36,7 +36,7 @@ namespace HangmanTests
 
             try {
                 // Run the playHangman method
-                game.playHangman("1");
+                game.playHangman("testcode");
 
                 // Verify that the incorrect guess message is displayed
                 bool foundIncorrectGuess = false;
@@ -82,7 +82,7 @@ namespace HangmanTests
 
             try {
                 // Run the playHangman method
-                game.playHangman("1");
+                game.playHangman("testcode");
 
                 // Verify that the correct guess message is displayed
                 bool foundCorrectGuess = false;
@@ -132,7 +132,7 @@ namespace HangmanTests
 
             try {
                 // Run the playHangman method with difficulty "1"
-                game.playHangman("1");
+                game.playHangman("testcode");
 
                 // Verify that the losing message is displayed
                 bool foundLoseMessage = false;
@@ -179,7 +179,7 @@ namespace HangmanTests
 
             try {
                 // Run the playHangman method with difficulty "1"
-                game.playHangman("1");
+                game.playHangman("testcode");
 
                 // Verify that the winning message is displayed
                 bool foundWinMessage = false;
@@ -221,7 +221,7 @@ namespace HangmanTests
             MockScreenBuffer mockScreenBuffer;
 
             // Simulate user inputs
-            mockScreenBuffer.inputQueue.push("1");    // Choose difficulty
+            mockScreenBuffer.inputQueue.push("testcode");    // Choose difficulty
             mockScreenBuffer.inputQueue.push("a");    // First guess
             mockScreenBuffer.inputQueue.push("stop"); // Exit the game
             mockScreenBuffer.inputQueue.push("n");    // Do not play again
