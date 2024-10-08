@@ -1,5 +1,6 @@
 #include "NaughtsxCrossess.h"
 
+// Global variable to track if the game has ended
 
 // Copy Constructor
 NaughtsxCrossess::NaughtsxCrossess(const NaughtsxCrossess& other) {
@@ -20,7 +21,6 @@ NaughtsxCrossess::NaughtsxCrossess(const NaughtsxCrossess& other) {
         }
     }
 }
-
 
 // Copy Assignment Operator
 NaughtsxCrossess& NaughtsxCrossess::operator=(const NaughtsxCrossess& other) {
@@ -51,25 +51,17 @@ NaughtsxCrossess& NaughtsxCrossess::operator=(const NaughtsxCrossess& other) {
     return *this;
 }
 
-
-// Default constructor, initializes its own ScreenBuffer
-NaughtsxCrossess::NaughtsxCrossess() : screenBuffer(nullptr), ownsScreenBuffer(true) {
+// Default constructor
+NaughtsxCrossess::NaughtsxCrossess() : screenBuffer(nullptr), ownsScreenBuffer(true), gameEnded(false) {
     screenBuffer = new ScreenBuffer();
-    for (int i = 0; i < BOARD_SIZE; ++i) {
-        for (int j = 0; j < BOARD_SIZE; ++j) {
-            board[i][j] = ' ';
-        }
-    }
+    resetBoard();
 }
 
-// Constructor that accepts an external ScreenBuffer
-NaughtsxCrossess::NaughtsxCrossess(ScreenBuffer* buffer) : screenBuffer(buffer), ownsScreenBuffer(false) {
-    for (int i = 0; i < BOARD_SIZE; ++i) {
-        for (int j = 0; j < BOARD_SIZE; ++j) {
-            board[i][j] = ' ';
-        }
-    }
+// Constructor with external ScreenBuffer
+NaughtsxCrossess::NaughtsxCrossess(ScreenBuffer* buffer) : screenBuffer(buffer), ownsScreenBuffer(false), gameEnded(false) {
+    resetBoard();
 }
+
 
 // Destructor to clean up internal ScreenBuffer if we own it
 NaughtsxCrossess::~NaughtsxCrossess() {
@@ -102,17 +94,21 @@ void NaughtsxCrossess::printBoard() const {
 }
 
 void NaughtsxCrossess::printBoardWithNumbers() const {
-    screenBuffer->writeToScreen(0, 0, L"-------------");
-    int rowOffset = 9;
-    int cellNumber = 1;
+    screenBuffer->writeToScreen(20, 0, L"-------------");
+    int rowOffset = 1;
+    int numpadNumbers[BOARD_SIZE][BOARD_SIZE] = {
+        {7, 8, 9},
+        {4, 5, 6},
+        {1, 2, 3}
+    };
     for (int i = 0; i < BOARD_SIZE; ++i) {
         std::wstring row = L"| ";
         for (int j = 0; j < BOARD_SIZE; ++j) {
+            int cellNumber = numpadNumbers[i][j];
             row += std::to_wstring(cellNumber) + L" | ";
-            cellNumber++;
         }
-        screenBuffer->writeToScreen(0, rowOffset++, row);
-        screenBuffer->writeToScreen(0, rowOffset++, L"-------------");
+        screenBuffer->writeToScreen(20, rowOffset++, row);
+        screenBuffer->writeToScreen(20, rowOffset++, L"-------------");
     }
 }
 
@@ -182,7 +178,7 @@ int NaughtsxCrossess::minimax(int depth, bool isMax, int difficulty) {
             for (int j = 0; j < BOARD_SIZE; ++j) {
                 if (board[i][j] == ' ') {
                     board[i][j] = 'x';
-                    best = std::max(best, minimax(depth + 1, !isMax, difficulty));  // Use std::max here
+                    best = std::max(best, minimax(depth + 1, !isMax, difficulty));
                     board[i][j] = ' ';
                 }
             }
@@ -196,7 +192,7 @@ int NaughtsxCrossess::minimax(int depth, bool isMax, int difficulty) {
             for (int j = 0; j < BOARD_SIZE; ++j) {
                 if (board[i][j] == ' ') {
                     board[i][j] = 'o';
-                    best = std::min(best, minimax(depth + 1, !isMax, difficulty));  // Use std::min here
+                    best = std::min(best, minimax(depth + 1, !isMax, difficulty));
                     board[i][j] = ' ';
                 }
             }
@@ -227,6 +223,21 @@ std::pair<int, int> NaughtsxCrossess::findBestMove(int difficulty) {
     return bestMove;
 }
 
+std::pair<int, int> NaughtsxCrossess::moveNumberToPosition(int moveNumber) const {
+    switch (moveNumber) {
+    case 7: return { 0, 0 };
+    case 8: return { 0, 1 };
+    case 9: return { 0, 2 };
+    case 4: return { 1, 0 };
+    case 5: return { 1, 1 };
+    case 6: return { 1, 2 };
+    case 1: return { 2, 0 };
+    case 2: return { 2, 1 };
+    case 3: return { 2, 2 };
+    default: return { -1, -1 }; // Invalid move
+    }
+}
+
 bool NaughtsxCrossess::playerMove(char player, std::function<std::string()> inputProvider) {
     screenBuffer->writeToScreen(0, 0, L"Enter your move (1-9) or type 'stop' to end the game: ");
 
@@ -234,20 +245,36 @@ bool NaughtsxCrossess::playerMove(char player, std::function<std::string()> inpu
     std::string input = inputProvider ? inputProvider() : screenBuffer->getBlockingInput();
 
     if (input == "stop") {
+        gameEnded = true;
         return false;
     }
 
-    int move = std::stoi(input);
-    move--;
+    int move;
+    try {
+        move = std::stoi(input);
+    }
+    catch (...) {
+        screenBuffer->writeToScreen(0, 10, L"Invalid input. Please enter a number between 1 and 9. press 'enter' to try again...");
+        screenBuffer->getBlockingInput();
+        clearScreen();
+        printBoardWithNumbers();
+        printBoard();
+        return playerMove(player, inputProvider);
+    }
 
-    int row = move / BOARD_SIZE;
-    int col = move % BOARD_SIZE;
+    std::pair<int, int> pos = moveNumberToPosition(move);
+    int row = pos.first;
+    int col = pos.second;
 
-    if (move >= 0 && move < BOARD_SIZE * BOARD_SIZE && board[row][col] == ' ') {
+    if (row >= 0 && col >= 0 && board[row][col] == ' ') {
         board[row][col] = player;
     }
     else {
-        screenBuffer->writeToScreen(0, 1, L"Invalid move. Try again.");
+        screenBuffer->writeToScreen(0, 10, L"Invalid input. Please enter a number between 1 and 9. press 'enter' to try again...");
+        screenBuffer->getBlockingInput();
+        clearScreen();
+        printBoardWithNumbers();
+        printBoard();
         return playerMove(player, inputProvider);  // Recursively call playerMove with the same inputProvider
     }
 
@@ -289,9 +316,19 @@ void NaughtsxCrossess::run(std::function<std::string()> inputProvider) {
             return;  // Stop the program if "stop" is entered
         }
 
-        int difficulty = std::stoi(input);
+        int difficulty;
+        try {
+            difficulty = std::stoi(input);
+        }
+        catch (...) {
+            screenBuffer->writeToScreen(0, 1, L"Invalid input. Exiting.");
+            screenBuffer->getBlockingInput();
+            return;
+        }
+
         if (difficulty < 1 || difficulty > 4) {
             screenBuffer->writeToScreen(0, 1, L"Invalid mode selected. Exiting.");
+            screenBuffer->getBlockingInput();
             return;
         }
 
@@ -309,6 +346,13 @@ void NaughtsxCrossess::run(std::function<std::string()> inputProvider) {
             printBoard();  // Show current board with pieces
 
             if (!playerMove(isPvP ? 'o' : 'o', inputProvider)) {  // Player 1 move
+                clearScreen();
+                screenBuffer->writeToScreen(0, 4, L"Game stopped by the player.");
+                gameOver = true;
+                break;
+            }
+
+            if (gameEnded) {
                 clearScreen();
                 screenBuffer->writeToScreen(0, 4, L"Game stopped by the player.");
                 gameOver = true;

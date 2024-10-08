@@ -48,6 +48,22 @@ std::string Hangman::getRandomWord(const std::string& filename) {
     return words[randomIndex];
 }
 
+void Hangman::displayGuessedLetters(const std::vector<char>& guessedLetters) {
+    if (guessedLetters.empty()) {
+        screenBuffer->writeToScreen(0, 10, L"No letters guessed yet.");
+        return;
+    }
+
+    std::wstring guessedLettersStr = L"Guessed letters: ";
+    for (char letter : guessedLetters) {
+        guessedLettersStr += letter;
+        guessedLettersStr += L' ';
+    }
+
+    screenBuffer->writeToScreen(0, 10, guessedLettersStr);
+}
+
+
 void Hangman::playHangman(const std::string& difficulty) {
     std::string filename;
     if (difficulty == "1" || difficulty == "easy") {
@@ -63,7 +79,7 @@ void Hangman::playHangman(const std::string& difficulty) {
         filename = "easy.txt";
     }
     else {
-        screenBuffer->writeToScreen(0, 0, L"Invalid difficulty level. Exiting game.");
+        screenBuffer->writeToScreen(0, 1, L"Invalid difficulty level. Exiting game.");
         return;
     }
 
@@ -84,6 +100,9 @@ void Hangman::playHangman(const std::string& difficulty) {
 
         // Display hangman figure
         displayHangman(wrongGuesses);
+
+        //display the guessed words
+        displayGuessedLetters(guessedLetters);
 
         screenBuffer->writeToScreen(0, 8, L"Guess a letter (or type 'stop' to exit): ");
         std::string input = screenBuffer->getBlockingInput();

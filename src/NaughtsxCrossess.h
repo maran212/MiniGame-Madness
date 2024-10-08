@@ -20,6 +20,7 @@ private:
     char board[BOARD_SIZE][BOARD_SIZE]; ///< The game board.
     ScreenBuffer* screenBuffer;         ///< ScreenBuffer pointer for managing console output.
     bool ownsScreenBuffer;              ///< Track if the class owns the screen buffer.
+    bool gameEnded;
 
 public:
     /// @brief Constructor to initialize the game board.
@@ -42,9 +43,6 @@ public:
 
     /// @brief Prints the current state of the board.
     void printBoard() const;
-
-    /// @brief Runs and manages the game.
-    void run(std::function<std::string()> inputProvider = nullptr);
 
     /// @brief Prints the board with numbers 1-9 to indicate cell positions.
     void printBoardWithNumbers() const;
@@ -92,6 +90,13 @@ public:
     /// @return A reference to the value at the specified position.
     char& getBoardValue(int row, int col);
 
+    /// @brief Converts a move number (1-9) to board coordinates based on numpad layout.
+    /// @param moveNumber The move number entered by the player.
+    /// @return A pair of integers representing the row and column.
+    std::pair<int, int> moveNumberToPosition(int moveNumber) const;
+
+    /// @brief Runs and manages the game.
+    void run(std::function<std::string()> inputProvider = nullptr);
 };
 
 #endif // NAUGHTS_AND_CROSSES_H

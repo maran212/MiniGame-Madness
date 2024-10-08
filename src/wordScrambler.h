@@ -27,6 +27,10 @@ public:
     /// @brief Destructor to clean up internal ScreenBuffer if we own it.
     ~WordScrambler();
 
+    /// @brief method used to display the guessed words by the player.
+    ///@param the guessed words
+    void displayGuessedWords(const std::vector<std::string>& guessedWords);
+
     /// @brief Sets the IScreenBuffer to be used by the game.
     void setScreenBuffer(IScreenBuffer* buffer);
 

@@ -1,5 +1,8 @@
 #include "BattleshipGame.h"
 
+// Global variable to track if the game has ended
+bool gameEnded = false;
+
 BattleshipGame::BattleshipGame() : screenBuffer(nullptr), ownsScreenBuffer(true), player(), ai() {
     screenBuffer = new ScreenBuffer();
 }
@@ -14,6 +17,7 @@ BattleshipGame::~BattleshipGame() {
         screenBuffer = nullptr;
     }
 }
+
 // Copy Constructor
 BattleshipGame::BattleshipGame(const BattleshipGame& other) : player(other.player), ai(other.ai) {
     if (other.screenBuffer && other.ownsScreenBuffer) {
@@ -54,8 +58,6 @@ BattleshipGame& BattleshipGame::operator=(const BattleshipGame& other) {
     }
     return *this;
 }
-
-
 
 void Player::displayGrid(bool revealShips, ScreenBuffer* screenBuffer, int startX, int startY) {
     int y = startY;
@@ -147,10 +149,12 @@ std::pair<int, int> Player::getAIShot() {
 
 void Player::playerTurn(Player& opponent, ScreenBuffer* screenBuffer, std::function<std::string()> inputProvider) {
     while (true) {
+        if (gameEnded) return; // Check if the game has ended
+
         screenBuffer->clearScreen();
         showBoards(opponent, screenBuffer); // Show both boards
 
-        screenBuffer->writeToScreen(0, gridSize * 2 + 3, L"Enter row and column to fire (e.g., '27' or '2 7'): ");
+        screenBuffer->writeToScreen(0, gridSize * 2 + 3, L"Enter row and column to fire (e.g., '27' or '2 7'): type stop to exit ");
 
         std::string input;
         if (inputProvider) {
@@ -158,6 +162,12 @@ void Player::playerTurn(Player& opponent, ScreenBuffer* screenBuffer, std::funct
         }
         else {
             input = screenBuffer->getBlockingInput();
+        }
+
+        // Check if input is "stop"
+        if (input == "stop") {
+            gameEnded = true;
+            return;
         }
 
         int row = -1, col = -1;
@@ -180,7 +190,7 @@ void Player::playerTurn(Player& opponent, ScreenBuffer* screenBuffer, std::funct
 
         // Validate row and col
         if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
-            screenBuffer->writeToScreen(0, gridSize * 2 + 4, L"Invalid coordinates. Please enter values within the grid.");
+            screenBuffer->writeToScreen(0, gridSize * 2 + 4, L"Invalid coordinates. Please enter values within the grid. Press enter to continue...");
             if (!inputProvider) {
                 screenBuffer->getBlockingInput();
             }
@@ -218,6 +228,8 @@ void Player::playerTurn(Player& opponent, ScreenBuffer* screenBuffer, std::funct
 }
 
 void Player::aiTurn(Player& opponent, ScreenBuffer* screenBuffer, std::function<std::string()> inputProvider) {
+    if (gameEnded) return; // Check if the game has ended
+
     auto shot = getAIShot();
     int row = shot.first;
     int col = shot.second;
@@ -264,27 +276,39 @@ void Player::setupGame(bool isAI, ScreenBuffer* screenBuffer, std::function<std:
             choice = inputProvider();
         }
         else {
-            screenBuffer->writeToScreen(0, 0, L"Do you want to manually place your ships or auto-place them? (m/a): ");
+            screenBuffer->writeToScreen(0, 0, L"Do you want to manually place your ships or auto-place them? (m/a): type stop to exit ");
             choice = screenBuffer->getBlockingInput();
+        }
+
+        // Check if choice is "stop"
+        if (choice == "stop") {
+            gameEnded = true;
+            return;
         }
 
         if (choice == "a" || choice == "A") {
             autoPlaceShips(shipsList);
             screenBuffer->writeToScreen(0, 1, L"Ships have been auto-placed. Here's your board:");
             displayGrid(true, screenBuffer, 0, 2);
-            screenBuffer->writeToScreen(0, gridSize + 3, L"Press Enter to continue...");
+            screenBuffer->writeToScreen(0, gridSize + 3, L"Press Enter to continue or type stop to exit...");
             if (!inputProvider) {
-                screenBuffer->getBlockingInput();
+                std::string input = screenBuffer->getBlockingInput();
+                if (input == "stop") {
+                    gameEnded = true;
+                    return;
+                }
             }
         }
         else {
             for (auto& ship : shipsList) {
                 bool placed = false;
                 while (!placed) {
+                    if (gameEnded) return; // Check if the game has ended
+
                     screenBuffer->clearScreen();
                     displayGrid(true, screenBuffer);
                     screenBuffer->writeToScreen(0, gridSize + 2, L"Place your " + std::wstring(ship.name.begin(), ship.name.end()) +
-                        L" (size " + std::to_wstring(ship.size) + L") at row, col and orientation (h/v): ");
+                        L" (size " + std::to_wstring(ship.size) + L") at row, col and orientation (h(left to right)/v(top to bottom)): type stop to exit ");
 
                     std::string input;
                     if (inputProvider) {
@@ -292,6 +316,12 @@ void Player::setupGame(bool isAI, ScreenBuffer* screenBuffer, std::function<std:
                     }
                     else {
                         input = screenBuffer->getBlockingInput();
+                    }
+
+                    // Check if input is "stop"
+                    if (input == "stop") {
+                        gameEnded = true;
+                        return;
                     }
 
                     int row = -1, col = -1;
@@ -348,20 +378,37 @@ void Player::showBoards(Player& opponent, ScreenBuffer* screenBuffer) {
 void BattleshipGame::run(std::function<std::string()> inputProvider) {
     srand(static_cast<unsigned int>(time(0))); // Seed the random number generator with the current time
 
+    gameEnded = false; // Set the gameEnded flag to false at the start
+
     screenBuffer->setActive();
     player.setupGame(false, screenBuffer, inputProvider); // Player setup
+    if (gameEnded) {
+        screenBuffer->clearScreen();
+        screenBuffer->writeToScreen(0, 0, L"Game has been stopped.");
+        screenBuffer->writeToScreen(0, 1, L"Press Enter to exit...");
+        if (!inputProvider) {
+            screenBuffer->getBlockingInput();
+        }
+        return;
+    }
     ai.setupGame(true, screenBuffer);      // AI setup
 
     // Main game loop
-    while (!player.isGameOver() && !ai.isGameOver()) {
+    while (!player.isGameOver() && !ai.isGameOver() && !gameEnded) {
         player.playerTurn(ai, screenBuffer, inputProvider);
+        if (gameEnded) {
+            break;
+        }
         if (!ai.isGameOver()) {
             ai.aiTurn(player, screenBuffer, inputProvider);
         }
     }
 
     screenBuffer->clearScreen();
-    if (player.isGameOver()) {
+    if (gameEnded) {
+        screenBuffer->writeToScreen(0, 0, L"Game has been stopped.");
+    }
+    else if (player.isGameOver()) {
         screenBuffer->writeToScreen(0, 0, L"You lost!");
     }
     else {

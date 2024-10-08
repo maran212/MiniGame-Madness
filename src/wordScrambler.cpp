@@ -95,7 +95,22 @@ void WordScrambler::displayHint(const std::string& word) {
     std::wstring hint = L"Hint: The first letter is '" + std::wstring(1, firstChar) +
         L"', the middle letter is '" + std::wstring(1, middleChar) +
         L"', and the last letter is '" + std::wstring(1, lastChar) + L"'.";
-    screenBuffer->writeToScreen(0, 5, hint);
+    screenBuffer->writeToScreen(0, 1, hint);
+}
+
+void WordScrambler::displayGuessedWords(const std::vector<std::string>& guessedWords) {
+    if (!screenBuffer) return;
+
+    std::wstring guessedWordsStr = L"Guessed words: ";
+    for (const auto& word : guessedWords) {
+        guessedWordsStr += std::wstring(word.begin(), word.end()) + L", ";
+    }
+    // Remove the trailing comma and space
+    if (guessedWords.size() > 0) {
+        guessedWordsStr = guessedWordsStr.substr(0, guessedWordsStr.length() - 2);
+    }
+
+    screenBuffer->writeToScreen(0, 7, guessedWordsStr+L" | Type Next Guess Here:");
 }
 
 void WordScrambler::playWordScrambler(const std::string& difficulty) {
@@ -117,7 +132,7 @@ void WordScrambler::playWordScrambler(const std::string& difficulty) {
         filename = "easy.txt";
     }
     else {
-        screenBuffer->writeToScreen(0, 0, L"Invalid difficulty level. Exiting game.");
+        screenBuffer->writeToScreen(0, 1, L"Invalid difficulty level. Exiting game.");
         return;
     }
 
@@ -131,10 +146,16 @@ void WordScrambler::playWordScrambler(const std::string& difficulty) {
     bool guessedCorrectly = false;
     int attempts = 0;
 
+    std::vector<std::string> guessedWords;  // **Vector to store guessed words**
+
     while (attempts < maxGuesses && !guessedCorrectly) {
         clearScreen();
         screenBuffer->writeToScreen(0, 0, L"Scrambled word: " + std::wstring(scrambledWord.begin(), scrambledWord.end()));
         screenBuffer->writeToScreen(0, 2, L"Guess the word (or type 'stop' to exit, or 'hint' for a hint that costs 2 lives): ");
+
+        // Display the guessed words so far
+        displayGuessedWords(guessedWords);
+
         guess = screenBuffer->getBlockingInput();
 
         if (guess == "stop") {
@@ -142,24 +163,32 @@ void WordScrambler::playWordScrambler(const std::string& difficulty) {
             return;
         }
         else if (guess == "hint") {
-            screenBuffer->writeToScreen(0, 3, L"Are you sure? You will lose 2 lives (y/n): ");
+            clearScreen();
+            screenBuffer->writeToScreen(0, 1, L"Are you sure? You will lose 2 lives (y/n): ");
             std::string response = screenBuffer->getBlockingInput();
+            clearScreen();
             if (response == "y" || response == "Y") {
                 displayHint(word);
                 attempts += 2;
                 if (attempts >= maxGuesses) break;
             }
+            screenBuffer->writeToScreen(0, 2, L"Press Enter to continue...");
             screenBuffer->getBlockingInput();  // Pause for user to continue
             continue;
         }
+
+        // **Add the guess to the guessedWords vector**
+        guessedWords.push_back(guess);
 
         if (toLowerCase(guess) == toLowerCase(word)) {
             guessedCorrectly = true;
         }
         else {
-            screenBuffer->writeToScreen(0, 4, L"Incorrect! Try again.");
+            clearScreen();
+            screenBuffer->writeToScreen(0, 1, L"Incorrect! Try again.");
             attempts++;
-            screenBuffer->writeToScreen(0, 5, L"Attempts left: " + std::to_wstring(maxGuesses - attempts));
+            screenBuffer->writeToScreen(0, 2, L"Attempts left: " + std::to_wstring(maxGuesses - attempts));
+            screenBuffer->writeToScreen(0, 3, L"Press Enter to continue...");
             screenBuffer->getBlockingInput();  // Pause for user to continue
         }
     }

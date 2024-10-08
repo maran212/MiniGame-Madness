@@ -34,7 +34,7 @@ namespace NaughtsCrossesTests
             std::function<std::string()> simulatedInput = []() { return "1"; };
 
             Assert::IsTrue(game.playerMove('x', simulatedInput), L"Player move failed.");
-            Assert::AreEqual('x', game.getBoardValue(0, 0), L"Board was not updated correctly.");
+            Assert::AreEqual('x', game.getBoardValue(2, 0), L"Board was not updated correctly.");
         }
 
         TEST_METHOD(TestEvaluateEmptyBoard)

@@ -39,6 +39,11 @@ public:
     /// @param wrongGuesses The number of wrong guesses made by the player.
     void displayHangman(int wrongGuesses);
 
+    /// @brief displayed guessed letters by the player
+    /// @param the guessed letters
+    void displayGuessedLetters(const std::vector<char>& guessedLetters);
+
+
     /// @brief Retrieves a random word from a specified text file.
     /// @param filename The name of the file containing the words.
     /// @return A randomly selected word from the file.
