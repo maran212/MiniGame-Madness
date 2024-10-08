@@ -107,7 +107,7 @@ void WordScrambler::displayGuessedWords(const std::vector<std::string>& guessedW
     }
     // Remove the trailing comma and space
     if (guessedWords.size() > 0) {
-        guessedWordsStr = guessedWordsStr.substr(0, guessedWordsStr.length() - 2);
+        guessedWordsStr.resize(guessedWordsStr.length() - 2);
     }
 
     screenBuffer->writeToScreen(0, 7, guessedWordsStr+L" | Type Next Guess Here:");
