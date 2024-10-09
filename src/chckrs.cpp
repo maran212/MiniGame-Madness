@@ -3,8 +3,8 @@
 using namespace std;
 
 int checkersGrid[8][8];
-int player1 = 1, player2 = 2, currentplayer = 1;
-bool winquestionmark = false;
+int player1 = 1, player2 = 2, currentplaying = 1;
+bool winnerquestionmark = false;
 
 void populateCheckersGrid()
 {
@@ -100,10 +100,10 @@ void swapturn(int playert)
 {
     if (playert == 1)
     {
-        currentplayer = 2;
+        currentplaying = 2;
     }
     else {
-        currentplayer = 1;
+        currentplaying = 1;
     }
 }
 
@@ -124,15 +124,15 @@ void checkers()
 {
     populateCheckersGrid();
 
-    while (winquestionmark == false)
+    while (winnerquestionmark == false)
     {
-        playerturn(currentplayer);
+        playerturn(currentplaying);
 
         checkwin();
 
         //checkdraw();
 
-        swapturn(currentplayer);
+        swapturn(currentplaying);
     }
 
     string see = "seel";

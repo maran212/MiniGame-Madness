@@ -9,16 +9,18 @@ namespace HnefataflTests
     TEST_CLASS(HnefataflGameTest)
     {
     public:
+        static const int BOARD_SIZE = 11; 
+        static const int WHITE = 1; 
+        static const int BLACK = 2; 
+        static const int KING = 3; 
+        static const int KING_SQUARE = 4; 
+        static const int EMPTY = 0; 
+        static const int OUT_OF_BOUNDS = -1; 
         
-		const int KING = 3;
-		const int KING_SQUARE = 4;
-		const int WHITE = 1;
-		const int BLACK = 2;
-
         // Test board initialization
         TEST_METHOD(BoardInitialization)
         {
-            HnefataflGame game;
+            Hnefatafl game;
 
             // Check the king's position
             Assert::AreEqual(KING, game.getPiece(5, 5));
@@ -45,7 +47,7 @@ namespace HnefataflTests
         // Test moving a piece
         TEST_METHOD(MovePiece)
         {
-            HnefataflGame game;
+            Hnefatafl game;
 
             std::pair<int, int> source = std::make_pair(4, 4);
             std::pair<int, int> target = std::make_pair(4, 6);
@@ -58,12 +60,12 @@ namespace HnefataflTests
 		// Test capturing a piece vertically
         TEST_METHOD(CapturePieceVertical)
         {
-            HnefataflGame game;
+            Hnefatafl game;
 
             // Move black pieces to surround a white piece
             game.move(std::make_pair(0, 3), std::make_pair(4, 3));
             game.move(std::make_pair(10, 3), std::make_pair(6, 3));
-
+           
             // Check if the white piece is captured
             Assert::IsTrue(game.isCaptured(std::make_pair(5, 3)));
         }
@@ -71,7 +73,7 @@ namespace HnefataflTests
 		// Test capturing a piece horizontally
 		TEST_METHOD(CapturePieceHorizontal)
 		{
-            HnefataflGame game;
+            Hnefatafl game;
 
 			// Move black pieces to surround a white piece
 			game.move(std::make_pair(5, 3), std::make_pair(5, 2));
@@ -84,7 +86,7 @@ namespace HnefataflTests
         // Test if the king is captured
         TEST_METHOD(KingCaptured)
         {
-            HnefataflGame game;
+            Hnefatafl game;
 
             // Move White out of the way
             game.move(std::make_pair(5, 3), std::make_pair(9, 3));
@@ -108,7 +110,7 @@ namespace HnefataflTests
         // Test if the game is over
         TEST_METHOD(GameOver)
         {
-            HnefataflGame game;
+            Hnefatafl game;
 
 			Assert::IsFalse(game.isGameOver());
 
@@ -123,7 +125,56 @@ namespace HnefataflTests
 			game.move(std::make_pair(1, 0), std::make_pair(0, 0));
 
             // Check if the game is over
-            //Assert::IsTrue(game.isGameOver());
+            Assert::IsTrue(game.isGameOver());
+        }
+
+		// Test if getPiece returns the correct piece
+        TEST_METHOD(GetPiece)
+        {
+            Hnefatafl game;
+
+            // Each type
+            Assert::AreEqual(KING, game.getPiece(5, 5));
+            Assert::AreEqual(KING_SQUARE, game.getPiece(0, 0));
+            Assert::AreEqual(BLACK, game.getPiece(0, 3));
+            Assert::AreEqual(WHITE, game.getPiece(4, 4));
+			Assert::AreEqual(0, game.getPiece(3, 3));
+
+			// Out of bounds
+			Assert::AreEqual(-1, game.getPiece(-1, 0));
+			Assert::AreEqual(-1, game.getPiece(0, -1));
+			Assert::AreEqual(-1, game.getPiece(11, 0));
+			Assert::AreEqual(-1, game.getPiece(0, 11));
+
+        }
+
+		// Test if covertMove returns the correct pair
+        TEST_METHOD(ConvertMove)
+        {
+            Hnefatafl game;
+			std::pair<int, int> test = game.convertMove("A2");
+            Assert::AreEqual(1, test.first);
+			Assert::AreEqual(0, test.second);
+
+			test = game.convertMove("K10");
+			Assert::AreEqual(9, test.first);
+			Assert::AreEqual(10, test.second);
+        }
+
+		// Test if isValidInput returns the correct boolean
+        TEST_METHOD(IsValidInput)
+        {
+            Hnefatafl game;
+
+            // Valid input
+            Assert::IsTrue(game.isValidInput("A1 B1"));
+
+            // Invalid input
+            Assert::IsFalse(game.isValidInput("A12 A9"));
+            Assert::IsFalse(game.isValidInput("A"));
+            Assert::IsFalse(game.isValidInput("11 22"));
+            Assert::IsFalse(game.isValidInput("AA BB"));
+            Assert::IsFalse(game.isValidInput("a1 B1"));
         }
     };
 }

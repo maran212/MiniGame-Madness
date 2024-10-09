@@ -8,8 +8,8 @@
 #include <sstream>
 
 extern int checkersGrid[8][8];
-extern int player1, player2, currentplayer;
-extern bool winquestionmark;
+extern int player1, player2, currentplaying;
+extern bool winnerquestionmark;
 
 void populateCheckersGrid();
 void forcejump(int playerturn, std::string piece);
